@@ -1,0 +1,57 @@
+#ifndef MAINFRAME_H
+#define MAINFRAME_H
+
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+#include "system.h"
+#include <vector>
+#include <queue> 
+#include "mathplot.h"
+using std::vector;
+using std::queue;
+
+class MainFrame : public wxFrame{
+public:
+	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
+	
+	void exit(wxCommandEvent &e);
+	void real_time(wxTimerEvent &e);
+	void shutdown(wxCommandEvent &e);
+	void restart(wxCommandEvent &e);
+
+	DECLARE_EVENT_TABLE();
+
+private:
+	System *system;
+
+	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text;
+	vector<wxStaticText*> cpu_usage_texts;
+	wxButton *exit_button, *restart_button, *shutdown_button;
+	wxPanel *main_panel;
+	wxBoxSizer *box,  *cpus_box, *header_buttons_box;
+	wxStaticBoxSizer *header_sbox, *system_sbox, *performance_sbox;
+	wxTimer *timer;
+	wxStaticBox *header_static, *system_static, *performance_static;
+
+	mpWindow *plot_window;
+	vector<mpFXYVector*> cpu_plot;
+	mpScaleY *cpu_axis_Y;
+
+	vector<double>cpu_plotting_points_X;
+	vector<vector<double>> cpu_plotting_points_Y;
+	
+	vector<wxColour> cpu_colors;
+};
+
+enum{
+	BUTTON_EXIT = wxID_HIGHEST +1,
+	BUTTON_RESTART,
+	BUTTON_SHUTDOWN,
+	TEXT_READONLY,
+	TIMER,
+	MP_WINDOW,
+	STATIC_BOX
+};
+
+#endif

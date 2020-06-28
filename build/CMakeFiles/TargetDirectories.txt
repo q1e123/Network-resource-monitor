@@ -1,0 +1,3 @@
+/home/robert/Workshop/Siemens/build/CMakeFiles/rebuild_cache.dir
+/home/robert/Workshop/Siemens/build/CMakeFiles/edit_cache.dir
+/home/robert/Workshop/Siemens/build/CMakeFiles/Siemens.dir
