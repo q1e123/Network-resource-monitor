@@ -8,7 +8,7 @@ using std::vector;
 namespace utils{
 	string get_value_sysfile(string filepath, string key,vector<char> separators);
 	string remove_char_str(string str, char ch);
-	string execute(char *cmd);
+	string execute(const char *cmd);
 	double round_n(double x, size_t n);
 };
 

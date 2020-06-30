@@ -25,7 +25,7 @@ public:
 private:
 	System *system;
 
-	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text;
+	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text;
 	vector<wxStaticText*> cpu_usage_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button;
 	wxPanel *main_panel;
@@ -34,11 +34,12 @@ private:
 	wxTimer *timer;
 	wxStaticBox *header_static, *system_static, *performance_static;
 
-	mpWindow *plot_window;
+	mpWindow *cpu_plot_window, *ram_plot_window;
+	mpFXYVector *ram_plot;
 	vector<mpFXYVector*> cpu_plot;
-	mpScaleY *cpu_axis_Y;
+	mpScaleY *cpu_axis_Y, *ram_axis_Y;
 
-	vector<double>cpu_plotting_points_X;
+	vector<double>time_plotting_points, ram_plotting_points_Y;
 	vector<vector<double>> cpu_plotting_points_Y;
 	
 	vector<wxColour> cpu_colors;

@@ -1,3 +1,11 @@
+#ifdef __linux__
+	#define OPEN popen
+	#define CLOSE pclose
+#elif defined _WIN32 || defined _WIN64
+	#define OPEN _popen
+	#define CLOSE _pclose
+#endif
+
 #include <algorithm>
 #include <cstdio>
 #include <iostream>
@@ -44,10 +52,10 @@ string utils::remove_char_str(string str, char ch){
 	return str;
 }
 
-string utils::execute(char *cmd){
+string utils::execute(const char *cmd){
     array<char, 128> buffer;
     string result;
-    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    unique_ptr<FILE, decltype(&CLOSE)> pipe(OPEN(cmd, "r"), CLOSE);
     if (!pipe) {
         cerr<<("popen() failed!\n");
     }

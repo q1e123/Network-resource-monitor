@@ -1,4 +1,4 @@
-#ifdef _WIN32 || defined _WIN64
+#ifdef _WIN32 || _WIN64
 #include <windows.h>
 #include <thread>
 #include <chrono>
@@ -70,5 +70,5 @@ void Msw::restart(){
 string Msw::get_ip(){
 	return "0.0.0.0";
 }
-
 #endif
+

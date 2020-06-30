@@ -9,6 +9,8 @@
 #include <string>
 #include <ctime>
 
+#define PLOT_SIZE 60
+
 using std::to_string;
 using std::cout;
 BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
@@ -21,6 +23,8 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 : wxFrame((wxFrame *) NULL, -1, title, pos, size){
 	SetAutoLayout(TRUE);
 	system = new System();
+	wxColour black(0, 0, 0);
+	wxColour white(255,255,255);
 	wxColour light_blue(128,200,255);
 	wxColour dark_blue(2,44,99);
 	wxColour light_red(255,138,138);
@@ -52,6 +56,8 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	wxFont h1(18, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 	wxFont h2(14, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 	wxFont normal_bold(12, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+	wxFont normal(12, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+
 	main_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 	main_panel->SetBackgroundColour(gray);
 	box = new wxBoxSizer(wxVERTICAL);
@@ -64,7 +70,11 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	IP_text= new wxStaticText(main_panel, TEXT_READONLY, system->get_ip());
 	header_buttons_box = new wxBoxSizer(wxHORIZONTAL);
 	restart_button = new wxButton(main_panel, BUTTON_RESTART, "Restart");
+	restart_button->SetBackgroundColour(light_gray);
+	restart_button->SetForegroundColour(black);
 	shutdown_button = new wxButton(main_panel, BUTTON_SHUTDOWN, "Shutdown");
+	shutdown_button->SetBackgroundColour(light_gray);
+	shutdown_button->SetForegroundColour(black);
 	header_buttons_box->Add(shutdown_button, 0, wxALL | wxEXPAND, 5);
 	header_buttons_box->Add(restart_button, 0, wxALL | wxEXPAND, 5);
 	header_sbox = new wxStaticBoxSizer(header_static,wxVERTICAL);
@@ -74,8 +84,10 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	// System
 	system_static = new wxStaticBox(main_panel, STATIC_BOX,"");
 	os_text = new wxStaticText(main_panel, TEXT_READONLY,"OS: " + system->get_os());
+	os_text->SetForegroundColour(white);
 	system_text = new wxStaticText(main_panel, TEXT_READONLY, "System");
 	system_text->SetFont(h1);
+	system_text->SetForegroundColour(white);
 	system_sbox = new wxStaticBoxSizer(system_static, wxVERTICAL);
 	system_sbox->Add(system_text, 0, wxALL | wxEXPAND, 5);
 	system_sbox->Add(os_text, 0, wxALL | wxEXPAND, 5);
@@ -84,9 +96,20 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	performance_static = new wxStaticBox(main_panel, STATIC_BOX,"");
 	performance_text= new wxStaticText(main_panel, TEXT_READONLY, "Performance");
 	performance_text->SetFont(h1);
+	performance_text->SetForegroundColour(white);
+
+	ram_title_text = new wxStaticText(main_panel, TEXT_READONLY, "RAM");
+	ram_title_text->SetFont(h2);
+	ram_title_text->SetForegroundColour(white);
 	total_ram_text = new wxStaticText(main_panel, TEXT_READONLY, "Total RAM: " + to_string(system->get_total_ram()));
+	total_ram_text->SetForegroundColour(white);
 	used_ram_text = new wxStaticText(main_panel, TEXT_READONLY,"Used RAM: " + to_string(system->get_used_ram()));
+	used_ram_text->SetForegroundColour(white);
 	avalabile_ram_text = new wxStaticText(main_panel, TEXT_READONLY,"Avalabile RAM: " + to_string(system->get_avalabile_ram()));
+	avalabile_ram_text->SetForegroundColour(white);
+	cpu_title_text = new wxStaticText(main_panel, TEXT_READONLY, "CPU usage");
+	cpu_title_text->SetFont(h2);
+	cpu_title_text->SetForegroundColour(white);
 	cpus_box = new wxBoxSizer(wxHORIZONTAL);
 	performance_sbox = new wxStaticBoxSizer(performance_static, wxVERTICAL);
 	
@@ -97,29 +120,50 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		cpu_text->SetForegroundColour(cpu_colors[t++]);
 		cpu_usage_texts.push_back(cpu_text);
 		cpus_box->Add(cpu_text, 0, wxALL | wxEXPAND, 15);
-		cpu_plotting_points_Y.push_back(vector<double>(0));
+		cpu_plotting_points_Y.push_back(vector<double>(2,0));
 	}
-	plot_window = new mpWindow(main_panel, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
-	plot_window->SetColourTheme(dark_gray,dark_gray,dark_gray);
-	cpu_plotting_points_X.push_back(0);
+	time_plotting_points.push_back(0);
+	time_plotting_points.push_back(0.5);
+
+	ram_plotting_points_Y = vector<double>(2,0);
+	ram_plot_window = new mpWindow(main_panel, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
+	ram_plot_window->SetColourTheme(dark_gray,light_green,light_red);
+	ram_axis_Y = new mpScaleY("",mpALIGN_LEFT);
+	ram_axis_Y->SetFont(normal);
+	ram_plot = new mpFXYVector();
+	ram_plot->SetContinuity(true);
+	ram_plot->SetDrawOutsideMargins(false);
+	ram_plot->SetData(time_plotting_points, ram_plotting_points_Y);
+	ram_plot->SetPen(wxPen(light_blue, 3, wxPENSTYLE_SOLID));
+	ram_plot->SetDrawOutsideMargins(false);	
+	ram_plot_window->AddLayer(ram_axis_Y);
+	ram_plot_window->AddLayer(ram_plot);
+
+	cpu_plot_window = new mpWindow(main_panel, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
+	cpu_plot_window->SetColourTheme(dark_gray,light_green,light_red);
+	cpu_axis_Y = new mpScaleY("",mpALIGN_LEFT);
+	cpu_axis_Y->SetFont(normal);
+	cpu_plot_window->AddLayer(cpu_axis_Y);
 	for(size_t i = 0; i < cpu_usage_texts.size();++i){
-		cpu_plotting_points_Y[i].push_back(0);
 		mpFXYVector *tmp = new mpFXYVector();
 		tmp->SetContinuity(true);
 		tmp->SetDrawOutsideMargins(false);
-		tmp->SetData(cpu_plotting_points_X, cpu_plotting_points_Y[i]);
+		tmp->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
 		tmp->SetPen(wxPen(cpu_colors[i], 3, wxPENSTYLE_SOLID));
 		tmp->SetDrawOutsideMargins(false);	
 		cpu_plot.push_back(tmp);
-		plot_window->AddLayer(cpu_plot[i]);
+		cpu_plot_window->AddLayer(cpu_plot[i]);
 	}
 
 	performance_sbox->Add(performance_text, 0, wxALL | wxEXPAND, 5);
+	performance_sbox->Add(ram_title_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(total_ram_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(used_ram_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(avalabile_ram_text, 0, wxALL | wxEXPAND, 5);
+	performance_sbox->Add(ram_plot_window,1, wxBOTTOM | wxEXPAND,50);
+	performance_sbox->Add(cpu_title_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(cpus_box, 0, wxALL, 5);
-	performance_sbox->Add(plot_window,1, wxBOTTOM | wxEXPAND,50);
+	performance_sbox->Add(cpu_plot_window,1, wxBOTTOM | wxEXPAND,50);
 
 	box->Add(header_sbox, 0, wxALL | wxEXPAND, 10);
 	box->Add(system_sbox, 0, wxALL | wxEXPAND, 10);
@@ -136,24 +180,31 @@ void MainFrame::real_time(wxTimerEvent &e){
 	avalabile_ram_text->SetLabel("Avalabile RAM: " + to_string(system->get_avalabile_ram()));
 	used_ram_text->SetLabel("Used RAM: " + to_string(system->get_used_ram()));
 	system->update_cpu_usage();
-	time_t t;
-	t = time(NULL);
+	static double t = 1.0;
 	size_t i;
 	i = 0;
-	cpu_plotting_points_X.push_back((double)t);
+	time_plotting_points.push_back(t);
+	if(time_plotting_points.size()>PLOT_SIZE-1){
+		time_plotting_points.erase(time_plotting_points.begin());
+		for(size_t j = 0; j<system->get_cpu_usage().size();++j){
+			cpu_plotting_points_Y[j].erase(cpu_plotting_points_Y[j].begin());
+		}
+		ram_plotting_points_Y.erase(ram_plotting_points_Y.begin());
+	}
 	for(auto item:system->get_cpu_usage()){
 		cpu_usage_texts[i]->SetLabel(item.first + ": " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
 		cpu_plotting_points_Y[i].push_back(item.second);
-		if(cpu_plotting_points_X.size()>11){
-			for(size_t i = 0; i<system->get_cpu_usage().size();++i){
-				cpu_plotting_points_Y[i].erase(cpu_plotting_points_Y[i].begin());
-			}
-			cpu_plotting_points_X.erase(cpu_plotting_points_X.begin());
-		}
-		cpu_plot[i]->SetData(cpu_plotting_points_X, cpu_plotting_points_Y[i]);
+		cpu_plot[i]->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
 		++i;
 	}
-	plot_window->Fit((double)t-10,double(t+5),0,100);
+	cpu_plot_window->Fit(double(t-PLOT_SIZE/2), double(t),-5,105);
+	double ram_usage;
+	ram_usage = double(system->get_used_ram()) / double(system->get_total_ram()) * 100;
+	ram_plotting_points_Y.push_back(ram_usage);
+	ram_plot->SetData(time_plotting_points, ram_plotting_points_Y); 
+	ram_plot_window->Fit(double(t-PLOT_SIZE/2), double(t),-5,105);
+
+	t +=0.5;
 }
 void MainFrame::shutdown(wxCommandEvent &e){
 	system->shutdown();
