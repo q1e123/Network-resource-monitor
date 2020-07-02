@@ -109,4 +109,75 @@ string Linux::get_ip(){
 	return "0.0.0.0";
 }
 
+vector<string> Linux::get_network_intarfaces(){
+	utils::execute("ls /sys/class/net/ > interfaces");
+
+	ifstream interfaces_file("interfaces");
+	vector<string> interfaces;
+	string interface;
+	while(interfaces_file>>interface){
+		interfaces.push_back(interface);
+	}
+
+	return interfaces;
+}
+
+Network_Usage Linux::get_interface_usage(string interface){
+	string start,cmd_rx, cmd_tx,stat, txp, rxp;
+	start = "cat /sys/class/net/";
+	stat = "/statistics/";
+	txp = "tx_packets";
+	rxp = "rx_packets";
+	cmd_rx = start + interface + stat + rxp;
+	cmd_tx = start + interface + stat + txp;
+	
+	size_t rx_old, tx_old;
+	rx_old = std::stoi(utils::execute(cmd_rx.c_str()));
+	tx_old = std::stoi(utils::execute(cmd_tx.c_str()));
+	Network_Usage nu_old(rx_old, tx_old);
+	usleep(100000);
+	size_t rx_new, tx_new;
+	rx_new = std::stoi(utils::execute(cmd_rx.c_str()));
+	tx_new = std::stoi(utils::execute(cmd_tx.c_str()));
+	Network_Usage nu_new(rx_new, tx_new);
+
+	return nu_new - nu_old;
+}
+
+map<string, Network_Usage> Linux::get_network_usage(){
+	map<string, Network_Usage> network_usage;
+	vector<string> interfaces;
+	interfaces = Linux::get_network_intarfaces();
+	
+	string start,cmd_rx, cmd_tx,stat, txp, rxp;
+	start = "cat /sys/class/net/";
+	stat = "/statistics/";
+	txp = "tx_packets";
+	rxp = "rx_packets";
+
+	vector<Network_Usage> old_usages;
+	for(auto interface : interfaces){
+		size_t rx_old, tx_old;
+		cmd_rx = start + interface + stat + rxp;
+		cmd_tx = start + interface + stat + txp;
+		rx_old = std::stoi(utils::execute(cmd_rx.c_str()));
+		tx_old = std::stoi(utils::execute(cmd_tx.c_str()));
+		old_usages.push_back(Network_Usage(rx_old, tx_old));
+	}
+	usleep(100000);
+	vector<Network_Usage> new_usages;
+	for(auto interface : interfaces){
+		size_t rx_new, tx_new;
+		cmd_rx = start + interface + stat + rxp;
+		cmd_tx = start + interface + stat + txp;
+		rx_new = std::stoi(utils::execute(cmd_rx.c_str()));
+		tx_new = std::stoi(utils::execute(cmd_tx.c_str()));
+		new_usages.push_back(Network_Usage(rx_new, tx_new));
+	}
+	for(size_t i = 0; i < interfaces.size();++i){
+		network_usage[interfaces[i]] = new_usages[i] - old_usages[i];
+	}
+	return network_usage;
+}
+
 #endif

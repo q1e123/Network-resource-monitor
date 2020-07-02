@@ -112,7 +112,17 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	cpu_title_text->SetForegroundColour(white);
 	cpus_box = new wxBoxSizer(wxHORIZONTAL);
 	performance_sbox = new wxStaticBoxSizer(performance_static, wxVERTICAL);
-	
+	network_text = new wxStaticText(main_panel, TEXT_READONLY, "Networking");
+	network_text->SetFont(h2);
+	network_text->SetForegroundColour(white);
+	network_rx_text = new wxStaticText(main_panel, TEXT_READONLY, "In: 0");
+	network_rx_text->SetFont(h2);
+	network_rx_text->SetForegroundColour(white);
+	network_tx_text = new wxStaticText(main_panel, TEXT_READONLY, "Out: 0");
+	network_tx_text->SetFont(h2);
+	network_tx_text->SetForegroundColour(white);
+
+
 	size_t t=0;
 	for(auto item:system->get_cpu_usage()){
 		wxStaticText *cpu_text = new wxStaticText(main_panel, TEXT_READONLY,item.first + " " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
@@ -155,6 +165,35 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		cpu_plot_window->AddLayer(cpu_plot[i]);
 	}
 
+	vector<wxString> choices;
+	for(auto inter : system->get_network_interfaces()){
+		choices.push_back(inter);
+		network_rx_plotting_points_Y[inter] = vector<double>(2,0);
+		network_tx_plotting_points_Y[inter] = vector<double>(2,0);
+	}
+	interface_select_combo = new wxComboBox(main_panel, COMBO_BOX_NETWORK, "Select interface");
+	interface_select_combo->Set(choices);
+	
+	network_plot_window = new mpWindow(main_panel, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
+	network_plot_window->SetColourTheme(dark_gray,light_green,light_red);
+	network_axis_Y = new mpScaleY("",mpALIGN_LEFT);
+	network_axis_Y->SetFont(normal);
+	network_rx_plot = new mpFXYVector();
+	network_rx_plot->SetContinuity(true);
+	network_rx_plot->SetDrawOutsideMargins(false);
+	network_rx_plot->SetData(time_plotting_points, vector<double>(2,0));
+	network_rx_plot->SetPen(wxPen(light_blue, 3, wxPENSTYLE_SOLID));
+	network_rx_plot->SetDrawOutsideMargins(false);	
+	network_tx_plot = new mpFXYVector();
+	network_tx_plot->SetContinuity(true);
+	network_tx_plot->SetDrawOutsideMargins(false);
+	network_tx_plot->SetData(time_plotting_points, vector<double>(2,0));
+	network_tx_plot->SetPen(wxPen(light_blue, 3, wxPENSTYLE_SOLID));
+	network_tx_plot->SetDrawOutsideMargins(false);	
+	network_plot_window->AddLayer(network_axis_Y);
+	network_plot_window->AddLayer(network_rx_plot);
+	network_plot_window->AddLayer(network_tx_plot);
+
 	performance_sbox->Add(performance_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(ram_title_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(total_ram_text, 0, wxALL | wxEXPAND, 5);
@@ -164,6 +203,11 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	performance_sbox->Add(cpu_title_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(cpus_box, 0, wxALL, 5);
 	performance_sbox->Add(cpu_plot_window,1, wxBOTTOM | wxEXPAND,50);
+	performance_sbox->Add(network_text,1, wxBOTTOM | wxEXPAND,5);
+	performance_sbox->Add(network_rx_text,1, wxBOTTOM | wxEXPAND,5);
+	performance_sbox->Add(network_tx_text,1, wxBOTTOM | wxEXPAND,5);
+	performance_sbox->Add(interface_select_combo, 0, wxALL | wxEXPAND, 5);
+	performance_sbox->Add(network_plot_window,1, wxBOTTOM | wxEXPAND,50);
 
 	box->Add(header_sbox, 0, wxALL | wxEXPAND, 10);
 	box->Add(system_sbox, 0, wxALL | wxEXPAND, 10);
@@ -190,6 +234,12 @@ void MainFrame::real_time(wxTimerEvent &e){
 			cpu_plotting_points_Y[j].erase(cpu_plotting_points_Y[j].begin());
 		}
 		ram_plotting_points_Y.erase(ram_plotting_points_Y.begin());
+
+		for(auto item : network_rx_plotting_points_Y){
+			network_rx_plotting_points_Y[item.first].erase(network_rx_plotting_points_Y[item.first].begin());
+			network_tx_plotting_points_Y[item.first].erase(network_tx_plotting_points_Y[item.first].begin());
+		}
+
 	}
 	for(auto item:system->get_cpu_usage()){
 		cpu_usage_texts[i]->SetLabel(item.first + ": " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
@@ -203,6 +253,19 @@ void MainFrame::real_time(wxTimerEvent &e){
 	ram_plotting_points_Y.push_back(ram_usage);
 	ram_plot->SetData(time_plotting_points, ram_plotting_points_Y); 
 	ram_plot_window->Fit(double(t-PLOT_SIZE/2), double(t),-5,105);
+
+	system->update_network_usage();
+	for(auto item:system->get_network_usage()){
+		network_rx_plotting_points_Y[item.first].push_back(item.second.get_rx());
+		network_tx_plotting_points_Y[item.first].push_back(item.second.get_tx());
+	}
+	if(string(interface_select_combo->GetStringSelection()) != ""){
+		network_rx_text->SetLabel("IN: " + to_string(network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())].back()));
+		network_tx_text->SetLabel("OUT: " + to_string(network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())].back()));
+		network_rx_plot->SetData(time_plotting_points, network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())]);
+		network_tx_plot->SetData(time_plotting_points, network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())]);
+	}
+	network_plot_window->Fit();//(double(t-PLOT_SIZE/2), double(t));
 
 	t +=0.5;
 }

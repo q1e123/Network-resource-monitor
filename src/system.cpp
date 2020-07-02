@@ -7,6 +7,8 @@ System::System(){
 	avalabile_ram = OS::get_avalabile_ram();
 	cpu_usage = OS::get_cpu_usage();
 	ip = OS::get_ip();
+	network_usage = OS::get_network_usage();
+	network_interfaces = OS::get_network_intarfaces();
 }
 
 string System::get_os(){
@@ -47,4 +49,16 @@ void System::restart(){
 
 size_t System::get_used_ram(){
 	return used_ram;
+}
+
+map<string, Network_Usage> System::get_network_usage(){
+	return network_usage;
+}
+
+void System::update_network_usage(){
+	network_usage = OS::get_network_usage();
+}
+
+vector<string> System::get_network_interfaces(){
+	return network_interfaces;
 }

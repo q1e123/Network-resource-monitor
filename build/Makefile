@@ -305,6 +305,33 @@ src/msw.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Siemens.dir/build.make CMakeFiles/Siemens.dir/src/msw.cpp.s
 .PHONY : src/msw.cpp.s
 
+src/network-usage.o: src/network-usage.cpp.o
+
+.PHONY : src/network-usage.o
+
+# target to build an object file
+src/network-usage.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Siemens.dir/build.make CMakeFiles/Siemens.dir/src/network-usage.cpp.o
+.PHONY : src/network-usage.cpp.o
+
+src/network-usage.i: src/network-usage.cpp.i
+
+.PHONY : src/network-usage.i
+
+# target to preprocess a source file
+src/network-usage.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Siemens.dir/build.make CMakeFiles/Siemens.dir/src/network-usage.cpp.i
+.PHONY : src/network-usage.cpp.i
+
+src/network-usage.s: src/network-usage.cpp.s
+
+.PHONY : src/network-usage.s
+
+# target to generate assembly for a file
+src/network-usage.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Siemens.dir/build.make CMakeFiles/Siemens.dir/src/network-usage.cpp.s
+.PHONY : src/network-usage.cpp.s
+
 src/system.o: src/system.cpp.o
 
 .PHONY : src/system.o
@@ -386,6 +413,9 @@ help:
 	@echo "... src/msw.o"
 	@echo "... src/msw.i"
 	@echo "... src/msw.s"
+	@echo "... src/network-usage.o"
+	@echo "... src/network-usage.i"
+	@echo "... src/network-usage.s"
 	@echo "... src/system.o"
 	@echo "... src/system.i"
 	@echo "... src/system.s"

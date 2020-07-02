@@ -2,8 +2,10 @@
 #define System_H
 
 #include <string>
+#include <vector>
 #include <cstdio>
 #include <map>
+#include "network-usage.h"
 
 #ifdef __linux__
 	#include "linux.h"
@@ -14,6 +16,7 @@
 #endif
 
 using std::string;
+using std::vector;
 using std::map;
 class System{
 public:
@@ -33,10 +36,16 @@ public:
 	void restart();
 
 	string get_ip();
+
+	map<string, Network_Usage> get_network_usage();
+	void update_network_usage();
+
+	vector<string> get_network_interfaces();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip;
+	vector<string> network_interfaces;
 	map<string, double> cpu_usage;
-	
+	map<string, Network_Usage> network_usage;
 };
 #endif

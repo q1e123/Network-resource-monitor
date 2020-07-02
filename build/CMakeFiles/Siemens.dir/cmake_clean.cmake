@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/Siemens.dir/src/mainframe.cpp.o"
   "CMakeFiles/Siemens.dir/src/mathplot.cpp.o"
   "CMakeFiles/Siemens.dir/src/msw.cpp.o"
+  "CMakeFiles/Siemens.dir/src/network-usage.cpp.o"
   "CMakeFiles/Siemens.dir/src/system.cpp.o"
   "CMakeFiles/Siemens.dir/src/utils.cpp.o"
   "Siemens"

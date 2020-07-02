@@ -4,11 +4,14 @@
 #define Linux_H
 #include <fstream>
 #include <string>
+#include <vector>
 #include <map>
 #include <cstdio>
 
 #include "jiffy.h"
+#include "network-usage.h"
 
+using std::vector;
 using std::string;
 using std::map;
 
@@ -29,6 +32,10 @@ namespace Linux{
 	void restart();
 
 	string get_ip();
+	vector<string> get_network_intarfaces();
+	Network_Usage get_interface_usage(string interface);
+	map<string, Network_Usage> get_network_usage();
+
 };
 
 #endif

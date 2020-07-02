@@ -25,7 +25,7 @@ public:
 private:
 	System *system;
 
-	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text;
+	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text;
 	vector<wxStaticText*> cpu_usage_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button;
 	wxPanel *main_panel;
@@ -34,15 +34,18 @@ private:
 	wxTimer *timer;
 	wxStaticBox *header_static, *system_static, *performance_static;
 
-	mpWindow *cpu_plot_window, *ram_plot_window;
-	mpFXYVector *ram_plot;
+	mpWindow *cpu_plot_window, *ram_plot_window, *network_plot_window;
+	mpFXYVector *ram_plot, *network_rx_plot, *network_tx_plot;
 	vector<mpFXYVector*> cpu_plot;
-	mpScaleY *cpu_axis_Y, *ram_axis_Y;
+	mpScaleY *cpu_axis_Y, *ram_axis_Y, *network_axis_Y;
 
 	vector<double>time_plotting_points, ram_plotting_points_Y;
-	vector<vector<double>> cpu_plotting_points_Y;
+	vector<vector<double>> cpu_plotting_points_Y; 
+	map<string, vector<double>> network_rx_plotting_points_Y,network_tx_plotting_points_Y; 
 	
 	vector<wxColour> cpu_colors;
+
+	wxComboBox *interface_select_combo;
 };
 
 enum{
@@ -52,7 +55,8 @@ enum{
 	TEXT_READONLY,
 	TIMER,
 	MP_WINDOW,
-	STATIC_BOX
+	STATIC_BOX,
+	COMBO_BOX_NETWORK
 };
 
 #endif

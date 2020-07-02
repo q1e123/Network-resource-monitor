@@ -17,12 +17,16 @@ fstream
 -
 string
 -
+vector
+-
 map
 -
 cstdio
 -
 jiffy.h
 ../include/jiffy.h
+network-usage.h
+../include/network-usage.h
 
 ../include/mainframe.h
 wx/wx.h
@@ -72,13 +76,21 @@ string
 map
 -
 
+../include/network-usage.h
+cstdio
+-
+
 ../include/system.h
 string
+-
+vector
 -
 cstdio
 -
 map
 -
+network-usage.h
+../include/network-usage.h
 linux.h
 ../include/linux.h
 msw.h
