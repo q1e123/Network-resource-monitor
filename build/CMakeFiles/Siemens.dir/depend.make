@@ -783,6 +783,7 @@ CMakeFiles/Siemens.dir/src/mathplot.cpp.o: /usr/local/lib/wx/include/gtk3-unicod
 
 CMakeFiles/Siemens.dir/src/msw.cpp.o: ../include/jiffy.h
 CMakeFiles/Siemens.dir/src/msw.cpp.o: ../include/msw.h
+CMakeFiles/Siemens.dir/src/msw.cpp.o: ../include/network-usage.h
 CMakeFiles/Siemens.dir/src/msw.cpp.o: ../include/utils.h
 CMakeFiles/Siemens.dir/src/msw.cpp.o: ../src/msw.cpp
 

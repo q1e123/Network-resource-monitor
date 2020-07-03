@@ -1,10 +1,25 @@
 #ifdef _WIN32 || _WIN64
+
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "IPHLPAPI.lib")
+
+#include <iphlpapi.h>
+
+#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
 #include <windows.h>
 #include <thread>
 #include <chrono>
+#include <iostream>
+#include <stdlib.h>
 #include "msw.h"
 #include "utils.h"
 #include "jiffy.h"
+
+using std::cerr;
+
 string Msw::get_os(){
 	return utils::remove_char_str(utils::execute("ver"),'\n');
 }
@@ -70,5 +85,119 @@ void Msw::restart(){
 string Msw::get_ip(){
 	return "0.0.0.0";
 }
+
+void setup_iftable(MIB_IFROW *if_table, DWORD&dw_size){
+
+}
+
+vector<string> Msw::get_network_interfaces(){
+	vector<string> interfaces;
+	DWORD dw_size;
+
+    MIB_IFTABLE* if_table;
+    MIB_IFROW* if_row;
+
+    if_table = (MIB_IFTABLE*)MALLOC(sizeof(MIB_IFTABLE));
+    if (if_table == NULL) {
+        cerr << "Error: memory allocation for if_table";
+        exit(EXIT_FAILURE);
+    }
+
+    dw_size = sizeof(MIB_IFTABLE);
+    DWORD ret = GetIfTable(if_table, &dw_size, FALSE);
+    if (ret == ERROR_INSUFFICIENT_BUFFER) {
+        FREE(if_table);
+        if_table = (MIB_IFTABLE*)MALLOC(dw_size);
+        if (if_table == NULL) {
+            cerr << "Error: memory allocation for getIfTable";
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if(GetIfTable(if_table, &dw_size, FALSE) == NO_ERROR) {
+        for (size_t i = 0; i < if_table->dwNumEntries; i++) {
+            if_row = (MIB_IFROW*)&if_table->table[i];
+            string intr(reinterpret_cast<char*>(if_row->bDescr));
+            interfaces.push_back(intr);
+        }		
+	}else{
+		cerr << "Error: GetIfTable";
+		exit(EXIT_FAILURE);
+	}
+	
+	return interfaces;
+}
+
+map<string, Network_Usage> Msw::get_network_usage(){
+	map<string, Network_Usage> network_usage;
+    DWORD dw_size;
+
+    MIB_IFTABLE* if_table;
+    MIB_IFROW* if_row;
+
+    if_table = (MIB_IFTABLE*)MALLOC(sizeof(MIB_IFTABLE));
+    if (if_table == NULL) {
+        cerr << "Error: memory allocation for if_table";
+        exit(EXIT_FAILURE);
+    }
+
+    dw_size = sizeof(MIB_IFTABLE);
+    DWORD ret = GetIfTable(if_table, &dw_size, FALSE);
+    if (ret == ERROR_INSUFFICIENT_BUFFER) {
+        FREE(if_table);
+        if_table = (MIB_IFTABLE*)MALLOC(dw_size);
+        if (if_table == NULL) {
+            cerr << "Error: memory allocation for getIfTable";
+            exit(EXIT_FAILURE);
+        }
+    }
+    vector<Network_Usage> old_usage;
+    if(GetIfTable(if_table, &dw_size, FALSE) == NO_ERROR) {
+        for (size_t i = 0; i < if_table->dwNumEntries; i++) {
+            if_row = (MIB_IFROW*)&if_table->table[i];
+            Network_Usage usage(if_row->dwInOctets, if_row->dwOutOctets);
+            old_usage.push_back(usage);
+        }
+	}else{
+		cerr << "Error: GetIfTable";
+		exit(EXIT_FAILURE);
+	}
+
+    std::this_thread::sleep_for (std::chrono::milliseconds(1000));
+
+    if_table = (MIB_IFTABLE*)MALLOC(sizeof(MIB_IFTABLE));
+    if (if_table == NULL) {
+        cerr << "Error: memory allocation for if_table";
+        exit(EXIT_FAILURE);
+    }
+
+    dw_size = sizeof(MIB_IFTABLE);
+    ret = GetIfTable(if_table, &dw_size, FALSE);
+    if (ret == ERROR_INSUFFICIENT_BUFFER) {
+        FREE(if_table);
+        if_table = (MIB_IFTABLE*)MALLOC(dw_size);
+        if (if_table == NULL) {
+            cerr << "Error: memory allocation for getIfTable";
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if(GetIfTable(if_table, &dw_size, FALSE) == NO_ERROR) {
+        for (size_t i = 0; i < if_table->dwNumEntries; i++){
+            if_row = (MIB_IFROW*)&if_table->table[i];
+            string intr(reinterpret_cast<char*>(if_row->bDescr));
+			Network_Usage new_usage(if_row->dwInOctets, if_row->dwOutOctets);
+            std::cout << new_usage.get_rx()<<" " <<old_usage[i].get_rx()<<"\n";
+            Network_Usage usage(new_usage.get_rx() - old_usage[i].get_rx(), new_usage.get_tx() - old_usage[i].get_tx());
+			network_usage[intr] = usage;
+        }
+	}else{
+		cerr << "Error: GetIfTable";
+		exit(EXIT_FAILURE);
+	}
+	
+	return network_usage;
+}
+
 #endif
 

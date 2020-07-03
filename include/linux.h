@@ -32,7 +32,7 @@ namespace Linux{
 	void restart();
 
 	string get_ip();
-	vector<string> get_network_intarfaces();
+	vector<string> get_network_interfaces();
 	Network_Usage get_interface_usage(string interface);
 	map<string, Network_Usage> get_network_usage();
 

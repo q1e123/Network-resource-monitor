@@ -109,7 +109,7 @@ string Linux::get_ip(){
 	return "0.0.0.0";
 }
 
-vector<string> Linux::get_network_intarfaces(){
+vector<string> Linux::get_network_interfaces(){
 	utils::execute("ls /sys/class/net/ > interfaces");
 
 	ifstream interfaces_file("interfaces");
@@ -147,7 +147,7 @@ Network_Usage Linux::get_interface_usage(string interface){
 map<string, Network_Usage> Linux::get_network_usage(){
 	map<string, Network_Usage> network_usage;
 	vector<string> interfaces;
-	interfaces = Linux::get_network_intarfaces();
+	interfaces = Linux::get_network_interfaces();
 	
 	string start,cmd_rx, cmd_tx,stat, txp, rxp;
 	start = "cat /sys/class/net/";

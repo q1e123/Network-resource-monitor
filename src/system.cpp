@@ -8,7 +8,7 @@ System::System(){
 	cpu_usage = OS::get_cpu_usage();
 	ip = OS::get_ip();
 	network_usage = OS::get_network_usage();
-	network_interfaces = OS::get_network_intarfaces();
+	network_interfaces = OS::get_network_interfaces();
 }
 
 string System::get_os(){
