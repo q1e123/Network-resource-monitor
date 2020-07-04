@@ -29,7 +29,7 @@ private:
 	vector<wxStaticText*> cpu_usage_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button;
 	wxPanel *main_panel;
-	wxBoxSizer *box,  *cpus_box, *header_buttons_box;
+	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box;
 	wxStaticBoxSizer *header_sbox, *system_sbox, *performance_sbox;
 	wxTimer *timer;
 	wxStaticBox *header_static, *system_static, *performance_static;

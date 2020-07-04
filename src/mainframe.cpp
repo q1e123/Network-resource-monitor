@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <algorithm>
 
 #define PLOT_SIZE 60
 
@@ -115,12 +116,13 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	network_text = new wxStaticText(main_panel, TEXT_READONLY, "Networking");
 	network_text->SetFont(h2);
 	network_text->SetForegroundColour(white);
+	rx_tx_box = new wxBoxSizer(wxHORIZONTAL);
 	network_rx_text = new wxStaticText(main_panel, TEXT_READONLY, "In: 0");
-	network_rx_text->SetFont(h2);
-	network_rx_text->SetForegroundColour(white);
+	network_rx_text->SetFont(normal_bold);
+	network_rx_text->SetForegroundColour(light_green);
 	network_tx_text = new wxStaticText(main_panel, TEXT_READONLY, "Out: 0");
-	network_tx_text->SetFont(h2);
-	network_tx_text->SetForegroundColour(white);
+	network_tx_text->SetFont(normal_bold);
+	network_tx_text->SetForegroundColour(light_red);
 
 
 	size_t t=0;
@@ -182,18 +184,21 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	network_rx_plot->SetContinuity(true);
 	network_rx_plot->SetDrawOutsideMargins(false);
 	network_rx_plot->SetData(time_plotting_points, vector<double>(2,0));
-	network_rx_plot->SetPen(wxPen(light_blue, 3, wxPENSTYLE_SOLID));
+	network_rx_plot->SetPen(wxPen(light_green, 3, wxPENSTYLE_SOLID));
 	network_rx_plot->SetDrawOutsideMargins(false);	
 	network_tx_plot = new mpFXYVector();
 	network_tx_plot->SetContinuity(true);
 	network_tx_plot->SetDrawOutsideMargins(false);
 	network_tx_plot->SetData(time_plotting_points, vector<double>(2,0));
-	network_tx_plot->SetPen(wxPen(light_blue, 3, wxPENSTYLE_SOLID));
+	network_tx_plot->SetPen(wxPen(light_red, 3, wxPENSTYLE_SOLID));
 	network_tx_plot->SetDrawOutsideMargins(false);	
 	network_plot_window->AddLayer(network_axis_Y);
 	network_plot_window->AddLayer(network_rx_plot);
 	network_plot_window->AddLayer(network_tx_plot);
 
+	rx_tx_box->Add(network_rx_text,0, wxALL | wxEXPAND,15);
+	rx_tx_box->Add(network_tx_text,0, wxALL | wxEXPAND,15);
+	
 	performance_sbox->Add(performance_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(ram_title_text, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(total_ram_text, 0, wxALL | wxEXPAND, 5);
@@ -204,14 +209,14 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	performance_sbox->Add(cpus_box, 0, wxALL, 5);
 	performance_sbox->Add(cpu_plot_window,1, wxBOTTOM | wxEXPAND,50);
 	performance_sbox->Add(network_text,1, wxBOTTOM | wxEXPAND,5);
-	performance_sbox->Add(network_rx_text,1, wxBOTTOM | wxEXPAND,5);
-	performance_sbox->Add(network_tx_text,1, wxBOTTOM | wxEXPAND,5);
+	performance_sbox->Add(rx_tx_box, 0, wxALL, 5);
 	performance_sbox->Add(interface_select_combo, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(network_plot_window,1, wxBOTTOM | wxEXPAND,50);
 
 	box->Add(header_sbox, 0, wxALL | wxEXPAND, 10);
 	box->Add(system_sbox, 0, wxALL | wxEXPAND, 10);
 	box->Add(performance_sbox,1, wxALL | wxEXPAND, 10 );
+
 	main_panel->SetSizer(box);
 }
 
@@ -259,13 +264,24 @@ void MainFrame::real_time(wxTimerEvent &e){
 		network_rx_plotting_points_Y[item.first].push_back(item.second.get_rx());
 		network_tx_plotting_points_Y[item.first].push_back(item.second.get_tx());
 	}
+	double min_y, max_y;
+	min_y = max_y = 0;
 	if(string(interface_select_combo->GetStringSelection()) != ""){
-		network_rx_text->SetLabel("IN: " + to_string(network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())].back()));
-		network_tx_text->SetLabel("OUT: " + to_string(network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())].back()));
-		network_rx_plot->SetData(time_plotting_points, network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())]);
-		network_tx_plot->SetData(time_plotting_points, network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())]);
+		vector<double> rx,tx;
+		rx = network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
+		tx = network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
+
+		network_rx_text->SetLabel("IN: " + to_string(rx.back()).substr(0, to_string(rx.back()).size() - 4));
+		network_tx_text->SetLabel("OUT: " + to_string(tx.back()).substr(0, to_string(tx.back()).size() - 4));
+		network_rx_plot->SetData(time_plotting_points, rx);
+		network_tx_plot->SetData(time_plotting_points, tx);
+
+		min_y = std::min(*std::min_element(rx.begin(), rx.end()),*std::min_element(tx.begin(), tx.end()));
+		max_y = std::max(*std::max_element(rx.begin(), rx.end()),*std::max_element(tx.begin(), tx.end()));
 	}
-	network_plot_window->Fit();//(double(t-PLOT_SIZE/2), double(t));
+
+
+	network_plot_window->Fit(double(t-PLOT_SIZE/2), double(t), min_y - 5, max_y + 5);
 
 	t +=0.5;
 }
