@@ -242,27 +242,8 @@ void MainFrame::exit(wxCommandEvent &e){
 }
 
 void MainFrame::real_time(wxTimerEvent &e){
-	check_points();
-
-	std::thread ram(&MainFrame::update_ram, this);
-	std::thread cpu(&MainFrame::update_cpu, this);
-	std::thread network(&MainFrame::update_network, this);
-
-	ram.join();
-	cpu.join();
-	network.join();
-
-	t +=0.5;
-}
-void MainFrame::shutdown(wxCommandEvent &e){
-	system->shutdown();
-}
-
-void MainFrame::restart(wxCommandEvent &e){
-	system->restart();
-}
-
-void MainFrame::check_points(){
+	size_t i;
+	i = 0;
 	time_plotting_points.push_back(t);
 	if(time_plotting_points.size()>PLOT_SIZE-1){
 		time_plotting_points.erase(time_plotting_points.begin());
@@ -276,6 +257,19 @@ void MainFrame::check_points(){
 			network_tx_plotting_points_Y[item.first].erase(network_tx_plotting_points_Y[item.first].begin());
 		}
 	}
+	
+	update_ram();
+	update_cpu();
+	update_network();
+
+	t +=0.5;
+}
+void MainFrame::shutdown(wxCommandEvent &e){
+	system->shutdown();
+}
+
+void MainFrame::restart(wxCommandEvent &e){
+	system->restart();
 }
 
 void MainFrame::update_ram(){

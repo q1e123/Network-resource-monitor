@@ -25,6 +25,7 @@ public:
 	DECLARE_EVENT_TABLE();
 
 private:
+	double t = 1;
 	System *system;
 
 	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text;
@@ -44,6 +45,11 @@ private:
 	vector<double>time_plotting_points, ram_plotting_points_Y;
 	vector<vector<double>> cpu_plotting_points_Y; 
 	map<string, vector<double>> network_rx_plotting_points_Y,network_tx_plotting_points_Y; 
+
+	void check_points();
+	void update_ram();
+	void update_cpu();
+	void update_network();
 	
 	vector<wxColour> cpu_colors;
 

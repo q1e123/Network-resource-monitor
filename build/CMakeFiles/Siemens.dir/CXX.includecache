@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+../include/app.h
+wx/app.h
+-
+
 ../include/jiffy.h
 cstdio
 -
@@ -102,33 +106,13 @@ linux.h
 msw.h
 ../include/msw.h
 
-../include/utils.h
-string
--
-cmath
--
-vector
--
-
-/home/robert/Workshop/Siemens/src/mainframe.cpp
-wx/wxprec.h
--
-wx/wx.h
--
+/home/robert/Workshop/Siemens/src/app.cpp
+wx_pch.h
+/home/robert/Workshop/Siemens/src/wx_pch.h
+app.h
+/home/robert/Workshop/Siemens/src/app.h
 mainframe.h
 /home/robert/Workshop/Siemens/src/mainframe.h
-system.h
-/home/robert/Workshop/Siemens/src/system.h
-utils.h
-/home/robert/Workshop/Siemens/src/utils.h
-iostream
--
-string
--
-ctime
--
-algorithm
--
 
 /usr/local/include/wx-3.1/wx/accel.h
 wx/defs.h
@@ -2887,24 +2871,6 @@ wx/string.h
 /usr/local/include/wx-3.1/wx/wx/string.h
 stdarg.h
 -
-
-/usr/local/include/wx-3.1/wx/wxprec.h
-wx/defs.h
-/usr/local/include/wx-3.1/wx/wx/defs.h
-wx/chartype.h
-/usr/local/include/wx-3.1/wx/wx/chartype.h
-wx/msw/wrapwin.h
-/usr/local/include/wx-3.1/wx/wx/msw/wrapwin.h
-wx/msw/private.h
-/usr/local/include/wx-3.1/wx/wx/msw/private.h
-wx/msw/wrapcctl.h
-/usr/local/include/wx-3.1/wx/wx/msw/wrapcctl.h
-wx/msw/wrapcdlg.h
-/usr/local/include/wx-3.1/wx/wx/msw/wrapcdlg.h
-wx/msw/missing.h
-/usr/local/include/wx-3.1/wx/wx/msw/missing.h
-wx/wx.h
-/usr/local/include/wx-3.1/wx/wx/wx.h
 
 /usr/local/include/wx-3.1/wx/xti.h
 wx/defs.h
