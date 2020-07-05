@@ -39,6 +39,8 @@ queue
 -
 mathplot.h
 ../include/mathplot.h
+wx/notebook.h
+-
 
 ../include/mathplot.h
 vector
@@ -328,6 +330,20 @@ wx/osx/bmpbuttn.h
 wx/qt/bmpbuttn.h
 /usr/local/include/wx-3.1/wx/wx/qt/bmpbuttn.h
 
+/usr/local/include/wx-3.1/wx/bookctrl.h
+wx/defs.h
+/usr/local/include/wx-3.1/wx/wx/defs.h
+wx/control.h
+/usr/local/include/wx-3.1/wx/wx/control.h
+wx/vector.h
+/usr/local/include/wx-3.1/wx/wx/vector.h
+wx/withimages.h
+/usr/local/include/wx-3.1/wx/wx/withimages.h
+wx/notebook.h
+/usr/local/include/wx-3.1/wx/wx/notebook.h
+wx/choicebk.h
+/usr/local/include/wx-3.1/wx/wx/choicebk.h
+
 /usr/local/include/wx-3.1/wx/brush.h
 wx/defs.h
 /usr/local/include/wx-3.1/wx/wx/defs.h
@@ -501,6 +517,16 @@ wx/osx/choice.h
 /usr/local/include/wx-3.1/wx/wx/osx/choice.h
 wx/qt/choice.h
 /usr/local/include/wx-3.1/wx/wx/qt/choice.h
+
+/usr/local/include/wx-3.1/wx/choicebk.h
+wx/defs.h
+/usr/local/include/wx-3.1/wx/wx/defs.h
+wx/bookctrl.h
+/usr/local/include/wx-3.1/wx/wx/bookctrl.h
+wx/choice.h
+/usr/local/include/wx-3.1/wx/wx/choice.h
+wx/containr.h
+/usr/local/include/wx-3.1/wx/wx/containr.h
 
 /usr/local/include/wx-3.1/wx/clntdata.h
 wx/defs.h
@@ -1110,6 +1136,14 @@ wx/filename.h
 wx/bitmap.h
 /usr/local/include/wx-3.1/wx/generic/wx/bitmap.h
 
+/usr/local/include/wx-3.1/wx/generic/imaglist.h
+wx/bitmap.h
+/usr/local/include/wx-3.1/wx/generic/wx/bitmap.h
+wx/gdicmn.h
+/usr/local/include/wx-3.1/wx/generic/wx/gdicmn.h
+wx/vector.h
+/usr/local/include/wx-3.1/wx/generic/wx/vector.h
+
 /usr/local/include/wx-3.1/wx/generic/listctrl.h
 wx/containr.h
 /usr/local/include/wx-3.1/wx/generic/wx/containr.h
@@ -1121,6 +1155,12 @@ wx/textctrl.h
 /usr/local/include/wx-3.1/wx/generic/logg.h
 
 /usr/local/include/wx-3.1/wx/generic/msgdlgg.h
+
+/usr/local/include/wx-3.1/wx/generic/notebook.h
+wx/event.h
+/usr/local/include/wx-3.1/wx/generic/wx/event.h
+wx/control.h
+/usr/local/include/wx-3.1/wx/generic/wx/control.h
 
 /usr/local/include/wx-3.1/wx/generic/paletteg.h
 wx/defs.h
@@ -1247,6 +1287,10 @@ wx/bitmap.h
 /usr/local/include/wx-3.1/wx/gtk/msgdlg.h
 
 /usr/local/include/wx-3.1/wx/gtk/nonownedwnd.h
+
+/usr/local/include/wx-3.1/wx/gtk/notebook.h
+wx/list.h
+/usr/local/include/wx-3.1/wx/gtk/wx/list.h
 
 /usr/local/include/wx-3.1/wx/gtk/pen.h
 
@@ -1405,6 +1449,14 @@ wx/image.h
 /usr/local/include/wx-3.1/wx/wx/image.h
 wx/versioninfo.h
 /usr/local/include/wx-3.1/wx/wx/versioninfo.h
+
+/usr/local/include/wx-3.1/wx/imaglist.h
+wx/defs.h
+/usr/local/include/wx-3.1/wx/wx/defs.h
+wx/msw/imaglist.h
+/usr/local/include/wx-3.1/wx/wx/msw/imaglist.h
+wx/generic/imaglist.h
+/usr/local/include/wx-3.1/wx/wx/generic/imaglist.h
 
 /usr/local/include/wx-3.1/wx/imagpcx.h
 wx/image.h
@@ -1767,6 +1819,26 @@ wx/msw/nonownedwnd.h
 /usr/local/include/wx-3.1/wx/wx/msw/nonownedwnd.h
 wx/qt/nonownedwnd.h
 /usr/local/include/wx-3.1/wx/wx/qt/nonownedwnd.h
+
+/usr/local/include/wx-3.1/wx/notebook.h
+wx/defs.h
+/usr/local/include/wx-3.1/wx/wx/defs.h
+wx/bookctrl.h
+/usr/local/include/wx-3.1/wx/wx/bookctrl.h
+wx/univ/notebook.h
+/usr/local/include/wx-3.1/wx/wx/univ/notebook.h
+wx/msw/notebook.h
+/usr/local/include/wx-3.1/wx/wx/msw/notebook.h
+wx/generic/notebook.h
+/usr/local/include/wx-3.1/wx/wx/generic/notebook.h
+wx/gtk/notebook.h
+/usr/local/include/wx-3.1/wx/wx/gtk/notebook.h
+wx/gtk1/notebook.h
+/usr/local/include/wx-3.1/wx/wx/gtk1/notebook.h
+wx/osx/notebook.h
+/usr/local/include/wx-3.1/wx/wx/osx/notebook.h
+wx/qt/notebook.h
+/usr/local/include/wx-3.1/wx/wx/qt/notebook.h
 
 /usr/local/include/wx-3.1/wx/object.h
 wx/memory.h
@@ -2613,6 +2685,14 @@ wx/univ/window.h
 /usr/local/include/wx-3.1/wx/wx/univ/window.h
 
 /usr/local/include/wx-3.1/wx/windowid.h
+
+/usr/local/include/wx-3.1/wx/withimages.h
+wx/defs.h
+/usr/local/include/wx-3.1/wx/wx/defs.h
+wx/icon.h
+/usr/local/include/wx-3.1/wx/wx/icon.h
+wx/imaglist.h
+/usr/local/include/wx-3.1/wx/wx/imaglist.h
 
 /usr/local/include/wx-3.1/wx/wx.h
 wx/defs.h

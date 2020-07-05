@@ -23,6 +23,7 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 : wxFrame((wxFrame *) NULL, -1, title, pos, size){
 	SetAutoLayout(TRUE);
+
 	system = new System();
 	wxColour black(0, 0, 0);
 	wxColour white(255,255,255);
@@ -65,15 +66,19 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	timer = new wxTimer(this,TIMER);
 	timer->Start(1000);
 	
+    main_notebook = new wxNotebook(main_panel, wxID_ANY);
+
+	wxNotebookPage *system_page = new wxPanel(main_notebook, wxID_ANY);
+	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
 	// Header
-	header_static = new wxStaticBox(main_panel, STATIC_BOX,"");
+	header_static = new wxStaticBox(system_page, STATIC_BOX,"");
 	header_static->SetBackgroundColour(dark_gray);
-	IP_text= new wxStaticText(main_panel, TEXT_READONLY, system->get_ip());
+	IP_text= new wxStaticText(system_page, TEXT_READONLY, system->get_ip());
 	header_buttons_box = new wxBoxSizer(wxHORIZONTAL);
-	restart_button = new wxButton(main_panel, BUTTON_RESTART, "Restart");
+	restart_button = new wxButton(system_page, BUTTON_RESTART, "Restart");
 	restart_button->SetBackgroundColour(light_gray);
 	restart_button->SetForegroundColour(black);
-	shutdown_button = new wxButton(main_panel, BUTTON_SHUTDOWN, "Shutdown");
+	shutdown_button = new wxButton(system_page, BUTTON_SHUTDOWN, "Shutdown");
 	shutdown_button->SetBackgroundColour(light_gray);
 	shutdown_button->SetForegroundColour(black);
 	header_buttons_box->Add(shutdown_button, 0, wxALL | wxEXPAND, 5);
@@ -82,52 +87,58 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	header_sbox->Add(IP_text, 0, wxALL | wxEXPAND, 10);
 	header_sbox->Add(header_buttons_box, 0, wxALL | wxEXPAND, 5);
 	
-	// System
-	system_static = new wxStaticBox(main_panel, STATIC_BOX,"");
-	os_text = new wxStaticText(main_panel, TEXT_READONLY,"OS: " + system->get_os());
+	system_static = new wxStaticBox(system_page, STATIC_BOX,"");
+	os_text = new wxStaticText(system_page, TEXT_READONLY,"OS: " + system->get_os());
 	os_text->SetForegroundColour(white);
-	system_text = new wxStaticText(main_panel, TEXT_READONLY, "System");
+	system_text = new wxStaticText(system_page, TEXT_READONLY, "System");
 	system_text->SetFont(h1);
 	system_text->SetForegroundColour(white);
 	system_sbox = new wxStaticBoxSizer(system_static, wxVERTICAL);
 	system_sbox->Add(system_text, 0, wxALL | wxEXPAND, 5);
 	system_sbox->Add(os_text, 0, wxALL | wxEXPAND, 5);
 
+	system_sizer->Add(header_sbox, 0, wxALL | wxEXPAND, 5);
+	system_sizer->Add(system_sbox, 0, wxALL | wxEXPAND, 5);
+	system_page->SetSizerAndFit(system_sizer);
+	main_notebook->AddPage(system_page, "System", true);
+
 	// Performance
-	performance_static = new wxStaticBox(main_panel, STATIC_BOX,"");
-	performance_text= new wxStaticText(main_panel, TEXT_READONLY, "Performance");
+	wxNotebookPage *performance_page = new wxPanel(main_notebook, wxID_ANY);
+	wxSizer *perfomance_sizer = new wxBoxSizer(wxVERTICAL);
+	performance_static = new wxStaticBox(performance_page, STATIC_BOX,"");
+	performance_text= new wxStaticText(performance_page, TEXT_READONLY, "Performance");
 	performance_text->SetFont(h1);
 	performance_text->SetForegroundColour(white);
 
-	ram_title_text = new wxStaticText(main_panel, TEXT_READONLY, "RAM");
+	ram_title_text = new wxStaticText(performance_page, TEXT_READONLY, "RAM");
 	ram_title_text->SetFont(h2);
 	ram_title_text->SetForegroundColour(white);
-	total_ram_text = new wxStaticText(main_panel, TEXT_READONLY, "Total RAM: " + to_string(system->get_total_ram()));
+	total_ram_text = new wxStaticText(performance_page, TEXT_READONLY, "Total RAM: " + to_string(system->get_total_ram()));
 	total_ram_text->SetForegroundColour(white);
-	used_ram_text = new wxStaticText(main_panel, TEXT_READONLY,"Used RAM: " + to_string(system->get_used_ram()));
+	used_ram_text = new wxStaticText(performance_page, TEXT_READONLY,"Used RAM: " + to_string(system->get_used_ram()));
 	used_ram_text->SetForegroundColour(white);
-	avalabile_ram_text = new wxStaticText(main_panel, TEXT_READONLY,"Avalabile RAM: " + to_string(system->get_avalabile_ram()));
+	avalabile_ram_text = new wxStaticText(performance_page, TEXT_READONLY,"Avalabile RAM: " + to_string(system->get_avalabile_ram()));
 	avalabile_ram_text->SetForegroundColour(white);
-	cpu_title_text = new wxStaticText(main_panel, TEXT_READONLY, "CPU usage");
+	cpu_title_text = new wxStaticText(performance_page, TEXT_READONLY, "CPU usage");
 	cpu_title_text->SetFont(h2);
 	cpu_title_text->SetForegroundColour(white);
 	cpus_box = new wxBoxSizer(wxHORIZONTAL);
 	performance_sbox = new wxStaticBoxSizer(performance_static, wxVERTICAL);
-	network_text = new wxStaticText(main_panel, TEXT_READONLY, "Networking");
+	network_text = new wxStaticText(performance_page, TEXT_READONLY, "Networking");
 	network_text->SetFont(h2);
 	network_text->SetForegroundColour(white);
 	rx_tx_box = new wxBoxSizer(wxHORIZONTAL);
-	network_rx_text = new wxStaticText(main_panel, TEXT_READONLY, "In: 0");
+	network_rx_text = new wxStaticText(performance_page, TEXT_READONLY, "In: 0");
 	network_rx_text->SetFont(normal_bold);
 	network_rx_text->SetForegroundColour(light_green);
-	network_tx_text = new wxStaticText(main_panel, TEXT_READONLY, "Out: 0");
+	network_tx_text = new wxStaticText(performance_page, TEXT_READONLY, "Out: 0");
 	network_tx_text->SetFont(normal_bold);
 	network_tx_text->SetForegroundColour(light_red);
 
 
 	size_t t=0;
 	for(auto item:system->get_cpu_usage()){
-		wxStaticText *cpu_text = new wxStaticText(main_panel, TEXT_READONLY,item.first + " " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
+		wxStaticText *cpu_text = new wxStaticText(performance_page, TEXT_READONLY,item.first + " " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
 		cpu_text->SetFont(normal_bold);
 		cpu_text->SetForegroundColour(cpu_colors[t++]);
 		cpu_usage_texts.push_back(cpu_text);
@@ -138,7 +149,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	time_plotting_points.push_back(0.5);
 
 	ram_plotting_points_Y = vector<double>(2,0);
-	ram_plot_window = new mpWindow(main_panel, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
+	ram_plot_window = new mpWindow(performance_page, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
 	ram_plot_window->SetColourTheme(dark_gray,light_green,light_red);
 	ram_axis_Y = new mpScaleY("",mpALIGN_LEFT);
 	ram_axis_Y->SetFont(normal);
@@ -151,7 +162,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	ram_plot_window->AddLayer(ram_axis_Y);
 	ram_plot_window->AddLayer(ram_plot);
 
-	cpu_plot_window = new mpWindow(main_panel, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
+	cpu_plot_window = new mpWindow(performance_page, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
 	cpu_plot_window->SetColourTheme(dark_gray,light_green,light_red);
 	cpu_axis_Y = new mpScaleY("",mpALIGN_LEFT);
 	cpu_axis_Y->SetFont(normal);
@@ -173,10 +184,10 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		network_rx_plotting_points_Y[inter] = vector<double>(2,0);
 		network_tx_plotting_points_Y[inter] = vector<double>(2,0);
 	}
-	interface_select_combo = new wxComboBox(main_panel, COMBO_BOX_NETWORK, "Select interface");
+	interface_select_combo = new wxComboBox(performance_page, COMBO_BOX_NETWORK, "Select interface");
 	interface_select_combo->Set(choices);
 	
-	network_plot_window = new mpWindow(main_panel, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
+	network_plot_window = new mpWindow(performance_page, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
 	network_plot_window->SetColourTheme(dark_gray,light_green,light_red);
 	network_axis_Y = new mpScaleY("",mpALIGN_LEFT);
 	network_axis_Y->SetFont(normal);
@@ -213,11 +224,16 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	performance_sbox->Add(interface_select_combo, 0, wxALL | wxEXPAND, 5);
 	performance_sbox->Add(network_plot_window,1, wxBOTTOM | wxEXPAND,50);
 
-	box->Add(header_sbox, 0, wxALL | wxEXPAND, 10);
-	box->Add(system_sbox, 0, wxALL | wxEXPAND, 10);
-	box->Add(performance_sbox,1, wxALL | wxEXPAND, 10 );
+	perfomance_sizer->Add(performance_sbox, 0, wxALL | wxEXPAND, 5);
+	performance_page->SetSizerAndFit(perfomance_sizer);
+	main_notebook->AddPage(performance_page, "Performance");
 
-	main_panel->SetSizer(box);
+    box->Add(main_notebook, 1, wxEXPAND);
+    main_panel->SetSizer(box);
+    /*wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
+    topSizer->SetMinSize(250, 100);
+    topSizer->Add(main_panel, 1, wxEXPAND);
+    SetSizerAndFit(topSizer);*/
 }
 
 void MainFrame::exit(wxCommandEvent &e){
@@ -279,10 +295,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 		min_y = std::min(*std::min_element(rx.begin(), rx.end()),*std::min_element(tx.begin(), tx.end()));
 		max_y = std::max(*std::max_element(rx.begin(), rx.end()),*std::max_element(tx.begin(), tx.end()));
 	}
-
-
 	network_plot_window->Fit(double(t-PLOT_SIZE/2), double(t), min_y - 5, max_y + 5);
-
 	t +=0.5;
 }
 void MainFrame::shutdown(wxCommandEvent &e){

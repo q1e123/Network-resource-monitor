@@ -8,6 +8,8 @@
 #include <vector>
 #include <queue> 
 #include "mathplot.h"
+#include <wx/notebook.h>
+
 using std::vector;
 using std::queue;
 
@@ -46,6 +48,8 @@ private:
 	vector<wxColour> cpu_colors;
 
 	wxComboBox *interface_select_combo;
+
+	wxNotebook *main_notebook;
 };
 
 enum{
