@@ -9,6 +9,7 @@ CMakeFiles/Siemens.dir/src/app.cpp.o
  ../include/mathplot.h
  ../include/msw.h
  ../include/network-usage.h
+ ../include/process.h
  ../include/system.h
  /home/robert/Workshop/Siemens/src/app.cpp
  /usr/local/include/wx-3.1/wx/accel.h
@@ -274,6 +275,7 @@ CMakeFiles/Siemens.dir/src/linux.cpp.o
  ../include/jiffy.h
  ../include/linux.h
  ../include/network-usage.h
+ ../include/process.h
  ../include/utils.h
  /home/robert/Workshop/Siemens/src/linux.cpp
 CMakeFiles/Siemens.dir/src/mainframe.cpp.o
@@ -283,6 +285,7 @@ CMakeFiles/Siemens.dir/src/mainframe.cpp.o
  ../include/mathplot.h
  ../include/msw.h
  ../include/network-usage.h
+ ../include/process.h
  ../include/system.h
  ../include/utils.h
  /home/robert/Workshop/Siemens/src/mainframe.cpp
@@ -806,11 +809,16 @@ CMakeFiles/Siemens.dir/src/msw.cpp.o
 CMakeFiles/Siemens.dir/src/network-usage.cpp.o
  ../include/network-usage.h
  /home/robert/Workshop/Siemens/src/network-usage.cpp
+CMakeFiles/Siemens.dir/src/process.cpp.o
+ ../include/jiffy.h
+ ../include/process.h
+ /home/robert/Workshop/Siemens/src/process.cpp
 CMakeFiles/Siemens.dir/src/system.cpp.o
  ../include/jiffy.h
  ../include/linux.h
  ../include/msw.h
  ../include/network-usage.h
+ ../include/process.h
  ../include/system.h
  /home/robert/Workshop/Siemens/src/system.cpp
 CMakeFiles/Siemens.dir/src/utils.cpp.o

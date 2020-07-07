@@ -10,6 +10,7 @@
 
 #include "jiffy.h"
 #include "network-usage.h"
+#include "process.h"
 
 using std::vector;
 using std::string;
@@ -35,7 +36,10 @@ namespace Linux{
 	vector<string> get_network_interfaces();
 	Network_Usage get_interface_usage(string interface);
 	map<string, Network_Usage> get_network_usage();
-
+	
+	void get_proc_info(size_t pid, Process &process);
+	vector<size_t> get_pids();
+	vector<Process> get_process_list();
 };
 
 #endif

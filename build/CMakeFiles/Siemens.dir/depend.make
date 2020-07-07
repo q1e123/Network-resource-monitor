@@ -8,6 +8,7 @@ CMakeFiles/Siemens.dir/src/app.cpp.o: ../include/mainframe.h
 CMakeFiles/Siemens.dir/src/app.cpp.o: ../include/mathplot.h
 CMakeFiles/Siemens.dir/src/app.cpp.o: ../include/msw.h
 CMakeFiles/Siemens.dir/src/app.cpp.o: ../include/network-usage.h
+CMakeFiles/Siemens.dir/src/app.cpp.o: ../include/process.h
 CMakeFiles/Siemens.dir/src/app.cpp.o: ../include/system.h
 CMakeFiles/Siemens.dir/src/app.cpp.o: ../src/app.cpp
 CMakeFiles/Siemens.dir/src/app.cpp.o: /usr/local/include/wx-3.1/wx/accel.h
@@ -273,6 +274,7 @@ CMakeFiles/Siemens.dir/src/jiffy.cpp.o: ../src/jiffy.cpp
 CMakeFiles/Siemens.dir/src/linux.cpp.o: ../include/jiffy.h
 CMakeFiles/Siemens.dir/src/linux.cpp.o: ../include/linux.h
 CMakeFiles/Siemens.dir/src/linux.cpp.o: ../include/network-usage.h
+CMakeFiles/Siemens.dir/src/linux.cpp.o: ../include/process.h
 CMakeFiles/Siemens.dir/src/linux.cpp.o: ../include/utils.h
 CMakeFiles/Siemens.dir/src/linux.cpp.o: ../src/linux.cpp
 
@@ -282,6 +284,7 @@ CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../include/mainframe.h
 CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../include/mathplot.h
 CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../include/msw.h
 CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../include/network-usage.h
+CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../include/process.h
 CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../include/system.h
 CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../include/utils.h
 CMakeFiles/Siemens.dir/src/mainframe.cpp.o: ../src/mainframe.cpp
@@ -806,10 +809,15 @@ CMakeFiles/Siemens.dir/src/msw.cpp.o: ../src/msw.cpp
 CMakeFiles/Siemens.dir/src/network-usage.cpp.o: ../include/network-usage.h
 CMakeFiles/Siemens.dir/src/network-usage.cpp.o: ../src/network-usage.cpp
 
+CMakeFiles/Siemens.dir/src/process.cpp.o: ../include/jiffy.h
+CMakeFiles/Siemens.dir/src/process.cpp.o: ../include/process.h
+CMakeFiles/Siemens.dir/src/process.cpp.o: ../src/process.cpp
+
 CMakeFiles/Siemens.dir/src/system.cpp.o: ../include/jiffy.h
 CMakeFiles/Siemens.dir/src/system.cpp.o: ../include/linux.h
 CMakeFiles/Siemens.dir/src/system.cpp.o: ../include/msw.h
 CMakeFiles/Siemens.dir/src/system.cpp.o: ../include/network-usage.h
+CMakeFiles/Siemens.dir/src/system.cpp.o: ../include/process.h
 CMakeFiles/Siemens.dir/src/system.cpp.o: ../include/system.h
 CMakeFiles/Siemens.dir/src/system.cpp.o: ../src/system.cpp
 

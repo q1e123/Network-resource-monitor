@@ -71,7 +71,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	wxNotebookPage *system_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
-	// Header
+	// System
 	header_static = new wxStaticBox(system_page, STATIC_BOX,"");
 	header_static->SetBackgroundColour(dark_gray);
 	IP_text= new wxStaticText(system_page, TEXT_READONLY, system->get_ip());
@@ -100,6 +100,17 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	system_sizer->Add(header_sbox, 0, wxALL | wxEXPAND, 5);
 	system_sizer->Add(system_sbox, 0, wxALL | wxEXPAND, 5);
+
+	process_list_panel = new wxScrolledWindow(system_page, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL, "Process List");
+	
+	proc_sizer = new wxBoxSizer(wxHORIZONTAL);
+	build_process_list();
+	process_list_panel->SetSizer(proc_sizer);
+	process_list_panel->FitInside();
+	process_list_panel->SetScrollRate(5,5);
+
+
+	system_sizer->Add(process_list_panel, 1, wxALL | wxEXPAND, 5);
 	system_page->SetSizerAndFit(system_sizer);
 	main_notebook->AddPage(system_page, "System", true);
 
@@ -126,10 +137,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	cpus_box = new wxBoxSizer(wxHORIZONTAL);
 	performance_sbox = new wxStaticBoxSizer(performance_static, wxVERTICAL);
 	network_text = new wxStaticText(performance_page, TEXT_READONLY, "Networking");
-	network_text->SetFont(h2);
-	network_text->SetForegroundColour(white);
-	rx_tx_box = new wxBoxSizer(wxHORIZONTAL);
-	network_rx_text = new wxStaticText(performance_page, TEXT_READONLY, "In: 0");
+	network_text->SetFont(h2); network_text->SetForegroundColour(white); rx_tx_box = new wxBoxSizer(wxHORIZONTAL); network_rx_text = new wxStaticText(performance_page, TEXT_READONLY, "In: 0");
 	network_rx_text->SetFont(normal_bold);
 	network_rx_text->SetForegroundColour(light_green);
 	network_tx_text = new wxStaticText(performance_page, TEXT_READONLY, "Out: 0");
@@ -231,10 +239,6 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
     box->Add(main_notebook, 1, wxEXPAND);
     main_panel->SetSizer(box);
-    /*wxBoxSizer* topSizer = new wxBoxSizer(wxHORIZONTAL);
-    topSizer->SetMinSize(250, 100);
-    topSizer->Add(main_panel, 1, wxEXPAND);
-    SetSizerAndFit(topSizer);*/
 }
 
 void MainFrame::exit(wxCommandEvent &e){
@@ -242,15 +246,17 @@ void MainFrame::exit(wxCommandEvent &e){
 }
 
 void MainFrame::real_time(wxTimerEvent &e){
+	time_plotting_points.push_back(t);
 	check_points();
-
 	std::thread ram(&MainFrame::update_ram, this);
 	std::thread cpu(&MainFrame::update_cpu, this);
 	std::thread network(&MainFrame::update_network, this);
+	std::thread proc(&MainFrame::update_process_list, this);
 
 	ram.join();
 	cpu.join();
 	network.join();
+	proc.join();
 
 	t +=0.5;
 }
@@ -263,7 +269,6 @@ void MainFrame::restart(wxCommandEvent &e){
 }
 
 void MainFrame::check_points(){
-	time_plotting_points.push_back(t);
 	if(time_plotting_points.size()>PLOT_SIZE-1){
 		time_plotting_points.erase(time_plotting_points.begin());
 		for(size_t j = 0; j<system->get_cpu_usage().size();++j){
@@ -324,4 +329,41 @@ void MainFrame::update_network(){
 		max_y = std::max(*std::max_element(rx.begin(), rx.end()),*std::max_element(tx.begin(), tx.end()));
 	}
 	network_plot_window->Fit(double(t-PLOT_SIZE/2), double(t), min_y - 5, max_y + 5);
+}
+
+void MainFrame::build_process_list(){
+	proc_cpu_sizer = new wxBoxSizer(wxVERTICAL);
+	proc_name_sizer = new wxBoxSizer(wxVERTICAL);
+	proc_pid_sizer = new wxBoxSizer(wxVERTICAL);
+	proc_ram_sizer = new wxBoxSizer(wxVERTICAL);
+
+	for(auto process : system->get_process_list()){
+		string name, cpu, ram, pid;
+		name = process.get_name();
+		cpu = to_string(process.get_cpu_usage());
+		pid = to_string(process.get_pid());
+		ram = to_string(process.get_ram());
+
+		wxStaticText *tmp_n = new wxStaticText(process_list_panel, TEXT_READONLY, name);
+		wxStaticText *tmp_c = new wxStaticText(process_list_panel, TEXT_READONLY, cpu);
+		wxStaticText *tmp_p = new wxStaticText(process_list_panel, TEXT_READONLY, pid); 
+		wxStaticText *tmp_r = new wxStaticText(process_list_panel, TEXT_READONLY, ram);
+
+		proc_name_sizer->Add(tmp_n, 0, wxALL, 5);	
+		proc_cpu_sizer->Add(tmp_c, 0, wxALL, 5);	
+		proc_pid_sizer->Add(tmp_p, 0, wxALL, 5);	
+		proc_ram_sizer->Add(tmp_r, 0, wxALL, 5);	
+	}
+	proc_sizer->Add(proc_pid_sizer, 1, wxALL | wxEXPAND, 5);	
+	proc_sizer->Add(proc_name_sizer, 1, wxALL | wxEXPAND, 5);	
+	proc_sizer->Add(proc_cpu_sizer, 1, wxALL | wxEXPAND, 5);	
+	proc_sizer->Add(proc_ram_sizer, 1, wxALL | wxEXPAND, 5);	
+
+	process_list_panel->FitInside();
+}
+
+void MainFrame::update_process_list(){
+	system->update_process_list();
+	process_list_panel->DestroyChildren();
+	build_process_list();
 }

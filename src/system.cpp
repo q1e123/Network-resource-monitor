@@ -9,6 +9,7 @@ System::System(){
 	ip = OS::get_ip();
 	network_usage = OS::get_network_usage();
 	network_interfaces = OS::get_network_interfaces();
+	process_list = OS::get_process_list();
 }
 
 string System::get_os(){
@@ -61,4 +62,12 @@ void System::update_network_usage(){
 
 vector<string> System::get_network_interfaces(){
 	return network_interfaces;
+}
+
+vector<Process> System::get_process_list(){
+	return process_list;
+}
+
+void System::update_process_list(){
+	process_list = OS::get_process_list();
 }

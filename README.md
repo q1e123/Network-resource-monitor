@@ -8,8 +8,9 @@ Acesta este repository-ul pentru proiectul de la practica.
 # Implementari
 * Detectarea sistemului de operare
 * Detectare ram (total, folositi, liberi)
-* Detectarea si reprezentarea grafica in timp real a utilizarii procesorului, a memoriei ram si a unei interfete de reatea
+* Detectarea si reprezentarea grafica in timp real a utilizarii procesorului, a memoriei ram si a unei interfete de retea
 * Detectarea rx si tx a unei interfete de retea 
+* Listarea proceselor impreuna cu PID, consum CPU si RAM (Doar Linux)
 
 # Rulare
 Se compileaza programul si dupa se foloseste executabilul.

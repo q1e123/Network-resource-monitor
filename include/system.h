@@ -6,13 +6,14 @@
 #include <cstdio>
 #include <map>
 #include "network-usage.h"
+#include "process.h"
 
 #ifdef __linux__
-	#include "linux.h"
 	#define OS Linux
+	#include "linux.h"
 #elif defined _WIN32 || defined _WIN64
-	#include "msw.h"
 	#define OS Msw
+	#include "msw.h"
 #endif
 
 using std::string;
@@ -41,11 +42,15 @@ public:
 	void update_network_usage();
 
 	vector<string> get_network_interfaces();
+
+	vector<Process> get_process_list();
+	void update_process_list();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip;
 	vector<string> network_interfaces;
 	map<string, double> cpu_usage;
 	map<string, Network_Usage> network_usage;
+	vector<Process> process_list;
 };
 #endif

@@ -29,10 +29,10 @@ private:
 	System *system;
 
 	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text;
-	vector<wxStaticText*> cpu_usage_texts;
+	vector<wxStaticText*> cpu_usage_texts, process_list_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button;
 	wxPanel *main_panel;
-	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box;
+	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer;
 	wxStaticBoxSizer *header_sbox, *system_sbox, *performance_sbox;
 	wxTimer *timer;
 	wxStaticBox *header_static, *system_static, *performance_static;
@@ -44,12 +44,16 @@ private:
 
 	vector<double>time_plotting_points, ram_plotting_points_Y;
 	vector<vector<double>> cpu_plotting_points_Y; 
-	map<string, vector<double>> network_rx_plotting_points_Y,network_tx_plotting_points_Y; 
+	map<string, vector<double>> network_rx_plotting_points_Y,network_tx_plotting_points_Y;
+
+	wxScrolledWindow *process_list_panel;
 
 	void check_points();
 	void update_ram();
 	void update_cpu();
 	void update_network();
+	void update_process_list();
+	void build_process_list();
 	
 	vector<wxColour> cpu_colors;
 

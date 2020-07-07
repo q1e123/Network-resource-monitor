@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/robert/Workshop/Siemens/src/mathplot.cpp" "/home/robert/Workshop/Siemens/build/CMakeFiles/Siemens.dir/src/mathplot.cpp.o"
   "/home/robert/Workshop/Siemens/src/msw.cpp" "/home/robert/Workshop/Siemens/build/CMakeFiles/Siemens.dir/src/msw.cpp.o"
   "/home/robert/Workshop/Siemens/src/network-usage.cpp" "/home/robert/Workshop/Siemens/build/CMakeFiles/Siemens.dir/src/network-usage.cpp.o"
+  "/home/robert/Workshop/Siemens/src/process.cpp" "/home/robert/Workshop/Siemens/build/CMakeFiles/Siemens.dir/src/process.cpp.o"
   "/home/robert/Workshop/Siemens/src/system.cpp" "/home/robert/Workshop/Siemens/build/CMakeFiles/Siemens.dir/src/system.cpp.o"
   "/home/robert/Workshop/Siemens/src/utils.cpp" "/home/robert/Workshop/Siemens/build/CMakeFiles/Siemens.dir/src/utils.cpp.o"
   )
