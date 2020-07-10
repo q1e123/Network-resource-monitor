@@ -10,7 +10,7 @@ Acesta este repository-ul pentru proiectul de la practica.
 * Detectare ram (total, folositi, liberi)
 * Detectarea si reprezentarea grafica in timp real a utilizarii procesorului, a memoriei ram si a unei interfete de retea
 * Detectarea rx si tx a unei interfete de retea 
-* Listarea proceselor impreuna cu PID, consum CPU si RAM (Doar Linux)
+* Listarea proceselor impreuna cu PID, consum CPU si RAM
 
 # Rulare
 Se compileaza programul si dupa se foloseste executabilul.

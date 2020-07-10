@@ -28,8 +28,8 @@ private:
 	double t = 1;
 	System *system;
 
-	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text;
-	vector<wxStaticText*> cpu_usage_texts;
+	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text;
+	vector<wxStaticText*> cpu_usage_texts, process_list_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button;
 	wxPanel *main_panel;
 	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer;
@@ -60,7 +60,6 @@ private:
 	wxComboBox *interface_select_combo;
 
 	wxNotebook *main_notebook;
-	wxNotebookPage *performance_page, *system_page;
 };
 
 enum{

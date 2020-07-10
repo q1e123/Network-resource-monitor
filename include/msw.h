@@ -6,7 +6,8 @@
 #include <string>
 #include <map>
 #include "network-usage.h"
-
+#include "process.h"
+#include <windows.h>
 using std::string;
 using std::map;
 using std::vector;
@@ -24,6 +25,9 @@ namespace Msw{
 	string get_ip();
 	vector<string> get_network_interfaces();
 	map<string, Network_Usage> get_network_usage();
+	
+	void get_proc_info(DWORD pid, Process &process);
+	vector<Process> get_process_list();
 };
 
 #endif

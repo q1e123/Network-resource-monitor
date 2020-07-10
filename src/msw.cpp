@@ -14,9 +14,13 @@
 #include <chrono>
 #include <iostream>
 #include <stdlib.h>
+#include <psapi.h>
 #include "msw.h"
 #include "utils.h"
 #include "jiffy.h"
+
+#define MB 1024/1024
+#define GB 1024/1024/1024
 
 using std::cerr;
 
@@ -28,14 +32,14 @@ size_t Msw::get_total_ram(){
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof (statex);
 	GlobalMemoryStatusEx(&statex);
-	return statex.ullTotalPhys;
+	return statex.ullTotalPhys / GB;
 }
 
 size_t Msw::get_avalabile_ram(){
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof (statex);
 	GlobalMemoryStatusEx(&statex);
-	return statex.ullAvailPhys;
+	return statex.ullAvailPhys / GB;
 }
 
 size_t filetime_to_int(const FILETIME &ft){
@@ -197,6 +201,79 @@ map<string, Network_Usage> Msw::get_network_usage(){
 	}
 	
 	return network_usage;
+}
+double filetime_to_double(struct _FILETIME& ft) {
+    unsigned long long t = ft.dwLowDateTime + ((unsigned long long)ft.dwHighDateTime << 32);
+    return t / 1e7;
+}
+
+void Msw::get_proc_info(DWORD pid, Process& process) {
+    HANDLE process_handle;
+    PROCESS_MEMORY_COUNTERS proc_mem_counter;
+    struct _FILETIME creation_time, exit_time, kernel_time, user_time;
+    process_handle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+    if (process_handle == NULL) {
+        cerr << "Can't open process: " << pid << "\n";
+        return;
+    }
+    HMODULE handle_module;
+    DWORD cbNeeded;
+    TCHAR proc_name[MAX_PATH] = TEXT("<unknown>");
+    if (GetProcessMemoryInfo(process_handle, &proc_mem_counter, sizeof(proc_mem_counter)) && GetProcessTimes(GetCurrentProcess(), &creation_time, &exit_time, &kernel_time, &user_time))
+    {
+        EnumProcessModules(process_handle, &handle_module, sizeof(handle_module), &cbNeeded);
+        double cpu_usage_old;
+        cpu_usage_old = filetime_to_double(user_time) + filetime_to_double(kernel_time);
+
+        GetModuleFileNameEx(process_handle, handle_module, proc_name, sizeof(proc_name) / sizeof(TCHAR));
+        //GetModuleBaseName(process_handle, handle_module, proc_name, sizeof(proc_name) / sizeof(TCHAR));
+        std::wstring tmp(proc_name);
+        std::string name(tmp.begin(), tmp.end());
+        name = name.substr(name.rfind("\\") + 1);
+        size_t p, ram;
+        p = pid; 
+        ram = proc_mem_counter.WorkingSetSize;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        GetProcessTimes(GetCurrentProcess(), &creation_time, &exit_time, &kernel_time, &user_time);
+        double cpu_usage_new, cpu_usage;
+        cpu_usage_new = filetime_to_double(user_time) + filetime_to_double(kernel_time);
+        cpu_usage = (cpu_usage_new - cpu_usage_old) * 100;
+        process = Process(pid, name, ram, cpu_usage);
+    }
+    CloseHandle(process_handle);
+
+}
+vector<Process> Msw::get_process_list() {
+    vector<Process> proc_list;
+    vector<std::thread> threads;
+
+    DWORD aProcesses[1024], cbNeeded, cProcesses;
+
+    if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)){
+        return proc_list;
+    }
+
+    cProcesses = cbNeeded / sizeof(DWORD);
+
+    vector<Process> tmp;
+    tmp = vector<Process>(cProcesses, Process());
+    
+    for (size_t i = 0; i < cProcesses; ++i) {
+        std::thread worker(Msw::get_proc_info, aProcesses[i], std::ref(tmp[i]));
+        threads.push_back(std::move(worker));
+    }
+
+    for (auto& worker : threads) {
+        worker.join();
+    }
+
+    for (auto proc : tmp) {
+        if (proc.get_name() != "") {
+            proc_list.push_back(proc);
+        }
+    }
+
+    return proc_list;
 }
 
 #endif

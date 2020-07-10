@@ -69,7 +69,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	
     main_notebook = new wxNotebook(main_panel, wxID_ANY);
 
-	system_page = new wxPanel(main_notebook, wxID_ANY);
+	wxNotebookPage *system_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
 	// System
 	header_static = new wxStaticBox(system_page, STATIC_BOX,"");
@@ -100,47 +100,22 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	system_sizer->Add(header_sbox, 0, wxALL | wxEXPAND, 5);
 	system_sizer->Add(system_sbox, 0, wxALL | wxEXPAND, 5);
-	
+
 	process_list_panel = new wxScrolledWindow(system_page, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL, "Process List");
-	proc_sizer = new wxBoxSizer(wxHORIZONTAL);
-	proc_cpu_sizer = new wxBoxSizer(wxVERTICAL);
-	proc_name_sizer = new wxBoxSizer(wxVERTICAL);
-	proc_pid_sizer = new wxBoxSizer(wxVERTICAL);
-	proc_ram_sizer = new wxBoxSizer(wxVERTICAL);
-
-	proc_name_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
-	proc_name_text->SetFont(normal);
-	proc_name_text->SetForegroundColour(white);
-	proc_pid_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
-	proc_pid_text->SetFont(normal);
-	proc_pid_text->SetForegroundColour(white);
-	proc_cpu_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
-	proc_cpu_text->SetFont(normal);
-	proc_cpu_text->SetForegroundColour(white);
-	proc_ram_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
-	proc_ram_text->SetFont(normal);
-	proc_ram_text->SetForegroundColour(white);
-
-	proc_name_sizer->Add(proc_name_text, 1, wxALL | wxEXPAND, 5);
-	proc_pid_sizer->Add(proc_pid_text, 1, wxALL | wxEXPAND, 5);
-	proc_cpu_sizer->Add(proc_cpu_text, 1, wxALL | wxEXPAND, 5);
-	proc_ram_sizer->Add(proc_ram_text, 1, wxALL | wxEXPAND, 5);
 	
-	proc_sizer->Add(proc_name_sizer, 0, wxALL | wxEXPAND, 0);
-	proc_sizer->Add(proc_pid_sizer, 0, wxALL | wxEXPAND, 0);
-	proc_sizer->Add(proc_cpu_sizer, 0, wxALL | wxEXPAND, 0);
-	proc_sizer->Add(proc_ram_sizer, 0, wxALL | wxEXPAND, 0);
-
+	proc_sizer = new wxBoxSizer(wxHORIZONTAL);
+	build_process_list();
 	process_list_panel->SetSizer(proc_sizer);
 	process_list_panel->FitInside();
 	process_list_panel->SetScrollRate(5,5);
+
 
 	system_sizer->Add(process_list_panel, 1, wxALL | wxEXPAND, 5);
 	system_page->SetSizerAndFit(system_sizer);
 	main_notebook->AddPage(system_page, "System", true);
 
 	// Performance
-	performance_page = new wxPanel(main_notebook, wxID_ANY);
+	wxNotebookPage *performance_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *perfomance_sizer = new wxBoxSizer(wxVERTICAL);
 	performance_static = new wxStaticBox(performance_page, STATIC_BOX,"");
 	performance_text= new wxStaticText(performance_page, TEXT_READONLY, "Performance");
@@ -277,79 +252,12 @@ void MainFrame::real_time(wxTimerEvent &e){
 	std::thread cpu(&MainFrame::update_cpu, this);
 	std::thread network(&MainFrame::update_network, this);
 	std::thread proc(&MainFrame::update_process_list, this);
-	
-	if(ram.joinable()){
-		ram.join();
-		avalabile_ram_text->SetLabel("Avalabile RAM: " + to_string(system->get_avalabile_ram()));
-		used_ram_text->SetLabel("Used RAM: " + to_string(system->get_used_ram()));
-		double ram_usage;
-		ram_usage = double(system->get_used_ram()) / double(system->get_total_ram()) * 100;
-		ram_plotting_points_Y.push_back(ram_usage);
-		ram_plot->SetData(time_plotting_points, ram_plotting_points_Y);
-		ram_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), -5, 105);
-	}
 
-	if (cpu.joinable()) {
-		cpu.join();
-		size_t i;
-		i = 0;
-		for (auto item : system->get_cpu_usage()) {
-			cpu_usage_texts[i]->SetLabel(item.first + ": " + to_string(item.second).substr(0, to_string(item.second).size() - 4) + "%");
-			cpu_plotting_points_Y[i].push_back(item.second);
-			cpu_plot[i]->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
-			++i;
-		}
-		cpu_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), -5, 105);
-	}
-	
-	if (network.joinable()) {
-		network.join();
-		for (auto item : system->get_network_usage()) {
-			network_rx_plotting_points_Y[item.first].push_back(item.second.get_rx());
-			network_tx_plotting_points_Y[item.first].push_back(item.second.get_tx());
-		}
-		double min_y, max_y;
-		min_y = max_y = 0;
-		if (string(interface_select_combo->GetStringSelection()) != "") {
-			vector<double> rx, tx;
-			rx = network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
-			tx = network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
+	ram.join();
+	cpu.join();
+	network.join();
+	proc.join();
 
-			network_rx_text->SetLabel("IN: " + to_string(rx.back()).substr(0, to_string(rx.back()).size() - 4));
-			network_tx_text->SetLabel("OUT: " + to_string(tx.back()).substr(0, to_string(tx.back()).size() - 4));
-			network_rx_plot->SetData(time_plotting_points, rx);
-			network_tx_plot->SetData(time_plotting_points, tx);
-
-			min_y = std::min(*std::min_element(rx.begin(), rx.end()), *std::min_element(tx.begin(), tx.end()));
-			max_y = std::max(*std::max_element(rx.begin(), rx.end()), *std::max_element(tx.begin(), tx.end()));
-		}
-		network_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), min_y - 5, max_y + 5);
-	}
-	
-	if (proc.joinable()) {
-		proc.join();
-		vector<Process> proc_list = system->get_process_list();
-		string name, pid, cpu, ram;
-		name = pid = cpu = ram = "";
-
-		for (auto proc : proc_list) {
-			string tmp_n, tmp_p, tmp_c, tmp_r;
-			tmp_n = proc.get_name();
-			tmp_p = to_string(proc.get_pid());
-			tmp_c = to_string(proc.get_cpu_usage());
-			tmp_r = to_string(proc.get_ram());
-			name += tmp_n + "\n";
-			pid += tmp_p + "\n";
-			cpu += tmp_c + "\n";
-			ram += tmp_r + "\n";
-		}
-		proc_name_text->SetLabel(name);
-		proc_pid_text->SetLabel(pid);
-		proc_cpu_text->SetLabel(cpu);
-		proc_ram_text->SetLabel(ram);
-		process_list_panel->FitInside();
-
-	}
 	t +=0.5;
 }
 void MainFrame::shutdown(wxCommandEvent &e){
@@ -377,22 +285,85 @@ void MainFrame::check_points(){
 
 void MainFrame::update_ram(){
 	system->update_avalabile_ram();
-
+	avalabile_ram_text->SetLabel("Avalabile RAM: " + to_string(system->get_avalabile_ram()));
+	used_ram_text->SetLabel("Used RAM: " + to_string(system->get_used_ram()));
+	double ram_usage;
+	ram_usage = double(system->get_used_ram()) / double(system->get_total_ram()) * 100;
+	ram_plotting_points_Y.push_back(ram_usage);
+	ram_plot->SetData(time_plotting_points, ram_plotting_points_Y); 
+	ram_plot_window->Fit(double(t-PLOT_SIZE/2), double(t),-5,105);
 }
 
 void MainFrame::update_cpu(){
 	system->update_cpu_usage();
-	
+	size_t i;
+	i = 0;
+	for(auto item:system->get_cpu_usage()){
+		cpu_usage_texts[i]->SetLabel(item.first + ": " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
+		cpu_plotting_points_Y[i].push_back(item.second);
+		cpu_plot[i]->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
+		++i;
+	}
+	cpu_plot_window->Fit(double(t-PLOT_SIZE/2), double(t),-5,105);
 }
 
 void MainFrame::update_network(){
 	system->update_network_usage();
+	for(auto item:system->get_network_usage()){
+		network_rx_plotting_points_Y[item.first].push_back(item.second.get_rx());
+		network_tx_plotting_points_Y[item.first].push_back(item.second.get_tx());
+	}
+	double min_y, max_y;
+	min_y = max_y = 0;
+	if(string(interface_select_combo->GetStringSelection()) != ""){
+		vector<double> rx,tx;
+		rx = network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
+		tx = network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
+
+		network_rx_text->SetLabel("IN: " + to_string(rx.back()).substr(0, to_string(rx.back()).size() - 4));
+		network_tx_text->SetLabel("OUT: " + to_string(tx.back()).substr(0, to_string(tx.back()).size() - 4));
+		network_rx_plot->SetData(time_plotting_points, rx);
+		network_tx_plot->SetData(time_plotting_points, tx);
+
+		min_y = std::min(*std::min_element(rx.begin(), rx.end()),*std::min_element(tx.begin(), tx.end()));
+		max_y = std::max(*std::max_element(rx.begin(), rx.end()),*std::max_element(tx.begin(), tx.end()));
+	}
+	network_plot_window->Fit(double(t-PLOT_SIZE/2), double(t), min_y - 5, max_y + 5);
 }
 
 void MainFrame::build_process_list(){
+	proc_cpu_sizer = new wxBoxSizer(wxVERTICAL);
+	proc_name_sizer = new wxBoxSizer(wxVERTICAL);
+	proc_pid_sizer = new wxBoxSizer(wxVERTICAL);
+	proc_ram_sizer = new wxBoxSizer(wxVERTICAL);
 
+	for(auto process : system->get_process_list()){
+		string name, cpu, ram, pid;
+		name = process.get_name();
+		cpu = to_string(process.get_cpu_usage());
+		pid = to_string(process.get_pid());
+		ram = to_string(process.get_ram());
+
+		wxStaticText *tmp_n = new wxStaticText(process_list_panel, TEXT_READONLY, name);
+		wxStaticText *tmp_c = new wxStaticText(process_list_panel, TEXT_READONLY, cpu);
+		wxStaticText *tmp_p = new wxStaticText(process_list_panel, TEXT_READONLY, pid); 
+		wxStaticText *tmp_r = new wxStaticText(process_list_panel, TEXT_READONLY, ram);
+
+		proc_name_sizer->Add(tmp_n, 0, wxALL, 5);	
+		proc_cpu_sizer->Add(tmp_c, 0, wxALL, 5);	
+		proc_pid_sizer->Add(tmp_p, 0, wxALL, 5);	
+		proc_ram_sizer->Add(tmp_r, 0, wxALL, 5);	
+	}
+	proc_sizer->Add(proc_pid_sizer, 1, wxALL | wxEXPAND, 5);	
+	proc_sizer->Add(proc_name_sizer, 1, wxALL | wxEXPAND, 5);	
+	proc_sizer->Add(proc_cpu_sizer, 1, wxALL | wxEXPAND, 5);	
+	proc_sizer->Add(proc_ram_sizer, 1, wxALL | wxEXPAND, 5);	
+
+	process_list_panel->FitInside();
 }
 
 void MainFrame::update_process_list(){
 	system->update_process_list();
+	process_list_panel->DestroyChildren();
+	build_process_list();
 }
