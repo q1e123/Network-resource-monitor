@@ -19,6 +19,10 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_TIMER(TIMER, MainFrame::real_time)
 	EVT_BUTTON(BUTTON_RESTART, MainFrame::restart)
 	EVT_BUTTON(BUTTON_SHUTDOWN, MainFrame::shutdown)
+	EVT_BUTTON(BUTTON_SORT_PROC_NAME, MainFrame::sort_by_name)
+	EVT_BUTTON(BUTTON_SORT_PROC_PID, MainFrame::sort_by_pid)
+	EVT_BUTTON(BUTTON_SORT_PROC_CPU, MainFrame::sort_by_cpu)
+	EVT_BUTTON(BUTTON_SORT_PROC_RAM, MainFrame::sort_by_ram)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -26,6 +30,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	SetAutoLayout(TRUE);
 
 	system = new System();
+
+	sort_type = SORT_NAME;
+
 	wxColour black(0, 0, 0);
 	wxColour white(255,255,255);
 	wxColour light_blue(128,200,255);
@@ -72,9 +79,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	system_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
 	// System
-	header_static = new wxStaticBox(system_page, STATIC_BOX,"");
+	header_static = new wxStaticBox(system_page, wxID_ANY,"");
 	header_static->SetBackgroundColour(dark_gray);
-	IP_text= new wxStaticText(system_page, TEXT_READONLY, system->get_ip());
+	IP_text= new wxStaticText(system_page, wxID_ANY, system->get_ip());
 	header_buttons_box = new wxBoxSizer(wxHORIZONTAL);
 	restart_button = new wxButton(system_page, BUTTON_RESTART, "Restart");
 	restart_button->SetBackgroundColour(light_gray);
@@ -88,10 +95,10 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	header_sbox->Add(IP_text, 0, wxALL | wxEXPAND, 10);
 	header_sbox->Add(header_buttons_box, 0, wxALL | wxEXPAND, 5);
 	
-	system_static = new wxStaticBox(system_page, STATIC_BOX,"");
-	os_text = new wxStaticText(system_page, TEXT_READONLY,"OS: " + system->get_os());
+	system_static = new wxStaticBox(system_page, wxID_ANY,"");
+	os_text = new wxStaticText(system_page, wxID_ANY,"OS: " + system->get_os());
 	os_text->SetForegroundColour(white);
-	system_text = new wxStaticText(system_page, TEXT_READONLY, "System");
+	system_text = new wxStaticText(system_page, wxID_ANY, "System");
 	system_text->SetFont(h1);
 	system_text->SetForegroundColour(white);
 	system_sbox = new wxStaticBoxSizer(system_static, wxVERTICAL);
@@ -108,28 +115,45 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	proc_pid_sizer = new wxBoxSizer(wxVERTICAL);
 	proc_ram_sizer = new wxBoxSizer(wxVERTICAL);
 
-	proc_name_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
+	proc_name_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
 	proc_name_text->SetFont(normal);
 	proc_name_text->SetForegroundColour(white);
-	proc_pid_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
+	proc_pid_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
 	proc_pid_text->SetFont(normal);
 	proc_pid_text->SetForegroundColour(white);
-	proc_cpu_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
+	proc_cpu_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
 	proc_cpu_text->SetFont(normal);
 	proc_cpu_text->SetForegroundColour(white);
-	proc_ram_text = new wxStaticText(process_list_panel, TEXT_READONLY, "---");
+	proc_ram_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
 	proc_ram_text->SetFont(normal);
 	proc_ram_text->SetForegroundColour(white);
 
-	proc_name_sizer->Add(proc_name_text, 1, wxALL | wxEXPAND, 5);
-	proc_pid_sizer->Add(proc_pid_text, 1, wxALL | wxEXPAND, 5);
-	proc_cpu_sizer->Add(proc_cpu_text, 1, wxALL | wxEXPAND, 5);
-	proc_ram_sizer->Add(proc_ram_text, 1, wxALL | wxEXPAND, 5);
+	proc_name_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_NAME, "Process");
+	proc_name_button->SetBackgroundColour(dark_gray);
+	proc_name_button->SetForegroundColour(light_blue);
+	proc_pid_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_PID, "PID");
+	proc_pid_button->SetBackgroundColour(dark_gray);
+	proc_pid_button->SetForegroundColour(light_blue);
+	proc_cpu_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_CPU, "CPU");
+	proc_cpu_button->SetBackgroundColour(dark_gray);
+	proc_cpu_button->SetForegroundColour(light_blue);
+	proc_ram_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_RAM, "RAM");
+	proc_ram_button->SetBackgroundColour(dark_gray);
+	proc_ram_button->SetForegroundColour(light_blue);
+
+	proc_name_sizer->Add(proc_name_button, 0, wxALL, 5);
+	proc_pid_sizer->Add(proc_pid_button, 0, wxALL, 5);
+	proc_cpu_sizer->Add(proc_cpu_button, 0, wxALL, 5);
+	proc_ram_sizer->Add(proc_ram_button, 0, wxALL, 5);
+	proc_name_sizer->Add(proc_name_text, 1, wxALL, 5);
+	proc_pid_sizer->Add(proc_pid_text, 1, wxALL, 5);
+	proc_cpu_sizer->Add(proc_cpu_text, 1, wxALL, 5);
+	proc_ram_sizer->Add(proc_ram_text, 1, wxALL, 5);
 	
-	proc_sizer->Add(proc_name_sizer, 0, wxALL | wxEXPAND, 0);
-	proc_sizer->Add(proc_pid_sizer, 0, wxALL | wxEXPAND, 0);
-	proc_sizer->Add(proc_cpu_sizer, 0, wxALL | wxEXPAND, 0);
-	proc_sizer->Add(proc_ram_sizer, 0, wxALL | wxEXPAND, 0);
+	proc_sizer->Add(proc_name_sizer, 1, wxALL, 0);
+	proc_sizer->Add(proc_pid_sizer, 0, wxALL, 0);
+	proc_sizer->Add(proc_cpu_sizer, 0, wxALL, 0);
+	proc_sizer->Add(proc_ram_sizer, 0, wxALL, 0);
 
 	process_list_panel->SetSizer(proc_sizer);
 	process_list_panel->FitInside();
@@ -142,37 +166,37 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	// Performance
 	performance_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *perfomance_sizer = new wxBoxSizer(wxVERTICAL);
-	performance_static = new wxStaticBox(performance_page, STATIC_BOX,"");
-	performance_text= new wxStaticText(performance_page, TEXT_READONLY, "Performance");
+	performance_static = new wxStaticBox(performance_page, wxID_ANY,"");
+	performance_text= new wxStaticText(performance_page, wxID_ANY, "Performance");
 	performance_text->SetFont(h1);
 	performance_text->SetForegroundColour(white);
 
-	ram_title_text = new wxStaticText(performance_page, TEXT_READONLY, "RAM");
+	ram_title_text = new wxStaticText(performance_page, wxID_ANY, "RAM");
 	ram_title_text->SetFont(h2);
 	ram_title_text->SetForegroundColour(white);
-	total_ram_text = new wxStaticText(performance_page, TEXT_READONLY, "Total RAM: " + to_string(system->get_total_ram()));
+	total_ram_text = new wxStaticText(performance_page, wxID_ANY, "Total RAM: " + to_string(system->get_total_ram()));
 	total_ram_text->SetForegroundColour(white);
-	used_ram_text = new wxStaticText(performance_page, TEXT_READONLY,"Used RAM: " + to_string(system->get_used_ram()));
+	used_ram_text = new wxStaticText(performance_page, wxID_ANY,"Used RAM: " + to_string(system->get_used_ram()));
 	used_ram_text->SetForegroundColour(white);
-	avalabile_ram_text = new wxStaticText(performance_page, TEXT_READONLY,"Avalabile RAM: " + to_string(system->get_avalabile_ram()));
+	avalabile_ram_text = new wxStaticText(performance_page, wxID_ANY,"Avalabile RAM: " + to_string(system->get_avalabile_ram()));
 	avalabile_ram_text->SetForegroundColour(white);
-	cpu_title_text = new wxStaticText(performance_page, TEXT_READONLY, "CPU usage");
+	cpu_title_text = new wxStaticText(performance_page, wxID_ANY, "CPU usage");
 	cpu_title_text->SetFont(h2);
 	cpu_title_text->SetForegroundColour(white);
 	cpus_box = new wxBoxSizer(wxHORIZONTAL);
 	performance_sbox = new wxStaticBoxSizer(performance_static, wxVERTICAL);
-	network_text = new wxStaticText(performance_page, TEXT_READONLY, "Networking");
-	network_text->SetFont(h2); network_text->SetForegroundColour(white); rx_tx_box = new wxBoxSizer(wxHORIZONTAL); network_rx_text = new wxStaticText(performance_page, TEXT_READONLY, "In: 0");
+	network_text = new wxStaticText(performance_page, wxID_ANY, "Networking");
+	network_text->SetFont(h2); network_text->SetForegroundColour(white); rx_tx_box = new wxBoxSizer(wxHORIZONTAL); network_rx_text = new wxStaticText(performance_page, wxID_ANY, "In: 0");
 	network_rx_text->SetFont(normal_bold);
 	network_rx_text->SetForegroundColour(light_green);
-	network_tx_text = new wxStaticText(performance_page, TEXT_READONLY, "Out: 0");
+	network_tx_text = new wxStaticText(performance_page, wxID_ANY, "Out: 0");
 	network_tx_text->SetFont(normal_bold);
 	network_tx_text->SetForegroundColour(light_red);
 
 
 	size_t t=0;
 	for(auto item:system->get_cpu_usage()){
-		wxStaticText *cpu_text = new wxStaticText(performance_page, TEXT_READONLY,item.first + " " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
+		wxStaticText *cpu_text = new wxStaticText(performance_page, wxID_ANY,item.first + " " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
 		cpu_text->SetFont(normal_bold);
 		cpu_text->SetForegroundColour(cpu_colors[t++]);
 		cpu_usage_texts.push_back(cpu_text);
@@ -329,6 +353,33 @@ void MainFrame::real_time(wxTimerEvent &e){
 	if (proc.joinable()) {
 		proc.join();
 		vector<Process> proc_list = system->get_process_list();
+		switch(sort_type){
+			case SORT_NAME:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name);
+				break;
+			case SORT_PID:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid);
+				break;
+			case SORT_CPU:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu);
+				break;
+			case SORT_RAM:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram);
+				break;
+			case SORT_NAME_REVERSE:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name_reverse);
+				break;
+			case SORT_PID_REVERSE:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid_reverse);
+				break;
+			case SORT_CPU_REVERSE:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu_reverse);
+				break;
+			case SORT_RAM_REVERSE:
+				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram_reverse);
+				break;
+		}
+
 		string name, pid, cpu, ram;
 		name = pid = cpu = ram = "";
 
@@ -336,7 +387,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 			string tmp_n, tmp_p, tmp_c, tmp_r;
 			tmp_n = proc.get_name();
 			tmp_p = to_string(proc.get_pid());
-			tmp_c = to_string(proc.get_cpu_usage());
+			tmp_c = to_string(utils::round_n(proc.get_cpu_usage(),2)).substr(0, to_string(proc.get_cpu_usage()).size() - 4);
 			tmp_r = to_string(proc.get_ram());
 			name += tmp_n + "\n";
 			pid += tmp_p + "\n";
@@ -389,10 +440,38 @@ void MainFrame::update_network(){
 	system->update_network_usage();
 }
 
-void MainFrame::build_process_list(){
-
-}
-
 void MainFrame::update_process_list(){
 	system->update_process_list();
+}
+
+void MainFrame::sort_by_name(wxCommandEvent &e){
+	if(sort_type != SORT_NAME){
+		sort_type = SORT_NAME;
+	}else{
+		sort_type = SORT_NAME_REVERSE;	
+	}
+}
+
+void MainFrame::sort_by_pid(wxCommandEvent &e){
+	if(sort_type != SORT_PID){
+		sort_type = SORT_PID;
+	}else{
+		sort_type = SORT_PID_REVERSE;	
+	}
+}
+
+void MainFrame::sort_by_cpu(wxCommandEvent &e){
+	if(sort_type != SORT_CPU){
+		sort_type = SORT_CPU;
+	}else{
+		sort_type = SORT_CPU_REVERSE;	
+	}
+}
+
+void MainFrame::sort_by_ram(wxCommandEvent &e){
+	if(sort_type != SORT_RAM){
+		sort_type = SORT_RAM;
+	}else{
+		sort_type = SORT_RAM_REVERSE;	
+	}
 }

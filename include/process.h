@@ -24,4 +24,15 @@ private:
 	string name;
 };
 
+namespace Proc_Utils{
+	bool compare_name(Process p1, Process p2);
+	bool compare_pid(Process p1, Process p2);
+	bool compare_cpu(Process p1, Process p2);
+	bool compare_ram(Process p1, Process p2);
+	bool compare_name_reverse(Process p1, Process p2);
+	bool compare_pid_reverse(Process p1, Process p2);
+	bool compare_cpu_reverse(Process p1, Process p2);
+	bool compare_ram_reverse(Process p1, Process p2);
+}
+
 #endif
