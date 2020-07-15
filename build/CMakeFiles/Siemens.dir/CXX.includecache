@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+../include/app.h
+wx/app.h
+-
+
 ../include/jiffy.h
 cstdio
 -
@@ -125,6 +129,14 @@ cmath
 -
 vector
 -
+
+/home/robert/Workshop/Siemens/src/app.cpp
+wx_pch.h
+/home/robert/Workshop/Siemens/src/wx_pch.h
+app.h
+/home/robert/Workshop/Siemens/src/app.h
+mainframe.h
+/home/robert/Workshop/Siemens/src/mainframe.h
 
 /home/robert/Workshop/Siemens/src/mainframe.cpp
 wx/wxprec.h

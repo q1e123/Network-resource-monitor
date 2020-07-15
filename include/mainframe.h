@@ -42,7 +42,11 @@ public:
 
 private:
 	double t = 1;
+
+	map<string, wxColour> colors;
+	map<string, wxFont> fonts;
 	System *system;
+	vector<wxColour> cpu_colors;
 	Sort sort_type;
 
 	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text;
@@ -65,18 +69,20 @@ private:
 
 	wxScrolledWindow *process_list_panel;
 
+	wxComboBox *interface_select_combo;
+
+	wxNotebook *main_notebook;
+	wxNotebookPage *performance_page, *system_page, *network_management_page;
+
 	void check_points();
 	void update_ram();
 	void update_cpu();
 	void update_network();
 	void update_process_list();
-	
-	vector<wxColour> cpu_colors;
-
-	wxComboBox *interface_select_combo;
-
-	wxNotebook *main_notebook;
-	wxNotebookPage *performance_page, *system_page;
+	void init_colors();
+	void init_fonts();
+	void create_system_page();
+	void create_performance_page();
 };
 
 
