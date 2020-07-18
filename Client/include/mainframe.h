@@ -9,7 +9,7 @@
 #include <queue> 
 #include "mathplot.h"
 #include <wx/notebook.h>
-
+#include "client.h"
 using std::vector;
 using std::queue;
 
@@ -37,22 +37,28 @@ public:
 	void sort_by_pid(wxCommandEvent &e);
 	void sort_by_cpu(wxCommandEvent &e);
 	void sort_by_ram(wxCommandEvent &e);
+	void connect(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 
 private:
 	double t = 1;
+
+	map<string, wxColour> colors;
+	map<string, wxFont> fonts;
 	System *system;
+	vector<wxColour> cpu_colors;
 	Sort sort_type;
 
 	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text;
+	wxTextCtrl *network_management_user_input, *network_management_port_input;
 	vector<wxStaticText*> cpu_usage_texts;
-	wxButton *exit_button, *restart_button, *shutdown_button, *proc_name_button, *proc_pid_button, *proc_cpu_button, *proc_ram_button;
+	wxButton *exit_button, *restart_button, *shutdown_button, *proc_name_button, *proc_pid_button, *proc_cpu_button, *proc_ram_button, *network_management_connect_button;
 	wxPanel *main_panel;
 	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer;
 	wxStaticBoxSizer *header_sbox, *system_sbox, *performance_sbox;
 	wxTimer *timer;
-	wxStaticBox *header_static, *system_static, *performance_static;
+	wxStaticBox *header_static, *system_static, *performance_static, *network_management_static;
 
 	mpWindow *cpu_plot_window, *ram_plot_window, *network_plot_window;
 	mpFXYVector *ram_plot, *network_rx_plot, *network_tx_plot;
@@ -65,18 +71,23 @@ private:
 
 	wxScrolledWindow *process_list_panel;
 
+	wxComboBox *interface_select_combo;
+
+	wxNotebook *main_notebook;
+	wxNotebookPage *performance_page, *system_page, *network_management_page;
+	
+	Client client;
+
 	void check_points();
 	void update_ram();
 	void update_cpu();
 	void update_network();
 	void update_process_list();
-	
-	vector<wxColour> cpu_colors;
-
-	wxComboBox *interface_select_combo;
-
-	wxNotebook *main_notebook;
-	wxNotebookPage *performance_page, *system_page;
+	void init_colors();
+	void init_fonts();
+	void create_system_page();
+	void create_performance_page();
+	void create_network_management_page();
 };
 
 
@@ -90,7 +101,8 @@ enum{
 	BUTTON_SORT_PROC_NAME,
 	BUTTON_SORT_PROC_PID,
 	BUTTON_SORT_PROC_CPU,
-	BUTTON_SORT_PROC_RAM
+	BUTTON_SORT_PROC_RAM,
+	BUTTON_CONNECT
 };
 
 #endif
