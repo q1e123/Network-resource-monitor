@@ -22,18 +22,21 @@ Client::Client(std::string user, size_t sock){
 		std::cerr << "initial identity message not sent\n";
 		exit(1);
 	}
-	worker = std::thread(&Client::recv_msg, this, my_sock);
+	worker_r = std::thread(&Client::recv_msg, this);
+	//worker_s = std::thread(&Client::send_msg, this);
 }
 
-void Client::recv_msg(size_t sock)
-{
-	int their_sock = sock;
+
+#include<iostream>
+void Client::recv_msg(){
 	char msg[500];
 	int len;
-	while ((len = recv(their_sock, msg, 500, 0)) > 0) {
-
+	while ((len = recv(my_sock, msg, 500, 0)) > 0) {
 		msg[len] = '\0';
-		fputs(msg, stdout);
+		mtx.lock();
+		std::cout<<msg<<"\n";
+		msg_rec = msg;
+		mtx.unlock();
 		memset(msg, '\0', sizeof(msg));
 	}
 }
@@ -41,19 +44,19 @@ void Client::recv_msg(size_t sock)
 Client::Client(){
 }
 Client::~Client(){
-	worker.join();
+	worker_r.join();
+	worker_s.join();
 	close(my_sock);
 }
 
-void Client::send(char *msg){
-	strcpy(res, username);
-	strcat(res, ":");
-	strcat(res, msg);
+void Client::send_msg(std::string msg){
+	mtx.lock();
+	strcat(res, msg.c_str());
 	len = write(my_sock, res, strlen(res));
 	if (len < 0) {
 		std::cerr << "message not sent\n";
-		exit(1);
 	}
-	memset(msg, '\0', sizeof(msg));
 	memset(res, '\0', sizeof(res));
+	msg_send = msg_old;
+	mtx.unlock();
 }

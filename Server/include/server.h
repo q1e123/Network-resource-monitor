@@ -24,10 +24,12 @@
 
 class Server{
 public:
-	Server(size_t port=DEFAULT_PORT);
+	Server(std::string name, size_t port=DEFAULT_PORT);
 	void start();
 private:
 size_t idx; 
+	std::string name;	
+
 	std::mutex mtx;
 	std::vector<Client_Info> clients;
 	std::map<size_t, std::thread> workers;	

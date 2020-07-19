@@ -1,6 +1,9 @@
+#include <iostream>
+
 #include "server.h"
 
-Server::Server(size_t sock){
+Server::Server(std::string name, size_t sock){
+	this->name = name;
 	portno = sock;
 	my_sock = socket(AF_INET, SOCK_STREAM, 0);
 	memset(my_addr.sin_zero, '\0', sizeof(my_addr.sin_zero));
@@ -31,6 +34,11 @@ void Server::start(){
 		std::cout << ip << " connected\n";
 		Client_Info client(their_sock, ip);
 		clients.push_back(client);
+		const char *sv_name = this->name.c_str();
+		if (send(client.get_socket_number(), sv_name, strlen(sv_name), 0) < 0) {
+			std::cerr << "sending error\n";
+			continue;
+		}
 		std::thread worker(&Server::recv_msg, this, client);
 		worker.detach();
 		workers[their_sock] = std::move(worker);
@@ -63,15 +71,14 @@ void Server::recv_msg(Client_Info client){
 
 	while ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
 		msg[len] = '\0';
+		std::cout << msg << "\n";
 		send_msg(msg, client.get_socket_number());
-		memset(msg, '\0', sizeof(msg));
+		memset(msg,'\0', sizeof(msg));
 	}
 	mtx.lock();
 	std::cout << client.get_ip() << " dissconnected\n";
-
 	mtx.unlock();
 	if(workers[client.get_socket_number()].joinable()){
 		workers[client.get_socket_number()].join();
-		std::cout<<"asd\n";
 	}
 }

@@ -10,6 +10,7 @@
 #include "mathplot.h"
 #include <wx/notebook.h>
 #include "client.h"
+#include <mutex>
 using std::vector;
 using std::queue;
 
@@ -43,19 +44,19 @@ public:
 
 private:
 	double t = 1;
-
+	bool connected = false;
 	map<string, wxColour> colors;
 	map<string, wxFont> fonts;
 	System *system;
 	vector<wxColour> cpu_colors;
 	Sort sort_type;
 
-	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text;
+	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text, *network_management_network_text;
 	wxTextCtrl *network_management_user_input, *network_management_port_input;
 	vector<wxStaticText*> cpu_usage_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button, *proc_name_button, *proc_pid_button, *proc_cpu_button, *proc_ram_button, *network_management_connect_button;
 	wxPanel *main_panel;
-	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer;
+	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer, *network_management_connect_box;
 	wxStaticBoxSizer *header_sbox, *system_sbox, *performance_sbox;
 	wxTimer *timer;
 	wxStaticBox *header_static, *system_static, *performance_static, *network_management_static;
@@ -76,8 +77,10 @@ private:
 	wxNotebook *main_notebook;
 	wxNotebookPage *performance_page, *system_page, *network_management_page;
 	
-	Client client;
-
+	Client *client;
+	std::thread worker;	
+	std::mutex mtx;
+	void send_update();
 	void check_points();
 	void update_ram();
 	void update_cpu();
@@ -88,6 +91,7 @@ private:
 	void create_system_page();
 	void create_performance_page();
 	void create_network_management_page();
+	void start_client(std::string user, size_t port);
 };
 
 

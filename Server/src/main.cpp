@@ -3,12 +3,12 @@
 #include "server.h"
 
 int main(int argc, char *argv[]){
-	if (argc != 2) {
-		std::cerr << "Usage: ./server <port>";
+	if (argc != 3) {
+		std::cerr << "Usage: ./server <server_name> <port>";
 		exit(1);
 	}
-
-	Server server(std::stol(argv[1]));
+	
+	Server server(argv[1], std::stol(argv[2]));
 	server.start();
 
 	return 0;

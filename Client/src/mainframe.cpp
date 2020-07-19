@@ -2,14 +2,16 @@
 #ifndef WX_PRECOMP
 #	include <wx/wx.h>
 #endif 
-#include "mainframe.h"
-#include "system.h"
-#include "utils.h"
 #include <iostream>
 #include <string>
 #include <ctime>
 #include <algorithm>
 #include <thread>
+
+#include "mainframe.h"
+#include "system.h"
+#include "utils.h"
+#include "network-package.h"
 
 #define PLOT_SIZE 60
 
@@ -167,6 +169,9 @@ void MainFrame::real_time(wxTimerEvent &e){
 
 	}
 	t +=0.5;
+	if(connected){
+		send_update();
+	}
 }
 void MainFrame::shutdown(wxCommandEvent &e){
 	system->shutdown();
@@ -501,18 +506,49 @@ void MainFrame::create_performance_page(){
 void MainFrame::create_network_management_page(){
 	network_management_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *network_management_sizer= new wxBoxSizer(wxVERTICAL);
+	network_management_connect_box = new wxBoxSizer(wxHORIZONTAL);
+
 	network_management_user_input = new wxTextCtrl(network_management_page,wxID_ANY,"USER");
-	network_management_port_input = new wxTextCtrl(network_management_page,wxID_ANY,"PORT");
+	network_management_user_input->SetForegroundColour(colors["white"]);
+	network_management_port_input = new wxTextCtrl(network_management_page,wxID_ANY,"50005");
+	network_management_port_input->SetForegroundColour(colors["white"]);
 	network_management_connect_button = new wxButton(network_management_page, BUTTON_CONNECT, "Connect");
-	network_management_sizer->Add(network_management_user_input, 0, wxALL | wxEXPAND, 5);
-	network_management_sizer->Add(network_management_port_input, 0, wxALL | wxEXPAND, 5);
-	network_management_sizer->Add(network_management_connect_button, 0, wxALL | wxEXPAND, 5);
+	network_management_connect_button->SetForegroundColour(colors["black"]);
+	network_management_connect_button->SetBackgroundColour(colors["light_green"]);
+	network_management_network_text = new wxStaticText(network_management_page,wxID_ANY,"");
+	network_management_network_text->SetFont(fonts["h1"]);
+	network_management_network_text->SetForegroundColour(colors["white"]);
+	network_management_network_text->Hide();
+
+	network_management_connect_box->Add(network_management_user_input, 0, wxALL | wxEXPAND, 5);
+	network_management_connect_box->Add(network_management_port_input, 0, wxALL | wxEXPAND, 5);
+	network_management_connect_box->Add(network_management_connect_button, 0, wxALL | wxEXPAND, 5);
+
+	network_management_sizer->Add(network_management_connect_box, 0, wxALL, 5);
 
 	network_management_page->SetSizerAndFit(network_management_sizer);
 }
 
+void MainFrame::start_client(std::string user, size_t port){
+	mtx.lock();
+	client = new Client(user, port);
+	mtx.unlock();
+}
+
+void MainFrame::send_update(){
+	std::string pkg = Network_Package::serilize_system(*(this->system));
+	client->msg_send = pkg;
+	client->send_msg(pkg);
+}
 void MainFrame::connect(wxCommandEvent &e){
+	connected = true;
 	size_t port = std::stol(network_management_port_input->GetValue().ToStdString());
 	string user = network_management_user_input->GetValue().ToStdString();
-	Client client(user, port);
+	client = new Client(user, port);
+    std::this_thread::sleep_for (std::chrono::milliseconds(500));
+	network_management_network_text->SetLabel("Connected to: " + client->msg_rec);
+	network_management_network_text->Show();
+	network_management_port_input->Hide();
+	network_management_user_input->Hide();
+	network_management_connect_button->Hide();
 }

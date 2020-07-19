@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 
 #include <thread>
+#include <mutex>
 #include <iostream>
 #include <string>
 
@@ -20,9 +21,14 @@ public:
 	Client();
 	Client(std::string user, size_t socket);
 	void start();
-	void send(char *msg);
+	void send_msg(std::string msg);
+	std::string msg_rec, msg_send;
+	void recv_msg();
 	~Client();
 private:
+	std::string msg_old;
+	std::thread worker_r, worker_s;
+	std::mutex mtx;
 	struct sockaddr_in their_addr;
 	int my_sock;
 	int their_sock;
@@ -33,10 +39,6 @@ private:
 	char res[600];
 	char ip[INET_ADDRSTRLEN];
 	int len;
-	
-	std::thread worker;
-	void recv_msg(size_t sock);
-
 };
 
 #endif
