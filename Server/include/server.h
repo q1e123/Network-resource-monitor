@@ -16,6 +16,7 @@
 #include <mutex>
 #include <vector>
 #include <map>
+#include <sstream>
 
 #include "client-info.h"
 
@@ -30,9 +31,12 @@ private:
 size_t idx; 
 	std::string name;	
 
+	std::thread send_worker;
+
 	std::mutex mtx;
 	std::vector<Client_Info> clients;
 	std::map<size_t, std::thread> workers;	
+	std::map<std::string, std::string> systems;
 	
 	struct sockaddr_in my_addr, their_addr;
 	int my_sock;
@@ -43,8 +47,12 @@ size_t idx;
 	int len;
 	Client_Info cl;
 	char ip[INET_ADDRSTRLEN];
-	void send_msg(char *msg, int curr);
+
+	void send_to_all();
+	void send_msg(char*msg, int curr);
 	void recv_msg(Client_Info client);
+	void run_cmd(std::string cmd);
+	void cmd_sys(std::istringstream cmd);
 
 };
 #endif

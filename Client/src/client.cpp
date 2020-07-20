@@ -1,6 +1,7 @@
 #include "client.h"
 
 Client::Client(std::string user, size_t sock){
+	username_str = user;
 	username = const_cast<char*>(user.c_str());
 	portno = sock;
 	my_sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -59,4 +60,8 @@ void Client::send_msg(std::string msg){
 	memset(res, '\0', sizeof(res));
 	msg_send = msg_old;
 	mtx.unlock();
+}
+
+std::string Client::get_user(){
+	return username_str;
 }

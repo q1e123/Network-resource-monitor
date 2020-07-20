@@ -1,7 +1,4 @@
 #include <iostream>
-#include <chrono>
-
-#define WAIT_PERIOD std::chrono::milliseconds(500)
 
 #include "server.h"
 
@@ -24,9 +21,6 @@ Server::Server(std::string name, size_t sock){
 		std::cerr << "listening unsuccessful\n";
 		exit(1);
 	}
-
-	send_worker = std::thread(&Server::send_to_all, this);
-	send_worker.detach();
 }
 
 void Server::start(){
@@ -52,23 +46,8 @@ void Server::start(){
 	}
 }
 
-void Server::send_to_all(){
-	while(1){
-		mtx.lock();
-		for(auto client : clients){
-			for(auto item : systems){
-				auto pkg = const_cast<char*>(item.second.c_str());
-				if(send(client.get_socket_number(), pkg, strlen(pkg), 0) < 0) {
-					std::cerr << "sending error\n";
-					continue;
-				}
-			}
-		}
-		mtx.unlock();
-		std::this_thread::sleep_for(WAIT_PERIOD);
-	}
-}
 void Server::send_msg(char *msg, int curr){
+	int i;
 	mtx.lock();
 	for(auto client : clients){
 		if (client.get_socket_number() != curr) {
@@ -92,8 +71,8 @@ void Server::recv_msg(Client_Info client){
 
 	while ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
 		msg[len] = '\0';
-		cmd_sys(std::istringstream(msg));
-		//send_msg(const_cast<char*>(systems["USER"].c_str()), client.get_socket_number());
+		std::cout << msg << "\n";
+		send_msg(msg, client.get_socket_number());
 		memset(msg,'\0', sizeof(msg));
 	}
 	mtx.lock();
@@ -105,23 +84,20 @@ void Server::recv_msg(Client_Info client){
 }
 
 void Server::run_cmd(std::string cmd){
-	/*std::istringstream iss(cmd);
+	std::istringstream iss;
 	std::string type;
-	getline(iss, type, ';');
-	size_t t;
-	t = std::stol(type);
-	switch(t){
-		case 0:
-			cmd_sys(std::move(iss));
-	}*/
+	getline(iss,type, ';');
+	switch(type){
+		case "s":
+			cmd_sys(iss);			
+	}
 }
 
 void Server::cmd_sys(std::istringstream iss){
-	std::string user,info, tmp;
-	getline(iss, tmp, ';');
+	std::string user,info;
 	getline(iss, user, ';');
-	getline(iss, info);
+	getline(iss, info, ';');
 	mtx.lock();
-	systems[user] = info;
+	system[user] = info;
 	mtx.unlock();
 }

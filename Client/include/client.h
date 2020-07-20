@@ -25,7 +25,9 @@ public:
 	std::string msg_rec, msg_send;
 	void recv_msg();
 	~Client();
+	std::string get_user();
 private:
+	std::string username_str;
 	std::string msg_old;
 	std::thread worker_r, worker_s;
 	std::mutex mtx;
