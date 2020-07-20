@@ -5,6 +5,6 @@
 #include "system.h"
 
 namespace Network_Package{
-	std::string serilize_system(System system);
+	std::string send_package(std::string serialization);
 }
 #endif

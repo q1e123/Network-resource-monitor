@@ -1,5 +1,5 @@
 #include "system.h"
-
+#include <sstream>
 
 System::System(){
 	os = OS::get_os();
@@ -70,4 +70,49 @@ vector<Process> System::get_process_list(){
 
 void System::update_process_list(){
 	process_list = OS::get_process_list();
+}
+
+std::string System::serilize(){
+	std::string pkg = "";
+	pkg += os + ";";
+	pkg += std::to_string(total_ram) + ";";
+	pkg += std::to_string(avalabile_ram) + ";";
+	pkg += std::to_string(used_ram)+ ";";
+	for(auto item : cpu_usage){
+		pkg += item.first + ":" + std::to_string(item.second).substr(0, std::to_string(item.second).size() - 4) + "-";
+	}
+	return pkg;
+}
+
+System::System(std::string serialization){
+	std::istringstream iss(serialization);	
+	string tmp;
+	size_t pos = 0;
+	while(getline(iss, tmp, ';')){
+		switch(pos){
+			case 0:
+				os = tmp;
+				break;
+			case 1:
+				total_ram = std::stol(tmp);
+				break;
+			case 2:
+				avalabile_ram = std::stol(tmp);
+				break;
+			case 3:
+				used_ram = std::stol(tmp);
+				break;
+			case 4:
+				std::istringstream proc_list_iss(tmp);
+				std::string cpu_line;
+				while(getline(proc_list_iss, cpu_line, '-')){
+					std::istringstream proc_iss(cpu_line);
+					std::string cpu_name, usage;
+					getline(proc_iss, cpu_name, ':');
+					getline(proc_iss, usage, ':');
+					cpu_usage[cpu_name] = std::stod(usage);
+				}
+		}
+		++pos;
+	}
 }

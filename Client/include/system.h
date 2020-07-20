@@ -22,6 +22,7 @@ using std::map;
 class System{
 public:
 	System();
+	System(std::string serialization);
 	
 	size_t get_total_ram();
 	size_t get_avalabile_ram();
@@ -45,6 +46,10 @@ public:
 
 	vector<Process> get_process_list();
 	void update_process_list();
+
+	// os;total_ram;avalabile_ram;used_ram;<cpu_usage>
+	// cpu_usage = cpu_name_0:usage_0-cpu_name_1:usage_1-...-cpu_name_n:usage_n
+	std::string serilize();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip;

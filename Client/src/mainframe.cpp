@@ -536,8 +536,8 @@ void MainFrame::start_client(std::string user, size_t port){
 }
 
 void MainFrame::send_update(){
-	std::string pkg = Network_Package::serilize_system(*(this->system));
-	client->msg_send = pkg;
+	std::string pkg;
+	pkg = Network_Package::send_package(system->serilize());
 	client->send_msg(pkg);
 }
 void MainFrame::connect(wxCommandEvent &e){
