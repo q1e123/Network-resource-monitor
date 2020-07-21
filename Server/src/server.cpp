@@ -37,14 +37,20 @@ void Server::start(){
 		}
 		mtx.lock();
 		inet_ntop(AF_INET, (struct sockaddr *)&their_addr, ip, INET_ADDRSTRLEN);
-		std::cout << ip << " connected\n";
 		Client_Info client(their_sock, ip);
-		clients.push_back(client);
 		const char *sv_name = this->name.c_str();
 		if (send(client.get_socket_number(), sv_name, strlen(sv_name), 0) < 0) {
 			std::cerr << "sending error\n";
 			continue;
 		}
+		char *msg;
+		if ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
+			msg[len] = '\0';
+			client.set_user(msg);
+			memset(msg,'\0', sizeof(msg));
+		}
+		std::cout << client.get_user() + "@" <<ip << " connected\n";
+		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
 		worker.detach();
 		workers[their_sock] = std::move(worker);
@@ -92,8 +98,7 @@ void Server::recv_msg(Client_Info client){
 
 	while ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
 		msg[len] = '\0';
-		cmd_sys(std::istringstream(msg));
-		//send_msg(const_cast<char*>(systems["USER"].c_str()), client.get_socket_number());
+		run_cmd(msg);
 		memset(msg,'\0', sizeof(msg));
 	}
 	mtx.lock();
@@ -105,23 +110,20 @@ void Server::recv_msg(Client_Info client){
 }
 
 void Server::run_cmd(std::string cmd){
-	/*std::istringstream iss(cmd);
+	std::istringstream iss(cmd);
 	std::string type;
 	getline(iss, type, ';');
-	size_t t;
-	t = std::stol(type);
-	switch(t){
-		case 0:
-			cmd_sys(std::move(iss));
-	}*/
+	mtx.lock();
+	if(type == "s"){
+		cmd_sys(std::move(iss));
+	}
+	mtx.unlock();
 }
 
 void Server::cmd_sys(std::istringstream iss){
-	std::string user,info, tmp;
-	getline(iss, tmp, ';');
-	getline(iss, user, ';');
-	getline(iss, info);
-	mtx.lock();
-	systems[user] = info;
-	mtx.unlock();
+		std::string user,info, tmp;
+		getline(iss, user, ';');
+		getline(iss, info);
+		std::cout<<user<<"|\n";
+		systems[user] = info;
 }

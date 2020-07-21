@@ -13,3 +13,11 @@ char* Client_Info::get_ip(){
 	char *tmp = ip;
 	return tmp;
 }
+
+std::string Client_Info::get_user(){
+	return user;
+}
+
+void Client_Info::set_user(std::string user){
+	this->user = user;
+}
