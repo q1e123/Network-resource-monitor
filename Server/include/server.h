@@ -35,6 +35,7 @@ size_t idx;
 
 	std::mutex mtx;
 	std::vector<Client_Info> clients;
+	std::string disc_users;
 	std::map<size_t, std::thread> workers;	
 	std::map<std::string, std::string> systems;
 	
@@ -51,8 +52,11 @@ size_t idx;
 	void send_to_all();
 	void send_msg(char*msg, int curr);
 	void recv_msg(Client_Info client);
+	void remove_user(std::string user);
+
 	void run_cmd(std::string cmd);
 	void cmd_sys(std::istringstream cmd);
+
 
 };
 #endif

@@ -7,6 +7,7 @@
 
 Server::Server(std::string name, size_t sock){
 	this->name = name;
+	disc_users = "d;";
 	portno = sock;
 	my_sock = socket(AF_INET, SOCK_STREAM, 0);
 	memset(my_addr.sin_zero, '\0', sizeof(my_addr.sin_zero));
@@ -49,7 +50,7 @@ void Server::start(){
 			client.set_user(msg);
 			memset(msg,'\0', sizeof(msg));
 		}
-		std::cout << client.get_user() + "@" <<ip << " connected\n";
+		std::cout << ip << " connected\n";
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
 		worker.detach();
@@ -61,13 +62,18 @@ void Server::start(){
 void Server::send_to_all(){
 	while(1){
 		mtx.lock();
+		std::string pkg = "";
+		pkg += "s;";
+		for(auto item : systems){
+			pkg += item.second + "|";
+		}
+		pkg += "@" + disc_users;
+		disc_users = "d;";
+		char *c_pkg = const_cast<char*>(pkg.c_str()); 
 		for(auto client : clients){
-			for(auto item : systems){
-				auto pkg = const_cast<char*>(item.second.c_str());
-				if(send(client.get_socket_number(), pkg, strlen(pkg), 0) < 0) {
-					std::cerr << "sending error\n";
-					continue;
-				}
+			if(send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
+				std::cerr << "sending error\n";
+				continue;
 			}
 		}
 		mtx.unlock();
@@ -103,6 +109,8 @@ void Server::recv_msg(Client_Info client){
 	}
 	mtx.lock();
 	std::cout << client.get_ip() << " dissconnected\n";
+	disc_users += client.get_user() + ";";
+	remove_user(client.get_user());
 	mtx.unlock();
 	if(workers[client.get_socket_number()].joinable()){
 		workers[client.get_socket_number()].join();
@@ -124,6 +132,15 @@ void Server::cmd_sys(std::istringstream iss){
 		std::string user,info, tmp;
 		getline(iss, user, ';');
 		getline(iss, info);
-		std::cout<<user<<"|\n";
 		systems[user] = info;
+}
+
+void Server::remove_user(std::string user){
+	size_t pos;
+	for(pos = 0; pos<clients.size(); ++pos){
+		if(clients[pos].get_user() == user){
+			clients.erase(clients.begin() + pos);
+			return;
+		}
+	}
 }
