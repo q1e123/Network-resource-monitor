@@ -574,7 +574,6 @@ void MainFrame::update_user_cards(){
 		}
 	}
 	for(auto inactive : r_pkg.get_inactive_users()){
-		std::cout<<inactive<<"|\n";
 		user_cards[inactive].set_inactive();
 	}
 	network_management_page->SetSizerAndFit(network_management_sizer);
