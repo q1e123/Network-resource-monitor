@@ -7,4 +7,5 @@
 namespace Network_Package{
 	std::string send_package(std::string serialization, std::string user);
 }
+
 #endif

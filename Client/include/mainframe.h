@@ -11,6 +11,7 @@
 #include <wx/notebook.h>
 #include "client.h"
 #include <mutex>
+#include "user-card.h"
 using std::vector;
 using std::queue;
 
@@ -56,7 +57,7 @@ private:
 	vector<wxStaticText*> cpu_usage_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button, *proc_name_button, *proc_pid_button, *proc_cpu_button, *proc_ram_button, *network_management_connect_button;
 	wxPanel *main_panel;
-	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer, *network_management_connect_box;
+	wxBoxSizer *box,  *cpus_box, *header_buttons_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer, *network_management_connect_box, *network_management_user_cards_box;
 	wxStaticBoxSizer *header_sbox, *system_sbox, *performance_sbox;
 	wxTimer *timer;
 	wxStaticBox *header_static, *system_static, *performance_static, *network_management_static;
@@ -76,10 +77,14 @@ private:
 
 	wxNotebook *main_notebook;
 	wxNotebookPage *performance_page, *system_page, *network_management_page;
+	wxSizer *network_management_sizer;
 	
 	Client *client;
 	std::thread worker;	
 	std::mutex mtx;
+
+	std::map<std::string, User_Card> user_cards;
+	
 	void send_update();
 	void check_points();
 	void update_ram();
@@ -92,6 +97,7 @@ private:
 	void create_performance_page();
 	void create_network_management_page();
 	void start_client(std::string user, size_t port);
+	void update_user_cards();
 };
 
 

@@ -1,4 +1,6 @@
 #include "system.h"
+#include <stdexcept>      // std::out_of_range
+
 #include <sstream>
 
 System::System(){

@@ -34,7 +34,7 @@ void Client::recv_msg(){
 	while ((len = recv(my_sock, msg, 500, 0)) > 0) {
 		msg[len] = '\0';
 		mtx.lock();
-		std::cout<<msg<<"\n";
+	//	std::cout<<msg<<"\n";
 		msg_rec = msg;
 		mtx.unlock();
 		memset(msg, '\0', sizeof(msg));
@@ -63,4 +63,8 @@ void Client::send_msg(std::string msg){
 
 std::string Client::get_user(){
 	return username_str;
+}
+
+std::string Client::get_msg_rec(){
+	return msg_rec;
 }
