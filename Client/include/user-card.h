@@ -10,7 +10,7 @@
 
 class User_Card{
 public:
-	User_Card(wxWindow *parent, wxWindowID id, System system);
+	User_Card(wxWindow *parent, wxWindowID id, std::string user, System system);
 
 	void set_active();
 	void set_inactive();
@@ -21,6 +21,6 @@ private:
 	wxStaticBoxSizer *card_sbox;
 	wxStaticText *user_text, *os_text, *ram_text, *cpu_text;
 	wxColour active_color, inactive_color;
-}
+};
 
 #endif

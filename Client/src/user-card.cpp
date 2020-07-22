@@ -1,7 +1,7 @@
-#include "User_Card"
+#include "user-card.h"
 
 User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System system){
-	card_static = new wxStaticBox(parent, id);
+	card_static = new wxStaticBox(parent, id, "");
 	user_text = new wxStaticText(parent, wxID_ANY, user); 
 	os_text = new wxStaticText(parent, wxID_ANY, system.get_os()); 
 
@@ -11,7 +11,7 @@ User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System s
 	ram += "Used ram: " + std::to_string(system.get_used_ram());
 
 	std::string cpu = "";
-	for(item : system.get_cpu_usage()){
+	for(auto item : system.get_cpu_usage()){
 		cpu+= item.first + ": " + std::to_string(item.second) + "%\t";
 	}
 
@@ -35,7 +35,7 @@ void User_Card::update(System system){
 	ram += "Used ram: " + std::to_string(system.get_used_ram());
 
 	std::string cpu = "";
-	for(item : system.get_cpu_usage()){
+	for(auto item : system.get_cpu_usage()){
 		cpu+= item.first + ": " + std::to_string(item.second) + "%\t";
 	}
 
@@ -44,9 +44,9 @@ void User_Card::update(System system){
 }
 
 void User_Card::set_active(){
-	header_static->SetBackgroundColour(active_color);
+	card_static->SetBackgroundColour(active_color);
 }
 
 void User_Card::set_inactive(){
-	header_static->SetBackgroundColour(inactive_color);
+	card_static->SetBackgroundColour(inactive_color);
 }

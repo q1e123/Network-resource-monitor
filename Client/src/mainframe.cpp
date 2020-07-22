@@ -545,7 +545,7 @@ void MainFrame::connect(wxCommandEvent &e){
 	size_t port = std::stol(network_management_port_input->GetValue().ToStdString());
 	string user = network_management_user_input->GetValue().ToStdString();
 	client = new Client(user, port);
-    std::this_thread::sleep_for (std::chrono::milliseconds(500));
+    std::this_thread::sleep_for (std::chrono::milliseconds(5));
 	network_management_network_text->SetLabel("Connected to: " + client->msg_rec);
 	network_management_network_text->Show();
 	network_management_port_input->Hide();

@@ -28,7 +28,6 @@ Client::Client(std::string user, size_t sock){
 }
 
 
-#include<iostream>
 void Client::recv_msg(){
 	char msg[500];
 	int len;
