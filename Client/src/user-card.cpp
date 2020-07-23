@@ -1,16 +1,16 @@
 #include "user-card.h"
+#include "colors.h"
+#include "fonts.h"
 
 User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System system){
-	active_color = wxColour(145,255,160);
-	inactive_color = wxColour(255,138,138);
-	label_color = wxColour(0, 0 ,0);
-
 	sizer = new wxBoxSizer(wxVERTICAL);
 	card_static = new wxStaticBox(parent, id, "");
 	user_text = new wxStaticText(parent, wxID_ANY, user); 
-	user_text->SetForegroundColour(label_color);
+	user_text->SetForegroundColour(Colors::black);
+	user_text->SetFont(Fonts::h1);
 	os_text = new wxStaticText(parent, wxID_ANY, system.get_os()); 
-	os_text->SetForegroundColour(label_color);
+	os_text->SetForegroundColour(Colors::black);
+	os_text->SetFont(Fonts::normal);
 
 	std::string ram = "";
 	ram += "Total ram: " + std::to_string(system.get_total_ram()) + "\t";
@@ -23,9 +23,11 @@ User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System s
 	}
 
 	ram_text = new wxStaticText(parent, wxID_ANY, ram);
-	ram_text->SetForegroundColour(label_color);
+	ram_text->SetForegroundColour(Colors::black);
+	ram_text->SetFont(Fonts::normal);
 	cpu_text = new wxStaticText(parent, wxID_ANY, cpu); 
-	cpu_text->SetForegroundColour(label_color);
+	cpu_text->SetForegroundColour(Colors::black);
+	cpu_text->SetFont(Fonts::normal);
 	card_sbox = new wxStaticBoxSizer(card_static, wxVERTICAL);
 
 	card_sbox->Add(user_text, 0, wxALL | wxEXPAND, 5);
@@ -50,11 +52,11 @@ void User_Card::update(System system){
 }
 
 void User_Card::set_active(){
-	card_static->SetBackgroundColour(active_color);
+	card_static->SetBackgroundColour(Colors::light_green);
 }
 
 void User_Card::set_inactive(){
-	card_static->SetBackgroundColour(inactive_color);
+	card_static->SetBackgroundColour(Colors::light_red);
 }
 
 User_Card::User_Card(){

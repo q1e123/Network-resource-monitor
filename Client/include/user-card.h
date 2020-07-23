@@ -22,7 +22,6 @@ private:
 	wxStaticBox *card_static;
 	wxStaticBoxSizer *card_sbox;
 	wxStaticText *user_text, *os_text, *ram_text, *cpu_text;
-	wxColour active_color, inactive_color, label_color;
 };
 
 #endif

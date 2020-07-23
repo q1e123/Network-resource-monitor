@@ -6,23 +6,23 @@
 #endif
 
 namespace Colors{
-	extern wxColour black(0, 0, 0);
-	extern wxColour white(255,255,255);
-	extern wxColour light_blue (128,200,255);
-	extern wxColour dark_blue(2,44,99);
-	extern wxColour light_red(255,138,138);
-	extern wxColour dark_red(171,0,0);
-	extern wxColour light_yellow(246,255,117);
-	extern wxColour dark_yellow(238,255,0);
-	extern wxColour light_green(145,255,160);
-	extern wxColour dark_green(0,161,21);
-	extern wxColour light_purple(198,133,255);
-	extern wxColour dark_purple(107,0,201);
-	extern wxColour light_gray(181,181,181);
-	extern wxColour dark_gray(53,53,53);
-	extern wxColour light_pink(235,135,239);
-	extern wxColour dark_pink(255,0,221);
-	extern wxColour gray(87,87,87);
-}
+	extern wxColour black;
+	extern wxColour white;
+	extern wxColour light_blue;
+	extern wxColour dark_blue;
+	extern wxColour light_red;
+	extern wxColour dark_red;
+	extern wxColour light_yellow;
+	extern wxColour dark_yellow;
+	extern wxColour light_green;
+	extern wxColour dark_green;
+	extern wxColour light_purple;
+	extern wxColour dark_purple;
+	extern wxColour light_gray;
+	extern wxColour dark_gray;
+	extern wxColour light_pink;
+	extern wxColour dark_pink;
+	extern wxColour gray;
+};
 
 #endif
