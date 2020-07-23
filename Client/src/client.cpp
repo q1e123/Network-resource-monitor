@@ -18,6 +18,16 @@ Client::Client(std::string user, size_t sock){
 	inet_ntop(AF_INET, (struct sockaddr *)&their_addr, ip, INET_ADDRSTRLEN);
 	std::cout << "connected to " << ip << " \n";
 
+	char msg[500];
+	int len;
+	if((len = recv(my_sock, msg, 500, 0)) > 0) {
+		msg[len] = '\0';
+		mtx.lock();
+		server_name = msg;
+		msg_rec = msg;
+		mtx.unlock();
+		memset(msg, '\0', sizeof(msg));
+	}
 	len = write(my_sock, username, strlen(username));
 	if (len < 0) {
 		std::cerr << "initial identity message not sent\n";
@@ -67,4 +77,8 @@ std::string Client::get_user(){
 
 std::string Client::get_msg_rec(){
 	return msg_rec;
+}
+
+std::string Client::get_server_name(){
+	return server_name;
 }

@@ -15,9 +15,10 @@ public:
 	void set_active();
 	void set_inactive();
 	wxStaticBoxSizer *get_items();
-
 	void update(System system);
+	bool is_active();
 private:
+	bool active;
 	wxBoxSizer *sizer;
 	wxStaticBox *card_static;
 	wxStaticBoxSizer *card_sbox;

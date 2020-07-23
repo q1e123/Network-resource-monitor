@@ -26,12 +26,14 @@ public:
 	void recv_msg();
 	~Client();
 	std::string get_msg_rec();
+	std::string get_server_name();
 	std::string get_user();
 private:
 	std::string username_str;
 	std::string msg_old;
 	std::thread worker_r, worker_s;
 	std::mutex mtx;
+	std::string server_name;
 	struct sockaddr_in their_addr;
 	int my_sock;
 	int their_sock;

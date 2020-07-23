@@ -83,13 +83,15 @@ void MainFrame::real_time(wxTimerEvent &e){
 	
 	if(ram.joinable()){
 		ram.join();
-		avalabile_ram_text->SetLabel("Avalabile RAM: " + to_string(system->get_avalabile_ram()));
-		used_ram_text->SetLabel("Used RAM: " + to_string(system->get_used_ram()));
 		double ram_usage;
 		ram_usage = double(system->get_used_ram()) / double(system->get_total_ram()) * 100;
 		ram_plotting_points_Y.push_back(ram_usage);
-		ram_plot->SetData(time_plotting_points, ram_plotting_points_Y);
-		ram_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), -5, 105);
+		if(main_notebook->GetSelection() == 1){
+			avalabile_ram_text->SetLabel("Avalabile RAM: " + to_string(system->get_avalabile_ram()));
+			used_ram_text->SetLabel("Used RAM: " + to_string(system->get_used_ram()));
+			ram_plot->SetData(time_plotting_points, ram_plotting_points_Y);
+			ram_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), -5, 105);
+		}
 	}
 
 	if (cpu.joinable()) {
@@ -97,9 +99,11 @@ void MainFrame::real_time(wxTimerEvent &e){
 		size_t i;
 		i = 0;
 		for (auto item : system->get_cpu_usage()) {
-			cpu_usage_texts[i]->SetLabel(item.first + ": " + to_string(item.second).substr(0, to_string(item.second).size() - 4) + "%");
 			cpu_plotting_points_Y[i].push_back(item.second);
-			cpu_plot[i]->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
+			if(main_notebook->GetSelection() == 1){
+				cpu_usage_texts[i]->SetLabel(item.first + ": " + to_string(item.second).substr(0, to_string(item.second).size() - 4) + "%");
+				cpu_plot[i]->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
+			}
 			++i;
 		}
 		cpu_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), -5, 105);
@@ -113,77 +117,82 @@ void MainFrame::real_time(wxTimerEvent &e){
 		}
 		double min_y, max_y;
 		min_y = max_y = 0;
-		if (string(interface_select_combo->GetStringSelection()) != "") {
-			vector<double> rx, tx;
-			rx = network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
-			tx = network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
+		if(main_notebook->GetSelection() == 1){
+			if (string(interface_select_combo->GetStringSelection()) != "") {
+				vector<double> rx, tx;
+				rx = network_rx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
+				tx = network_tx_plotting_points_Y[string(interface_select_combo->GetStringSelection())];
 
-			network_rx_text->SetLabel("IN: " + to_string(rx.back()).substr(0, to_string(rx.back()).size() - 4));
-			network_tx_text->SetLabel("OUT: " + to_string(tx.back()).substr(0, to_string(tx.back()).size() - 4));
-			network_rx_plot->SetData(time_plotting_points, rx);
-			network_tx_plot->SetData(time_plotting_points, tx);
+				network_rx_text->SetLabel("IN: " + to_string(rx.back()).substr(0, to_string(rx.back()).size() - 4));
+				network_tx_text->SetLabel("OUT: " + to_string(tx.back()).substr(0, to_string(tx.back()).size() - 4));
+				network_rx_plot->SetData(time_plotting_points, rx);
+				network_tx_plot->SetData(time_plotting_points, tx);
 
-			min_y = std::min(*std::min_element(rx.begin(), rx.end()), *std::min_element(tx.begin(), tx.end()));
-			max_y = std::max(*std::max_element(rx.begin(), rx.end()), *std::max_element(tx.begin(), tx.end()));
+				min_y = std::min(*std::min_element(rx.begin(), rx.end()), *std::min_element(tx.begin(), tx.end()));
+				max_y = std::max(*std::max_element(rx.begin(), rx.end()), *std::max_element(tx.begin(), tx.end()));
+			}
+			network_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), min_y - 5, max_y + 5);
 		}
-		network_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), min_y - 5, max_y + 5);
-	}
-	
-	if (proc.joinable()) {
-		proc.join();
-		vector<Process> proc_list = system->get_process_list();
-		switch(sort_type){
-			case SORT_NAME:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name);
-				break;
-			case SORT_PID:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid);
-				break;
-			case SORT_CPU:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu);
-				break;
-			case SORT_RAM:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram);
-				break;
-			case SORT_NAME_REVERSE:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name_reverse);
-				break;
-			case SORT_PID_REVERSE:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid_reverse);
-				break;
-			case SORT_CPU_REVERSE:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu_reverse);
-				break;
-			case SORT_RAM_REVERSE:
-				std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram_reverse);
-				break;
-		}
-
-		string name, pid, cpu, ram;
-		name = pid = cpu = ram = "";
-
-		for (auto proc : proc_list) {
-			string tmp_n, tmp_p, tmp_c, tmp_r;
-			tmp_n = proc.get_name();
-			tmp_p = to_string(proc.get_pid());
-			tmp_c = to_string(utils::round_n(proc.get_cpu_usage(),2)).substr(0, to_string(proc.get_cpu_usage()).size() - 4);
-			tmp_r = to_string(proc.get_ram());
-			name += tmp_n + "\n";
-			pid += tmp_p + "\n";
-			cpu += tmp_c + "\n";
-			ram += tmp_r + "\n";
-		}
-		proc_name_text->SetLabel(name);
-		proc_pid_text->SetLabel(pid);
-		proc_cpu_text->SetLabel(cpu);
-		proc_ram_text->SetLabel(ram);
-		process_list_panel->FitInside();
-
 	}
 	t +=0.5;
-	if(connected){
-		send_update();
-		update_user_cards();
+
+	if (proc.joinable()) {
+		proc.join();
+		if(main_notebook->GetSelection() == 0){
+			vector<Process> proc_list = system->get_process_list();
+			switch(sort_type){
+				case SORT_NAME:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name);
+					break;
+				case SORT_PID:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid);
+					break;
+				case SORT_CPU:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu);
+					break;
+				case SORT_RAM:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram);
+					break;
+				case SORT_NAME_REVERSE:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name_reverse);
+					break;
+				case SORT_PID_REVERSE:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid_reverse);
+					break;
+				case SORT_CPU_REVERSE:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu_reverse);
+					break;
+				case SORT_RAM_REVERSE:
+					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram_reverse);
+				break;
+			}
+			string name, pid, cpu, ram;
+			name = pid = cpu = ram = "";
+
+			for (auto proc : proc_list) {
+				string tmp_n, tmp_p, tmp_c, tmp_r;
+				tmp_n = proc.get_name();
+				tmp_p = to_string(proc.get_pid());
+				tmp_c = to_string(utils::round_n(proc.get_cpu_usage(),2)).substr(0, to_string(proc.get_cpu_usage()).size() - 4);
+				tmp_r = to_string(proc.get_ram());
+				name += tmp_n + "\n";
+				pid += tmp_p + "\n";
+				cpu += tmp_c + "\n";
+				ram += tmp_r + "\n";
+			}
+			proc_name_text->SetLabel(name);
+			proc_pid_text->SetLabel(pid);
+			proc_cpu_text->SetLabel(cpu);
+			proc_ram_text->SetLabel(ram);
+			process_list_panel->FitInside();
+
+		}
+	}
+	if(main_notebook->GetSelection() == 2){
+		if(connected){
+			send_update();
+			update_user_cards();
+		}
 	}
 }
 void MainFrame::shutdown(wxCommandEvent &e){
@@ -515,7 +524,7 @@ void MainFrame::connect(wxCommandEvent &e){
 	string user = network_management_user_input->GetValue().ToStdString();
 	client = new Client(user, port);
     std::this_thread::sleep_for (std::chrono::milliseconds(5));
-	network_management_network_text->SetLabel("Connected to: " + client->msg_rec);
+	network_management_network_text->SetLabel("Connected to: " + client->get_server_name());
 	network_management_network_text->Show();
 	network_management_port_input->Hide();
 	network_management_user_input->Hide();
@@ -529,20 +538,22 @@ void MainFrame::connect(wxCommandEvent &e){
 
 void MainFrame::update_user_cards(){
 	std::string pkg = client->get_msg_rec();
-//	std::cout<<pkg<<"\n";
+	//std::cout<<pkg<<"\n";
 	Recv_Package r_pkg(pkg);
 	for(auto item : r_pkg.get_user_data()){
 		if(user_cards.find(item.first) != user_cards.end()){
+			if(!user_cards[item.first].is_active()){
+				user_cards[item.first].set_active();
+			}
 			user_cards[item.first].update(System(item.second));
 		}else{
 			User_Card uc = User_Card(network_management_page, wxID_ANY, item.first, System(item.second));
 			uc.set_active();
-			network_management_user_cards_box->Add(uc.get_items(), 0, wxALL | wxEXPAND, 5);
+			network_management_user_cards_box->Add(uc.get_items(), 1, wxALL | wxEXPAND, 5);
 			user_cards[item.first] = uc;
 		}
 	}
 	for(auto inactive : r_pkg.get_inactive_users()){
-		std::cout<<"inac: "<<inactive<<"\n";
 		user_cards[inactive].set_inactive();
 	}
 	network_management_page->SetSizerAndFit(network_management_sizer);
