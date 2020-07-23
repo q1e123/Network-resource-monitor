@@ -91,8 +91,6 @@ private:
 	void update_cpu();
 	void update_network();
 	void update_process_list();
-	void init_colors();
-	void init_fonts();
 	void create_system_page();
 	void create_performance_page();
 	void create_network_management_page();
