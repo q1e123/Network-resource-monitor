@@ -74,7 +74,7 @@ void Server::send_to_all(){
 			pkg += item.first + ";" + item.second + "|";
 		}
 		pkg += "@" + disc_users;
-		//disc_users = "d;";
+		disc_users = "d;";
 		char *c_pkg = const_cast<char*>(pkg.c_str()); 
 		for(auto client : clients){
 			if(send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
