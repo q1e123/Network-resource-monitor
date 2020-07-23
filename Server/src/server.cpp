@@ -25,12 +25,10 @@ Server::Server(std::string name, size_t sock){
 		std::cerr << "listening unsuccessful\n";
 		exit(1);
 	}
-
-	send_worker = std::thread(&Server::send_to_all, this);
-	send_worker.detach();
 }
 
 void Server::start(){
+	send_worker = std::thread(&Server::send_to_all, this);
 	while(1) {
 		if ((their_sock = accept(my_sock, (struct sockaddr *)&their_addr, &their_addr_size)) < 0) {
 			std::cerr << "accept unsuccessful";
@@ -57,6 +55,14 @@ void Server::start(){
 		workers[their_sock] = std::move(worker);
 		mtx.unlock();
 	}
+	for(auto client:clients){
+		if(workers[client.get_socket_number()].joinable()){
+			workers[client.get_socket_number()].join();
+		}
+	}
+	if(send_worker.joinable()){
+		send_worker.join();
+	}
 }
 
 void Server::send_to_all(){
@@ -68,7 +74,7 @@ void Server::send_to_all(){
 			pkg += item.first + ";" + item.second + "|";
 		}
 		pkg += "@" + disc_users;
-		disc_users = "d;";
+		//disc_users = "d;";
 		char *c_pkg = const_cast<char*>(pkg.c_str()); 
 		for(auto client : clients){
 			if(send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
@@ -112,9 +118,6 @@ void Server::recv_msg(Client_Info client){
 	disc_users += client.get_user() + ";";
 	remove_user(client.get_user());
 	mtx.unlock();
-	if(workers[client.get_socket_number()].joinable()){
-		workers[client.get_socket_number()].join();
-	}
 }
 
 void Server::run_cmd(std::string cmd){
@@ -140,7 +143,8 @@ void Server::remove_user(std::string user){
 	for(pos = 0; pos<clients.size(); ++pos){
 		if(clients[pos].get_user() == user){
 			clients.erase(clients.begin() + pos);
-			return;
+			break;
 		}
 	}
+	systems.erase(user);
 }

@@ -561,7 +561,7 @@ void MainFrame::connect(wxCommandEvent &e){
 
 void MainFrame::update_user_cards(){
 	std::string pkg = client->get_msg_rec();
-	std::cout<<pkg<<"\n";
+//	std::cout<<pkg<<"\n";
 	Recv_Package r_pkg(pkg);
 	for(auto item : r_pkg.get_user_data()){
 		if(user_cards.find(item.first) != user_cards.end()){
@@ -574,6 +574,7 @@ void MainFrame::update_user_cards(){
 		}
 	}
 	for(auto inactive : r_pkg.get_inactive_users()){
+		std::cout<<"inac: "<<inactive<<"\n";
 		user_cards[inactive].set_inactive();
 	}
 	network_management_page->SetSizerAndFit(network_management_sizer);
