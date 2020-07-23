@@ -65,7 +65,7 @@ void Server::send_to_all(){
 		std::string pkg = "";
 		pkg += "s;";
 		for(auto item : systems){
-			pkg += item.second + "|";
+			pkg += item.first + ";" + item.second + "|";
 		}
 		pkg += "@" + disc_users;
 		disc_users = "d;";
