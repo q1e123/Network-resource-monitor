@@ -1,6 +1,6 @@
 #include "client.h"
 
-Client::Client(std::string user, size_t sock){
+Client::Client(std::string user, std::string server_ip, size_t sock){
 	username_str = user;
 	username = const_cast<char*>(user.c_str());
 	portno = sock;
@@ -8,7 +8,7 @@ Client::Client(std::string user, size_t sock){
 	memset(their_addr.sin_zero, '\0', sizeof(their_addr.sin_zero));
 	their_addr.sin_family = AF_INET;
 	their_addr.sin_port = htons(portno);
-	their_addr.sin_addr.s_addr = inet_addr(LOOPBACK_ADDR);
+	their_addr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 
 	if (connect(my_sock, (struct sockaddr *)&their_addr, sizeof(their_addr)) < 0) {
 		std::cerr<< "connection not established\n";

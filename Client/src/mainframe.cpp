@@ -488,6 +488,8 @@ void MainFrame::create_network_management_page(){
 
 	network_management_user_input = new wxTextCtrl(network_management_page,wxID_ANY,"USER");
 	network_management_user_input->SetForegroundColour(Colors::white);
+	network_management_ip_input = new wxTextCtrl(network_management_page,wxID_ANY,"127.0.0.1");
+	network_management_ip_input->SetForegroundColour(Colors::white);
 	network_management_port_input = new wxTextCtrl(network_management_page,wxID_ANY,"50005");
 	network_management_port_input->SetForegroundColour(Colors::white);
 	network_management_connect_button = new wxButton(network_management_page, BUTTON_CONNECT, "Connect");
@@ -499,18 +501,13 @@ void MainFrame::create_network_management_page(){
 	network_management_network_text->Hide();
 
 	network_management_connect_box->Add(network_management_user_input, 0, wxALL | wxEXPAND, 5);
+	network_management_connect_box->Add(network_management_ip_input, 0, wxALL | wxEXPAND, 5);
 	network_management_connect_box->Add(network_management_port_input, 0, wxALL | wxEXPAND, 5);
 	network_management_connect_box->Add(network_management_connect_button, 0, wxALL | wxEXPAND, 5);
 	
 	network_management_sizer->Add(network_management_network_text, 0, wxALL, 5);
 	network_management_sizer->Add(network_management_connect_box, 0, wxALL, 5);
 	network_management_page->SetSizerAndFit(network_management_sizer);
-}
-
-void MainFrame::start_client(std::string user, size_t port){
-	mtx.lock();
-	client = new Client(user, port);
-	mtx.unlock();
 }
 
 void MainFrame::send_update(){
@@ -522,12 +519,14 @@ void MainFrame::connect(wxCommandEvent &e){
 	connected = true;
 	size_t port = std::stol(network_management_port_input->GetValue().ToStdString());
 	string user = network_management_user_input->GetValue().ToStdString();
-	client = new Client(user, port);
+	string ip = network_management_ip_input->GetValue().ToStdString();
+	client = new Client(user, ip, port);
     std::this_thread::sleep_for (std::chrono::milliseconds(5));
 	network_management_network_text->SetLabel("Connected to: " + client->get_server_name());
 	network_management_network_text->Show();
 	network_management_port_input->Hide();
 	network_management_user_input->Hide();
+	network_management_ip_input->Hide();
 	network_management_connect_button->Hide();
 	network_management_user_cards_box = new wxBoxSizer(wxVERTICAL);
 

@@ -53,7 +53,7 @@ private:
 	Sort sort_type;
 
 	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *IP_text, *system_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text, *network_management_network_text;
-	wxTextCtrl *network_management_user_input, *network_management_port_input;
+	wxTextCtrl *network_management_user_input, *network_management_port_input, *network_management_ip_input;
 	vector<wxStaticText*> cpu_usage_texts;
 	wxButton *exit_button, *restart_button, *shutdown_button, *proc_name_button, *proc_pid_button, *proc_cpu_button, *proc_ram_button, *network_management_connect_button;
 	wxPanel *main_panel;
@@ -94,7 +94,6 @@ private:
 	void create_system_page();
 	void create_performance_page();
 	void create_network_management_page();
-	void start_client(std::string user, size_t port);
 	void update_user_cards();
 };
 

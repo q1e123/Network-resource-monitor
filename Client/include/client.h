@@ -19,7 +19,7 @@
 class Client{
 public:
 	Client();
-	Client(std::string user, size_t socket);
+	Client(std::string user, std::string server_ip, size_t socket);
 	void start();
 	void send_msg(std::string msg);
 	std::string msg_rec, msg_send;
