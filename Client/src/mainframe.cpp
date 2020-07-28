@@ -36,13 +36,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	SetAutoLayout(TRUE);
 	system = new System();
 	sort_type = SORT_NAME;
-<<<<<<< HEAD:src/mainframe.cpp
 	init_colors();
-	init_fonts();
-
 	main_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 	main_panel->SetBackgroundColour(colors["gray"]);
-=======
 
 	cpu_colors.push_back(Colors::light_blue);
 	cpu_colors.push_back(Colors::light_red);
@@ -57,7 +53,6 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	main_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 	main_panel->SetBackgroundColour(Colors::gray);
->>>>>>> network:Client/src/mainframe.cpp
 	box = new wxBoxSizer(wxVERTICAL);
 	timer = new wxTimer(this,TIMER);
 	timer->Start(1000);
@@ -66,7 +61,6 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	create_system_page();
 	main_notebook->AddPage(system_page, "System", true);
-<<<<<<< HEAD:src/mainframe.cpp
 
 	create_performance_page();
 	main_notebook->AddPage(performance_page, "Performance");
@@ -717,24 +711,6 @@ void MainFrame::update_user_cards(){
 }
 
 void MainFrame::init_colors(){
-	colors["black"] = wxColour(0, 0, 0);
-	colors["white"] = wxColour(255,255,255);
-	colors["light_blue"] = wxColour(128,200,255);
-	colors["dark_blue"] = wxColour(2,44,99);
-	colors["light_red"] = wxColour(255,138,138);
-	colors["dark_red"] = wxColour(171,0,0);
-	colors["light_yellow"] = wxColour(246,255,117);
-	colors["dark_yellow"] = wxColour(238,255,0);
-	colors["light_green"] = wxColour(145,255,160);
-	colors["dark_green"] = wxColour(0,161,21);
-	colors["light_purple"] = wxColour(198,133,255);
-	colors["dark_purple"] = wxColour(107,0,201);
-	colors["light_gray"] = wxColour(181,181,181);
-	colors["dark_gray"] = wxColour(53,53,53);
-	colors["light_pink"] = wxColour(235,135,239);
-	colors["dark_pink"] = wxColour(255,0,221);
-	colors["gray"] = wxColour(87,87,87);
-
 	cpu_colors.push_back(colors["light_blue"]);
 	cpu_colors.push_back(colors["light_red"]);
 	cpu_colors.push_back(colors["light_green"]);

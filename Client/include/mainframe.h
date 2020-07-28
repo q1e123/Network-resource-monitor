@@ -45,13 +45,7 @@ public:
 
 private:
 	double t = 1;
-<<<<<<< HEAD:include/mainframe.h
-
-=======
 	bool connected = false;
->>>>>>> network:Client/include/mainframe.h
-	map<string, wxColour> colors;
-	map<string, wxFont> fonts;
 	System *system;
 	vector<wxColour> cpu_colors;
 	Sort sort_type;
@@ -81,9 +75,6 @@ private:
 
 	wxNotebook *main_notebook;
 	wxNotebookPage *performance_page, *system_page, *network_management_page;
-<<<<<<< HEAD:include/mainframe.h
-
-=======
 	wxSizer *network_management_sizer;
 	
 	Client *client;
@@ -93,23 +84,18 @@ private:
 	std::map<std::string, User_Card> user_cards;
 	
 	void send_update();
->>>>>>> network:Client/include/mainframe.h
 	void check_points();
 	void update_ram();
 	void update_cpu();
 	void update_network();
 	void update_process_list();
-<<<<<<< HEAD:include/mainframe.h
 	void init_colors();
-	void init_fonts();
 	void create_system_page();
 	void create_performance_page();
-=======
 	void create_system_page();
 	void create_performance_page();
 	void create_network_management_page();
 	void update_user_cards();
->>>>>>> network:Client/include/mainframe.h
 };
 
 
