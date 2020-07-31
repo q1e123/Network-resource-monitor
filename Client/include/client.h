@@ -26,19 +26,20 @@ typedef int SOCKET;
 
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
+#define MESSAGE_SIZE 500
 class Client {
 public:
 	Client();
 	Client(std::string user, std::string server_ip, size_t socket);
 	void start();
 	void send_msg(std::string msg);
-	std::string msg_rec, msg_send;
-	void recv_msg();
+	std::string message_recived, msg_send;
 	~Client();
-	std::string get_msg_rec();
+	std::string get_message_recived();
 	std::string get_server_name();
 	std::string get_user();
 private:
+	void recive_message();
 
 	int socket_init();
 	int socket_quit();
@@ -46,20 +47,16 @@ private:
 	int socket_close(SOCKET socket);
 
 	std::string username_str;
-	std::string msg_old;
-	std::thread worker_r, worker_s;
+	std::thread reciver;
 	std::mutex mtx;
 	std::string server_name;
-	struct sockaddr_in their_addr;
-	SOCKET my_sock;
-	SOCKET their_sock;
-	int their_addr_size;
-	int portno;
-	char msg[500];
+	struct sockaddr_in server_addr;
+	SOCKET client_sock;
+	SOCKET server_sock;
+	int server_addr_size;
+	int port_number;
 	char* username;
-	char res[600];
 	char *ip[INET_ADDRSTRLEN];
-	int len;
 };
 
 #endif

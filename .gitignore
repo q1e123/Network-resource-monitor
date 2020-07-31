@@ -1,3 +1,4 @@
 build/
 interfaces
 *.swp
+settings.json

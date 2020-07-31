@@ -537,7 +537,7 @@ void MainFrame::connect(wxCommandEvent &e){
 }
 
 void MainFrame::update_user_cards(){
-	std::string pkg = client->get_msg_rec();
+	std::string pkg = client->get_message_recived();
 	//std::cout<<pkg<<"\n";
 	Recv_Package r_pkg(pkg);
 	for(auto item : r_pkg.get_user_data()){
