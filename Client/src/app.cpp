@@ -8,9 +8,9 @@
 IMPLEMENT_APP(App)
 
 bool App::OnInit(){
-	MainFrame *main_win = new MainFrame("Siemens", wxDefaultPosition, wxSize(800, 600));
-	main_win->Show(true);
-	SetTopWindow(main_win);
+	MainFrame *main_window = new MainFrame("Siemens", wxDefaultPosition, wxSize(800, 600));
+	main_window->Show(true);
+	SetTopWindow(main_window);
 
 	return true;
 }

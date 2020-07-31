@@ -32,7 +32,9 @@ public:
 	Client();
 	Client(std::string user, std::string server_ip, size_t socket);
 	void start();
-	void send_msg(std::string msg);
+	void send_message(std::string message);
+	void connect_to_server();
+	void start_reciver();
 	std::string message_recived;
 	~Client();
 	std::string get_message_recived();
@@ -45,7 +47,6 @@ private:
 	int socket_quit();
 	bool socket_check(SOCKET socket);
 	int socket_close(SOCKET socket);
-
 	std::thread reciver;
 	std::mutex server_name_mutex, message_recived_mutex;
 	std::string server_name;

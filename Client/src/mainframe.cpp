@@ -514,7 +514,7 @@ void MainFrame::create_network_management_page(){
 void MainFrame::send_update(){
 	std::string pkg;
 	pkg = Network_Package::send_package(system->serilize(), client->get_user());
-	client->send_msg(pkg);
+	client->send_message(pkg);
 }
 void MainFrame::connect(wxCommandEvent &e){
 	connected = true;
@@ -522,6 +522,8 @@ void MainFrame::connect(wxCommandEvent &e){
 	string user = network_management_user_input->GetValue().ToStdString();
 	string ip = network_management_ip_input->GetValue().ToStdString();
 	client = new Client(user, ip, port);
+	client->connect_to_server();
+	client->start_reciver();
     std::this_thread::sleep_for (std::chrono::milliseconds(5));
 	network_management_network_text->SetLabel("Connected to: " + client->get_server_name());
 	network_management_network_text->Show();

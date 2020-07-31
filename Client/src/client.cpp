@@ -11,7 +11,9 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(port_number);
 	server_addr.sin_addr.s_addr = inet_addr(server_ip.c_str());
+}
 
+void Client::connect_to_server(){
 	if (connect(client_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
 		std::cerr << "connection not established\n";
 		exit(1);
@@ -36,9 +38,11 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 		std::cerr << "initial identity message not sent\n";
 		exit(1);
 	}
-	reciver = std::thread(&Client::recive_message, this);
 }
 
+void Client::start_reciver(){
+	reciver = std::thread(&Client::recive_message, this);
+}
 
 void Client::recive_message() {
 	char message[MESSAGE_SIZE];
@@ -55,14 +59,16 @@ void Client::recive_message() {
 Client::Client() {
 }
 Client::~Client() {
-	reciver.join();
+	if(reciver.joinable()){
+		reciver.join();
+	}
 	socket_close(client_sock);
 }
 
-void Client::send_msg(std::string msg) {
+void Client::send_message(std::string message) {
 	char package[MESSAGE_SIZE];
 
-	STRCAT(package, msg.c_str());
+	STRCAT(package, message.c_str());
 	int len = send(client_sock, package, strlen(package), NULL);
 	if (len < 0) {
 		std::cerr << "message not sent\n";
