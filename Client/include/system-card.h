@@ -16,6 +16,7 @@ public:
 
     wxStaticBoxSizer* get_all();
 private:
+    System *system;
     wxStaticBoxSizer *static_box_sizer;
     wxStaticBox *static_box;
     wxStaticText *os_text, *header_text;

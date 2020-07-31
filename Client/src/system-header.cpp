@@ -6,6 +6,7 @@
 System_Header::System_Header(){}
 
 System_Header::System_Header(wxNotebookPage *system_page){
+	this->system = system;
     static_box = new wxStaticBox(system_page, wxID_ANY,"");
 	static_box->SetBackgroundColour(Colors::dark_gray);
 	buttons_box = new wxBoxSizer(wxHORIZONTAL);

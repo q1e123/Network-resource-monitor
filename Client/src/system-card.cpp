@@ -7,6 +7,8 @@
 System_Card::System_Card(){}
 
 System_Card::System_Card(wxNotebookPage *system_page, System *system){
+    this->system = system;
+
     static_box = new wxStaticBox(system_page, wxID_ANY,"");
 	os_text = new wxStaticText(system_page, wxID_ANY,"OS: " + system->get_os());
 	os_text->SetForegroundColour(Colors::white);

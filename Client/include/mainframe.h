@@ -17,18 +17,7 @@ using std::queue;
 
 
 #include "system-page.h"
-
-enum Sort{
-	SORT_NAME,
-	SORT_PID,
-	SORT_CPU,
-	SORT_RAM,
-	SORT_NAME_REVERSE,
-	SORT_PID_REVERSE,
-	SORT_CPU_REVERSE,
-	SORT_RAM_REVERSE
-};
-
+#include "process-sort-type.h"
 class MainFrame : public wxFrame{
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
@@ -50,7 +39,7 @@ private:
 	bool connected = false;
 	System *system;
 	vector<wxColour> cpu_colors;
-	Sort sort_type;
+	Process_Sort_Type process_sort_type;
 
 	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text, *network_management_network_text;
 	wxTextCtrl *network_management_user_input, *network_management_port_input, *network_management_ip_input;

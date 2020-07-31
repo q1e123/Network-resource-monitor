@@ -1,0 +1,15 @@
+#ifndef PROCESS_SORT_TYPE
+#define PROCESS_SORT_TYPE
+
+enum Process_Sort_Type{
+	NAME,
+	PID,
+	CPU,
+	RAM,
+	NAME_REVERSE,
+	PID_REVERSE,
+	CPU_REVERSE,
+	RAM_REVERSE
+};
+
+#endif

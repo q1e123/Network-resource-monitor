@@ -36,7 +36,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 : wxFrame((wxFrame *) NULL, -1, title, pos, size){
 	SetAutoLayout(TRUE);
 	system = new System();
-	sort_type = SORT_NAME;
+	process_sort_type = Process_Sort_Type::NAME;
 
 	init_colors();
 
@@ -133,53 +133,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	if (proc.joinable()) {
 		proc.join();
 		if(main_notebook->GetSelection() == 0){
-			vector<Process> proc_list = system->get_process_list();
-			switch(sort_type){
-				case SORT_NAME:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name);
-					break;
-				case SORT_PID:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid);
-					break;
-				case SORT_CPU:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu);
-					break;
-				case SORT_RAM:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram);
-					break;
-				case SORT_NAME_REVERSE:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_name_reverse);
-					break;
-				case SORT_PID_REVERSE:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_pid_reverse);
-					break;
-				case SORT_CPU_REVERSE:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_cpu_reverse);
-					break;
-				case SORT_RAM_REVERSE:
-					std::sort(proc_list.begin(), proc_list.end(), Proc_Utils::compare_ram_reverse);
-				break;
-			}
-			string name, pid, cpu, ram;
-			name = pid = cpu = ram = "";
-
-			for (auto proc : proc_list) {
-				string tmp_n, tmp_p, tmp_c, tmp_r;
-				tmp_n = proc.get_name();
-				tmp_p = to_string(proc.get_pid());
-				tmp_c = to_string(utils::round_n(proc.get_cpu_usage(),2)).substr(0, to_string(proc.get_cpu_usage()).size() - 4);
-				tmp_r = to_string(proc.get_ram());
-				name += tmp_n + "\n";
-				pid += tmp_p + "\n";
-				cpu += tmp_c + "\n";
-				ram += tmp_r + "\n";
-			}
-			proc_name_text->SetLabel(name);
-			proc_pid_text->SetLabel(pid);
-			proc_cpu_text->SetLabel(cpu);
-			proc_ram_text->SetLabel(ram);
-			process_list_panel->FitInside();
-
+			system_page->update_process_list(process_sort_type);
 		}
 	}
 	if(main_notebook->GetSelection() == 2){
@@ -231,34 +185,34 @@ void MainFrame::update_process_list(){
 }
 
 void MainFrame::sort_by_name(wxCommandEvent &e){
-	if(sort_type != SORT_NAME){
-		sort_type = SORT_NAME;
+	if(process_sort_type != Process_Sort_Type::NAME){
+		process_sort_type = Process_Sort_Type::NAME;
 	}else{
-		sort_type = SORT_NAME_REVERSE;	
+		process_sort_type = Process_Sort_Type::NAME_REVERSE;	
 	}
 }
 
 void MainFrame::sort_by_pid(wxCommandEvent &e){
-	if(sort_type != SORT_PID){
-		sort_type = SORT_PID;
+	if(process_sort_type != Process_Sort_Type::PID){
+		process_sort_type = Process_Sort_Type::PID;
 	}else{
-		sort_type = SORT_PID_REVERSE;	
+		process_sort_type = Process_Sort_Type::PID_REVERSE;	
 	}
 }
 
 void MainFrame::sort_by_cpu(wxCommandEvent &e){
-	if(sort_type != SORT_CPU){
-		sort_type = SORT_CPU;
+	if(process_sort_type != Process_Sort_Type::CPU){
+		process_sort_type = Process_Sort_Type::CPU;
 	}else{
-		sort_type = SORT_CPU_REVERSE;	
+		process_sort_type = Process_Sort_Type::CPU_REVERSE;	
 	}
 }
 
 void MainFrame::sort_by_ram(wxCommandEvent &e){
-	if(sort_type != SORT_RAM){
-		sort_type = SORT_RAM;
+	if(process_sort_type != Process_Sort_Type::RAM){
+		process_sort_type = Process_Sort_Type::RAM;
 	}else{
-		sort_type = SORT_RAM_REVERSE;	
+		process_sort_type = Process_Sort_Type::RAM_REVERSE;	
 	}
 }
 

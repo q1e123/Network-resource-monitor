@@ -8,6 +8,7 @@
 #include <wx/notebook.h>
 
 #include "gui-element-id.h"
+#include "system.h"
 
 class System_Header{
 public:
@@ -17,6 +18,7 @@ public:
 
     wxStaticBoxSizer* get_all();
 private:
+    System *system;
     wxBoxSizer *buttons_box;
     wxStaticBoxSizer *static_box_sizer;
     wxStaticBox *static_box;
