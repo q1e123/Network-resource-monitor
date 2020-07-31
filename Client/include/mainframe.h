@@ -92,8 +92,6 @@ private:
 	void init_colors();
 	void create_system_page();
 	void create_performance_page();
-	void create_system_page();
-	void create_performance_page();
 	void create_network_management_page();
 	void update_user_cards();
 };
