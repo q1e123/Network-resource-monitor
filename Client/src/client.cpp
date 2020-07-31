@@ -4,7 +4,6 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 	if (socket_init() != 0) {
 		std::cout << "socket init failed\n";
 	}
-	username_str = user;
 	username = const_cast<char*>(user.c_str());
 	port_number = sock;
 	client_sock = socket(AF_INET, SOCK_STREAM, 0); 
@@ -71,7 +70,7 @@ void Client::send_msg(std::string msg) {
 }
 
 std::string Client::get_user() {
-	return username_str;
+	return std::string(username);
 }
 
 std::string Client::get_message_recived() {

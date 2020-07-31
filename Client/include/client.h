@@ -33,7 +33,7 @@ public:
 	Client(std::string user, std::string server_ip, size_t socket);
 	void start();
 	void send_msg(std::string msg);
-	std::string message_recived, msg_send;
+	std::string message_recived;
 	~Client();
 	std::string get_message_recived();
 	std::string get_server_name();
@@ -46,7 +46,6 @@ private:
 	bool socket_check(SOCKET socket);
 	int socket_close(SOCKET socket);
 
-	std::string username_str;
 	std::thread reciver;
 	std::mutex server_name_mutex, message_recived_mutex;
 	std::string server_name;
