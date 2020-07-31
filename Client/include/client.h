@@ -48,7 +48,7 @@ private:
 
 	std::string username_str;
 	std::thread reciver;
-	std::mutex mtx;
+	std::mutex server_name_mutex, message_recived_mutex;
 	std::string server_name;
 	struct sockaddr_in server_addr;
 	SOCKET client_sock;

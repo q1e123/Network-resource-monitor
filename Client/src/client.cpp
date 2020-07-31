@@ -1,4 +1,5 @@
 #include "client.h"
+
 Client::Client(std::string user, std::string server_ip, size_t sock) {
 	if (socket_init() != 0) {
 		std::cout << "socket init failed\n";
@@ -23,10 +24,12 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 	int len;
 	if ((len = recv(client_sock, msg, MESSAGE_SIZE, 0)) > 0) {
 		msg[len] = '\0';
-		mtx.lock();
+		server_name_mutex.lock();
 		server_name = msg;
+		server_name_mutex.unlock();
+		message_recived_mutex.lock();
 		message_recived = msg;
-		mtx.unlock();
+		message_recived_mutex.unlock();
 		memset(msg, '\0', sizeof(msg));
 	}
 	len = send(client_sock, username, strlen(username), NULL);
@@ -43,9 +46,9 @@ void Client::recive_message() {
 	int len;
 	while ((len = recv(client_sock, message, MESSAGE_SIZE, 0)) > 0) {
 		message[len] = '\0';
-		mtx.lock();
+		message_recived_mutex.lock();
 		message_recived = message;
-		mtx.unlock();
+		message_recived_mutex.unlock();
 		memset(message, '\0', sizeof(message));
 	}
 }
@@ -58,7 +61,6 @@ Client::~Client() {
 }
 
 void Client::send_msg(std::string msg) {
-	mtx.lock();
 	char package[MESSAGE_SIZE];
 
 	STRCAT(package, msg.c_str());
@@ -66,7 +68,6 @@ void Client::send_msg(std::string msg) {
 	if (len < 0) {
 		std::cerr << "message not sent\n";
 	}
-	mtx.unlock();
 }
 
 std::string Client::get_user() {
