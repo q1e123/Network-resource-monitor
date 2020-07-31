@@ -38,16 +38,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	system = new System();
 	sort_type = SORT_NAME;
 
-	cpu_colors.push_back(Colors::light_blue);
-	cpu_colors.push_back(Colors::light_red);
-	cpu_colors.push_back(Colors::light_green);
-	cpu_colors.push_back(Colors::light_purple);
-	cpu_colors.push_back(Colors::light_pink);
-	cpu_colors.push_back(Colors::dark_blue);
-	cpu_colors.push_back(Colors::dark_red);
-	cpu_colors.push_back(Colors::dark_green);
-	cpu_colors.push_back(Colors::dark_purple);
-	cpu_colors.push_back(Colors::dark_pink);
+	init_colors();
 
 	main_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 	main_panel->SetBackgroundColour(Colors::gray);
@@ -57,8 +48,10 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	
     main_notebook = new wxNotebook(main_panel, wxID_ANY);
 
-	create_system_page();
-	main_notebook->AddPage(system_page, "System", true);
+	//create_system_page();
+	system_page = new System_Page(main_notebook, system);
+
+	main_notebook->AddPage(system_page->get_all(), "System", true);
 
 	create_performance_page();
 	main_notebook->AddPage(performance_page, "Performance");
@@ -269,93 +262,6 @@ void MainFrame::sort_by_ram(wxCommandEvent &e){
 	}
 }
 
-void MainFrame::create_system_page(){
-	system_page = new wxPanel(main_notebook, wxID_ANY);
-	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
-	header_static = new wxStaticBox(system_page, wxID_ANY,"");
-	header_static->SetBackgroundColour(Colors::dark_gray);
-	IP_text= new wxStaticText(system_page, wxID_ANY, system->get_ip());
-	header_buttons_box = new wxBoxSizer(wxHORIZONTAL);
-	restart_button = new wxButton(system_page, BUTTON_RESTART, "Restart");
-	restart_button->SetBackgroundColour(Colors::light_gray);
-	restart_button->SetForegroundColour(Colors::black);
-	shutdown_button = new wxButton(system_page, BUTTON_SHUTDOWN, "Shutdown");
-	shutdown_button->SetBackgroundColour(Colors::light_gray);
-	shutdown_button->SetForegroundColour(Colors::black);
-	header_buttons_box->Add(shutdown_button, 0, wxALL | wxEXPAND, 5);
-	header_buttons_box->Add(restart_button, 0, wxALL | wxEXPAND, 5);
-	header_sbox = new wxStaticBoxSizer(header_static,wxVERTICAL);
-	header_sbox->Add(IP_text, 0, wxALL | wxEXPAND, 10);
-	header_sbox->Add(header_buttons_box, 0, wxALL | wxEXPAND, 5);
-	
-	system_static = new wxStaticBox(system_page, wxID_ANY,"");
-	os_text = new wxStaticText(system_page, wxID_ANY,"OS: " + system->get_os());
-	os_text->SetForegroundColour(Colors::white);
-	system_text = new wxStaticText(system_page, wxID_ANY, "System");
-	system_text->SetFont(Fonts::h1);
-	system_text->SetForegroundColour(Colors::white);
-	system_sbox = new wxStaticBoxSizer(system_static, wxVERTICAL);
-	system_sbox->Add(system_text, 0, wxALL | wxEXPAND, 5);
-	system_sbox->Add(os_text, 0, wxALL | wxEXPAND, 5);
-
-	system_sizer->Add(header_sbox, 0, wxALL | wxEXPAND, 5);
-	system_sizer->Add(system_sbox, 0, wxALL | wxEXPAND, 5);
-	
-	process_list_panel = new wxScrolledWindow(system_page, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL, "Process List");
-	proc_sizer = new wxBoxSizer(wxHORIZONTAL);
-	proc_cpu_sizer = new wxBoxSizer(wxVERTICAL);
-	proc_name_sizer = new wxBoxSizer(wxVERTICAL);
-	proc_pid_sizer = new wxBoxSizer(wxVERTICAL);
-	proc_ram_sizer = new wxBoxSizer(wxVERTICAL);
-
-	proc_name_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
-	proc_name_text->SetFont(Fonts::normal);
-	proc_name_text->SetForegroundColour(Colors::white);
-	proc_pid_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
-	proc_pid_text->SetFont(Fonts::normal);
-	proc_pid_text->SetForegroundColour(Colors::white);
-	proc_cpu_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
-	proc_cpu_text->SetFont(Fonts::normal);
-	proc_cpu_text->SetForegroundColour(Colors::white);
-	proc_ram_text = new wxStaticText(process_list_panel, wxID_ANY, "---");
-	proc_ram_text->SetFont(Fonts::normal);
-	proc_ram_text->SetForegroundColour(Colors::white);
-
-	proc_name_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_NAME, "Process");
-	proc_name_button->SetBackgroundColour(Colors::dark_gray);
-	proc_name_button->SetForegroundColour(Colors::light_blue);
-	proc_pid_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_PID, "PID");
-	proc_pid_button->SetBackgroundColour(Colors::dark_gray);
-	proc_pid_button->SetForegroundColour(Colors::light_blue);
-	proc_cpu_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_CPU, "CPU");
-	proc_cpu_button->SetBackgroundColour(Colors::dark_gray);
-	proc_cpu_button->SetForegroundColour(Colors::light_blue);
-	proc_ram_button = new wxButton(process_list_panel, BUTTON_SORT_PROC_RAM, "RAM");
-	proc_ram_button->SetBackgroundColour(Colors::dark_gray);
-	proc_ram_button->SetForegroundColour(Colors::light_blue);
-
-	proc_name_sizer->Add(proc_name_button, 0, wxALL, 5);
-	proc_pid_sizer->Add(proc_pid_button, 0, wxALL, 5);
-	proc_cpu_sizer->Add(proc_cpu_button, 0, wxALL, 5);
-	proc_ram_sizer->Add(proc_ram_button, 0, wxALL, 5);
-	proc_name_sizer->Add(proc_name_text, 1, wxALL, 5);
-	proc_pid_sizer->Add(proc_pid_text, 1, wxALL, 5);
-	proc_cpu_sizer->Add(proc_cpu_text, 1, wxALL, 5);
-	proc_ram_sizer->Add(proc_ram_text, 1, wxALL, 5);
-	
-	proc_sizer->Add(proc_name_sizer, 1, wxALL, 0);
-	proc_sizer->Add(proc_pid_sizer, 0, wxALL, 0);
-	proc_sizer->Add(proc_cpu_sizer, 0, wxALL, 0);
-	proc_sizer->Add(proc_ram_sizer, 0, wxALL, 0);
-
-	process_list_panel->SetSizer(proc_sizer);
-	process_list_panel->FitInside();
-	process_list_panel->SetScrollRate(5,5);
-
-	system_sizer->Add(process_list_panel, 1, wxALL | wxEXPAND, 5);
-	system_page->SetSizerAndFit(system_sizer);
-}
-
 void MainFrame::create_performance_page(){
 	performance_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *perfomance_sizer = new wxBoxSizer(wxVERTICAL);
@@ -559,4 +465,17 @@ void MainFrame::update_user_cards(){
 		user_cards[inactive].set_inactive();
 	}
 	network_management_page->SetSizerAndFit(network_management_sizer);
+}
+
+void MainFrame::init_colors(){
+	cpu_colors.push_back(Colors::light_blue);
+	cpu_colors.push_back(Colors::light_red);
+	cpu_colors.push_back(Colors::light_green);
+	cpu_colors.push_back(Colors::light_purple);
+	cpu_colors.push_back(Colors::light_pink);
+	cpu_colors.push_back(Colors::dark_blue);
+	cpu_colors.push_back(Colors::dark_red);
+	cpu_colors.push_back(Colors::dark_green);
+	cpu_colors.push_back(Colors::dark_purple);
+	cpu_colors.push_back(Colors::dark_pink);
 }
