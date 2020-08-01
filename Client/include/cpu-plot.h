@@ -15,7 +15,7 @@ public:
     void update_gui();
 private:
     size_t number_of_cpus;
-    std::vector<wxColour> cpu_colors
+    std::vector<wxColour> cpu_colors;
 	std::vector<std::vector<double>> y_points; 
 	std::vector<mpFXYVector*> plots;
 

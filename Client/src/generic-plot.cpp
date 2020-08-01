@@ -12,3 +12,7 @@ Generic_Plot::Generic_Plot(wxNotebookPage *page){
 	y_axis->SetFont(Fonts::normal);
 	window->AddLayer(y_axis);
 }
+
+mpWindow* Generic_Plot::get_all(){
+	return window;
+}

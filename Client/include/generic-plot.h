@@ -16,7 +16,7 @@ public:
     Generic_Plot();
     Generic_Plot(wxNotebookPage *page);
 
-    mpWindow *get_plot();
+    mpWindow *get_all();
 protected:
     std::vector<double> x_points;
 

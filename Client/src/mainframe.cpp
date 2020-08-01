@@ -53,8 +53,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	main_notebook->AddPage(system_page->get_all(), "System", true);
 
-	create_performance_page();
-	main_notebook->AddPage(performance_page, "Performance");
+	//create_performance_page();
+	performance_page = new Performance_Page(main_notebook, system);
+	main_notebook->AddPage(performance_page->get_all(), "Performance");
 
 	create_network_management_page();
 	main_notebook->AddPage(network_management_page, "Network Management");
@@ -70,24 +71,17 @@ void MainFrame::exit(wxCommandEvent &e){
 void MainFrame::real_time(wxTimerEvent &e){
 	time_plotting_points.push_back(t);
 	check_points();
-	std::thread ram(&MainFrame::update_ram, this);
+	std::thread ram(&MainFrame::update_ram, this);/*
 	std::thread cpu(&MainFrame::update_cpu, this);
-	std::thread network(&MainFrame::update_network, this);
+	std::thread network(&MainFrame::update_network, this);*/
 	std::thread proc(&MainFrame::update_process_list, this);
 	
 	if(ram.joinable()){
 		ram.join();
-		double ram_usage;
-		ram_usage = double(system->get_used_ram()) / double(system->get_total_ram()) * 100;
-		ram_plotting_points_Y.push_back(ram_usage);
-		if(main_notebook->GetSelection() == 1){
-			avalabile_ram_text->SetLabel("Avalabile RAM: " + to_string(system->get_avalabile_ram()));
-			used_ram_text->SetLabel("Used RAM: " + to_string(system->get_used_ram()));
-			ram_plot->SetData(time_plotting_points, ram_plotting_points_Y);
-			ram_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), -5, 105);
-		}
+		performance_page->update_data();
+		performance_page->update_gui();
 	}
-
+/*
 	if (cpu.joinable()) {
 		cpu.join();
 		size_t i;
@@ -128,7 +122,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 			network_plot_window->Fit(double(t - PLOT_SIZE / 2), double(t), min_y - 5, max_y + 5);
 		}
 	}
-	t +=0.5;
+	t +=0.5;*/
 
 	if (proc.joinable()) {
 		proc.join();
@@ -217,22 +211,9 @@ void MainFrame::sort_by_ram(wxCommandEvent &e){
 }
 
 void MainFrame::create_performance_page(){
-	performance_page = new wxPanel(main_notebook, wxID_ANY);
-	wxSizer *perfomance_sizer = new wxBoxSizer(wxVERTICAL);
-	performance_static = new wxStaticBox(performance_page, wxID_ANY,"");
-	performance_text= new wxStaticText(performance_page, wxID_ANY, "Performance");
-	performance_text->SetFont(Fonts::h1);
-	performance_text->SetForegroundColour(Colors::white);
+	/*
 
-	ram_title_text = new wxStaticText(performance_page, wxID_ANY, "RAM");
-	ram_title_text->SetFont(Fonts::h2);
-	ram_title_text->SetForegroundColour(Colors::white);
-	total_ram_text = new wxStaticText(performance_page, wxID_ANY, "Total RAM: " + to_string(system->get_total_ram()));
-	total_ram_text->SetForegroundColour(Colors::white);
-	used_ram_text = new wxStaticText(performance_page, wxID_ANY,"Used RAM: " + to_string(system->get_used_ram()));
-	used_ram_text->SetForegroundColour(Colors::white);
-	avalabile_ram_text = new wxStaticText(performance_page, wxID_ANY,"Avalabile RAM: " + to_string(system->get_avalabile_ram()));
-	avalabile_ram_text->SetForegroundColour(Colors::white);
+	
 	cpu_title_text = new wxStaticText(performance_page, wxID_ANY, "CPU usage");
 	cpu_title_text->SetFont(Fonts::h2);
 	cpu_title_text->SetForegroundColour(Colors::white);
@@ -339,7 +320,7 @@ void MainFrame::create_performance_page(){
 	performance_sbox->Add(network_plot_window,1, wxBOTTOM | wxEXPAND,50);
 
 	perfomance_sizer->Add(performance_sbox, 0, wxALL | wxEXPAND, 5);
-	performance_page->SetSizerAndFit(perfomance_sizer);
+	performance_page->SetSizerAndFit(perfomance_sizer);*/
 }
 
 void MainFrame::create_network_management_page(){

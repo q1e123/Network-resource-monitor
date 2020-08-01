@@ -18,6 +18,7 @@ using std::queue;
 
 #include "system-page.h"
 #include "process-sort-type.h"
+#include "performance-page.h"
 class MainFrame : public wxFrame{
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
@@ -65,7 +66,7 @@ private:
 	wxComboBox *interface_select_combo;
 
 	wxNotebook *main_notebook;
-	wxNotebookPage *performance_page, *network_management_page;
+	wxNotebookPage *network_management_page;
 	wxSizer *network_management_sizer;
 	
 	Client *client;
@@ -75,6 +76,7 @@ private:
 	std::map<std::string, User_Card> user_cards;
 
 	System_Page *system_page;
+	Performance_Page *performance_page;
 	
 	void send_update();
 	void check_points();

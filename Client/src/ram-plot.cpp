@@ -1,5 +1,8 @@
 #include "ram-plot.h"
 
+#include "colors.h"
+#include "fonts.h"
+
 Ram_Plot::Ram_Plot(){}
 Ram_Plot::Ram_Plot(wxNotebookPage *page) : Generic_Plot(page){
     plot = new mpFXYVector();

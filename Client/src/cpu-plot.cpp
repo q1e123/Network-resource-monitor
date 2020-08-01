@@ -36,8 +36,9 @@ void Cpu_Plot::shrink(){
 
 
 void Cpu_Plot::update_gui(){
-    for(auto plot : plots){
-        plot->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
+    for(size_t i = 0; i < plots.size(); ++i){
+        plots[i]->SetData(x_points, y_points[i]);
     }
+
     window->Fit(double(x_points.back() - PLOT_SIZE / 2), double(x_points.back()), -5, 105);
 }
