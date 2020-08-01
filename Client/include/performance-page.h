@@ -7,6 +7,7 @@
 #include <wx/notebook.h>
 
 #include "ram-performance.h"
+#include "cpu-performance.h"
 #include "system.h"
 
 class Performance_Page{
@@ -24,6 +25,7 @@ private:
     wxStaticBox *static_box;
     wxStaticText *header_text;
     Ram_Performance *ram_performance;
+    Cpu_Performance *cpu_performance;
     double t;
 
 };

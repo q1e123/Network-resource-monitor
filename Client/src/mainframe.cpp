@@ -70,14 +70,15 @@ void MainFrame::exit(wxCommandEvent &e){
 
 void MainFrame::real_time(wxTimerEvent &e){
 	time_plotting_points.push_back(t);
-	check_points();
-	std::thread ram(&MainFrame::update_ram, this);/*
+	//check_points();
+	std::thread ram(&MainFrame::update_ram, this);
 	std::thread cpu(&MainFrame::update_cpu, this);
-	std::thread network(&MainFrame::update_network, this);*/
+	//std::thread network(&MainFrame::update_network, this);
 	std::thread proc(&MainFrame::update_process_list, this);
 	
-	if(ram.joinable()){
+	if(ram.joinable() && cpu.joinable()){
 		ram.join();
+		cpu.join();
 		performance_page->update_data();
 		performance_page->update_gui();
 	}
