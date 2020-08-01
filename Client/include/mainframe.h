@@ -11,7 +11,6 @@
 #include <wx/notebook.h>
 #include "client.h"
 #include <mutex>
-#include "user-card.h"
 using std::vector;
 using std::queue;
 
@@ -19,6 +18,7 @@ using std::queue;
 #include "system-page.h"
 #include "process-sort-type.h"
 #include "performance-page.h"
+#include "network-management-page.h"
 class MainFrame : public wxFrame{
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
@@ -66,17 +66,16 @@ private:
 	wxComboBox *interface_select_combo;
 
 	wxNotebook *main_notebook;
-	wxNotebookPage *network_management_page;
 	wxSizer *network_management_sizer;
 	
 	Client *client;
 	std::thread worker;	
 	std::mutex mtx;
 
-	std::map<std::string, User_Card> user_cards;
 
 	System_Page *system_page;
 	Performance_Page *performance_page;
+	Network_Management_Page *network_management_page;
 	
 	void send_update();
 	void check_points();
@@ -84,11 +83,6 @@ private:
 	void update_cpu();
 	void update_network();
 	void update_process_list();
-	void init_colors();
-	void create_system_page();
-	void create_performance_page();
-	void create_network_management_page();
-	void update_user_cards();
 };
 
 #endif
