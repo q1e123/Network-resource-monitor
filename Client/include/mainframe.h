@@ -6,13 +6,10 @@
 #endif
 #include "system.h"
 #include <vector>
-#include <queue> 
 #include "mathplot.h"
 #include <wx/notebook.h>
 #include "client.h"
 #include <mutex>
-using std::vector;
-using std::queue;
 
 
 #include "system-page.h"
@@ -41,37 +38,14 @@ private:
 	System *system;
 	vector<wxColour> cpu_colors;
 	Process_Sort_Type process_sort_type;
-
-	wxStaticText *os_text, *total_ram_text, *avalabile_ram_text, *performance_text, *used_ram_text, *cpu_title_text, *ram_title_text, *network_text, *network_rx_text, *network_tx_text, *proc_cpu_text, *proc_name_text, *proc_pid_text, *proc_ram_text, *network_management_network_text;
-	wxTextCtrl *network_management_user_input, *network_management_port_input, *network_management_ip_input;
-	vector<wxStaticText*> cpu_usage_texts;
-	wxButton *proc_name_button, *proc_pid_button, *proc_cpu_button, *proc_ram_button, *network_management_connect_button;
-	wxPanel *main_panel;
-	wxBoxSizer *box,  *cpus_box, *rx_tx_box, *proc_sizer, *proc_cpu_sizer, *proc_name_sizer, *proc_pid_sizer, *proc_ram_sizer, *network_management_connect_box, *network_management_user_cards_box;
-	wxStaticBoxSizer *performance_sbox;
 	wxTimer *timer;
-	wxStaticBox *performance_static, *network_management_static;
-
-	mpWindow *cpu_plot_window, *ram_plot_window, *network_plot_window;
-	mpFXYVector *ram_plot, *network_rx_plot, *network_tx_plot;
-	vector<mpFXYVector*> cpu_plot;
-	mpScaleY *cpu_axis_Y, *ram_axis_Y, *network_axis_Y;
-
-	vector<double>time_plotting_points, ram_plotting_points_Y;
-	vector<vector<double>> cpu_plotting_points_Y; 
-	map<string, vector<double>> network_rx_plotting_points_Y,network_tx_plotting_points_Y;
-
-	wxScrolledWindow *process_list_panel;
-
-	wxComboBox *interface_select_combo;
-
+	wxPanel *main_panel;
+	wxBoxSizer *box_sizer;
 	wxNotebook *main_notebook;
-	wxSizer *network_management_sizer;
 	
 	Client *client;
 	std::thread worker;	
 	std::mutex mtx;
-
 
 	System_Page *system_page;
 	Performance_Page *performance_page;

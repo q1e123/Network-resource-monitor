@@ -2,7 +2,6 @@
 #ifndef WX_PRECOMP
 	#include <wx/wx.h>
 #endif 
-#include <iostream>
 #include <string>
 #include <ctime>
 #include <algorithm>
@@ -12,15 +11,9 @@
 #include "utils.h"
 #include "network-package.h"
 #include "recv-package.h"
-#include "colors.h"
-#include "fonts.h"
 
 #include "mainframe.h"
 
-#define PLOT_SIZE 60
-
-using std::to_string;
-using std::cout;
 BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_TIMER(TIMER, MainFrame::real_time)
 	EVT_BUTTON(BUTTON_RESTART, MainFrame::restart)
@@ -38,10 +31,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	system = new System();
 	process_sort_type = Process_Sort_Type::NAME;
 
-
 	main_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 	main_panel->SetBackgroundColour(Colors::gray);
-	box = new wxBoxSizer(wxVERTICAL);
+	box_sizer = new wxBoxSizer(wxVERTICAL);
 	timer = new wxTimer(this,TIMER);
 	timer->Start(1000);
 	
@@ -56,8 +48,8 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	network_management_page = new Network_Management_Page(main_notebook, system);
 	main_notebook->AddPage(network_management_page->get_all(), "Network Management");
 
-    box->Add(main_notebook, 1, wxEXPAND);
-    main_panel->SetSizer(box);
+    box_sizer->Add(main_notebook, 1, wxEXPAND);
+    main_panel->SetSizer(box_sizer);
 }
 
 void MainFrame::exit(wxCommandEvent &e){
@@ -65,29 +57,31 @@ void MainFrame::exit(wxCommandEvent &e){
 }
 
 void MainFrame::real_time(wxTimerEvent &e){
-	time_plotting_points.push_back(t);
-	std::thread ram(&MainFrame::update_ram, this);
-	std::thread cpu(&MainFrame::update_cpu, this);
-	std::thread network(&MainFrame::update_network, this);
-	std::thread proc(&MainFrame::update_process_list, this);
+	std::thread ram_worker(&MainFrame::update_ram, this);
+	std::thread cpu_worker(&MainFrame::update_cpu, this);
+	std::thread network_worker(&MainFrame::update_network, this);
+	std::thread process_list_worker(&MainFrame::update_process_list, this);
 	
-	if(ram.joinable() && cpu.joinable() && network.joinable()){
-		ram.join();
-		cpu.join();
-		network.join();
+	if(ram_worker.joinable() && cpu_worker.joinable() && network_worker.joinable()){
+		ram_worker.join();
+		cpu_worker.join();
+		network_worker.join();
 		performance_page->update_data();
-		performance_page->update_gui();
+		if(main_notebook->GetSelection() == 0){
+			performance_page->update_gui();	
+		}
 	}
 
-	if (proc.joinable()) {
-		proc.join();
+	if (process_list_worker.joinable()) {
+		process_list_worker.join();
 		if(main_notebook->GetSelection() == 0){
 			system_page->update_process_list(process_sort_type);
 		}
 	}
-	if(main_notebook->GetSelection() == 2){
-		if(connected){
-			send_update();
+	
+	if(connected){
+		send_update();
+		if(main_notebook->GetSelection() == 2){
 			std::string package = client->get_message_recived();
 			Recv_Package recv_package(package);
 			network_management_page->update_user_cards(recv_package);
@@ -153,9 +147,9 @@ void MainFrame::sort_by_ram(wxCommandEvent &e){
 }
 
 void MainFrame::send_update(){
-	std::string pkg;
-	pkg = Network_Package::send_package(system->serilize(), client->get_user());
-	client->send_message(pkg);
+	std::string package;
+	package = Network_Package::send_package(system->serilize(), client->get_user());
+	client->send_message(package);
 }
 void MainFrame::connect(wxCommandEvent &e){
 	connected = true;
