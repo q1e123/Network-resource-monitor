@@ -37,11 +37,11 @@ void Ram_Performance::update_data(double x){
     double ram_usage;
     ram_usage = double(system->get_used_ram()) / double(system->get_total_ram()) * 100;
     plot->add_point(x,ram_usage);
+	plot->shrink();
 }
 
 void Ram_Performance::update_gui(){
     avalabile_text->SetLabel("Avalabile RAM: " + std::to_string(system->get_avalabile_ram()));
     used_text->SetLabel("Used RAM: " + std::to_string(system->get_used_ram()));
-    plot->shrink();
     plot->update_gui();
 }

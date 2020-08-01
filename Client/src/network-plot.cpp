@@ -40,7 +40,6 @@ void Network_Plot::shrink(){
     }
 }
 
-
 void Network_Plot::update_gui(std::string interface){
     auto rx = y_points_rx[interface];
     auto tx = y_points_tx[interface];

@@ -28,17 +28,16 @@ void Cpu_Plot::add_point(double x, std::vector<double> y){
 void Cpu_Plot::shrink(){
     if(x_points.size()>PLOT_SIZE-1){
         x_points.erase(x_points.begin());
-        for(auto data_set : y_points){
-            data_set.erase(data_set.begin());
+
+        for(size_t i = 0; i < y_points.size(); ++i){
+            y_points[i].erase(y_points[i].begin());
         }
     }
 }
-
 
 void Cpu_Plot::update_gui(){
     for(size_t i = 0; i < plots.size(); ++i){
         plots[i]->SetData(x_points, y_points[i]);
     }
-
     window->Fit(double(x_points.back() - PLOT_SIZE / 2), double(x_points.back()), -5, 105);
 }
