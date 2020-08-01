@@ -8,6 +8,7 @@
 
 #include "ram-performance.h"
 #include "cpu-performance.h"
+#include "network-performance.h"
 #include "system.h"
 
 class Performance_Page{
@@ -26,6 +27,7 @@ private:
     wxStaticText *header_text;
     Ram_Performance *ram_performance;
     Cpu_Performance *cpu_performance;
+    Network_Performance *network_performance;
     double t;
 
 };

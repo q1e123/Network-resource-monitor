@@ -25,7 +25,7 @@ Cpu_Performance::Cpu_Performance(wxNotebookPage *page, System *system){
 		usage_box_sizer->Add(cpu_text, 0, wxALL | wxEXPAND, 15);
 	}
 	
-	box_sizer->Add(header_text, 0, wxALL | wxEXPAND, 15);
+	box_sizer->Add(header_text, 0, wxALL | wxEXPAND, 5);
 	box_sizer->Add(usage_box_sizer, 0, wxALL | wxEXPAND, 15);
 	box_sizer->Add(plot->get_all(), 0, wxALL | wxEXPAND, 15);
 

@@ -48,12 +48,10 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	
     main_notebook = new wxNotebook(main_panel, wxID_ANY);
 
-	//create_system_page();
-	system_page = new System_Page(main_notebook, system);
 
+	system_page = new System_Page(main_notebook, system);
 	main_notebook->AddPage(system_page->get_all(), "System", true);
 
-	//create_performance_page();
 	performance_page = new Performance_Page(main_notebook, system);
 	main_notebook->AddPage(performance_page->get_all(), "Performance");
 
@@ -73,12 +71,13 @@ void MainFrame::real_time(wxTimerEvent &e){
 	//check_points();
 	std::thread ram(&MainFrame::update_ram, this);
 	std::thread cpu(&MainFrame::update_cpu, this);
-	//std::thread network(&MainFrame::update_network, this);
+	std::thread network(&MainFrame::update_network, this);
 	std::thread proc(&MainFrame::update_process_list, this);
 	
-	if(ram.joinable() && cpu.joinable()){
+	if(ram.joinable() && cpu.joinable() && network.joinable()){
 		ram.join();
 		cpu.join();
+		network.join();
 		performance_page->update_data();
 		performance_page->update_gui();
 	}
@@ -214,11 +213,6 @@ void MainFrame::sort_by_ram(wxCommandEvent &e){
 void MainFrame::create_performance_page(){
 	/*
 
-	
-	cpu_title_text = new wxStaticText(performance_page, wxID_ANY, "CPU usage");
-	cpu_title_text->SetFont(Fonts::h2);
-	cpu_title_text->SetForegroundColour(Colors::white);
-	cpus_box = new wxBoxSizer(wxHORIZONTAL);
 	performance_sbox = new wxStaticBoxSizer(performance_static, wxVERTICAL);
 	network_text = new wxStaticText(performance_page, wxID_ANY, "Networking");
 	network_text->SetFont(Fonts::h2);
@@ -230,49 +224,6 @@ void MainFrame::create_performance_page(){
 	network_tx_text = new wxStaticText(performance_page, wxID_ANY, "Out: 0");
 	network_tx_text->SetFont(Fonts::normal_bold);
 	network_tx_text->SetForegroundColour(Colors::light_red);
-
-
-	size_t t=0;
-	for(auto item:system->get_cpu_usage()){
-		wxStaticText *cpu_text = new wxStaticText(performance_page, wxID_ANY,item.first + " " + to_string(item.second).substr(0, to_string(item.second).size()-4)+"%");
-		cpu_text->SetFont(Fonts::normal_bold);
-		cpu_text->SetForegroundColour(cpu_colors[t++]);
-		cpu_usage_texts.push_back(cpu_text);
-		cpus_box->Add(cpu_text, 0, wxALL | wxEXPAND, 15);
-		cpu_plotting_points_Y.push_back(vector<double>(2,0));
-	}
-	time_plotting_points.push_back(0);
-	time_plotting_points.push_back(0.5);
-
-	ram_plotting_points_Y = vector<double>(2,0);
-	ram_plot_window = new mpWindow(performance_page, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
-	ram_plot_window->SetColourTheme(Colors::dark_gray, Colors::light_green, Colors::light_red);
-	ram_axis_Y = new mpScaleY("",mpALIGN_LEFT);
-	ram_axis_Y->SetFont(Fonts::normal);
-	ram_plot = new mpFXYVector();
-	ram_plot->SetContinuity(true);
-	ram_plot->SetDrawOutsideMargins(false);
-	ram_plot->SetData(time_plotting_points, ram_plotting_points_Y);
-	ram_plot->SetPen(wxPen(Colors::light_blue, 3, wxPENSTYLE_SOLID));
-	ram_plot->SetDrawOutsideMargins(false);	
-	ram_plot_window->AddLayer(ram_axis_Y);
-	ram_plot_window->AddLayer(ram_plot);
-
-	cpu_plot_window = new mpWindow(performance_page, MP_WINDOW,wxPoint(0,0), wxSize(500,500),wxBORDER_SIMPLE); 
-	cpu_plot_window->SetColourTheme(Colors::dark_gray, Colors::light_green, Colors::light_red);
-	cpu_axis_Y = new mpScaleY("",mpALIGN_LEFT);
-	cpu_axis_Y->SetFont(Fonts::normal);
-	cpu_plot_window->AddLayer(cpu_axis_Y);
-	for(size_t i = 0; i < cpu_usage_texts.size();++i){
-		mpFXYVector *tmp = new mpFXYVector();
-		tmp->SetContinuity(true);
-		tmp->SetDrawOutsideMargins(false);
-		tmp->SetData(time_plotting_points, cpu_plotting_points_Y[i]);
-		tmp->SetPen(wxPen(cpu_colors[i], 3, wxPENSTYLE_SOLID));
-		tmp->SetDrawOutsideMargins(false);	
-		cpu_plot.push_back(tmp);
-		cpu_plot_window->AddLayer(cpu_plot[i]);
-	}
 
 	vector<wxString> choices;
 	for(auto inter : system->get_network_interfaces()){

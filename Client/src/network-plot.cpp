@@ -42,13 +42,11 @@ void Network_Plot::shrink(){
 
 
 void Network_Plot::update_gui(std::string interface){
-    if(interface != ""){
-        auto rx = y_points_rx[interface];
-        auto tx = y_points_tx[interface];
-        rx_plot->SetData(x_points, rx);
-        tx_plot->SetData(x_points, tx);
-        double min_y = std::min(*std::min_element(rx.begin(), rx.end()), *std::min_element(tx.begin(), tx.end()));
-        double max_y = std::max(*std::max_element(rx.begin(), rx.end()), *std::max_element(tx.begin(), tx.end()));
-        window->Fit(double(x_points.back()- PLOT_SIZE / 2), double(x_points.back()), min_y - 5, max_y + 5);
-    }
+    auto rx = y_points_rx[interface];
+    auto tx = y_points_tx[interface];
+    rx_plot->SetData(x_points, rx);
+    tx_plot->SetData(x_points, tx);
+    double min_y = std::min(*std::min_element(rx.begin(), rx.end()), *std::min_element(tx.begin(), tx.end()));
+    double max_y = std::max(*std::max_element(rx.begin(), rx.end()), *std::max_element(tx.begin(), tx.end()));
+    window->Fit(double(x_points.back()- PLOT_SIZE / 2), double(x_points.back()), min_y - 5, max_y + 5);
 }
