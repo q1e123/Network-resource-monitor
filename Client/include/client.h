@@ -55,7 +55,7 @@ private:
 	SOCKET server_sock;
 	int server_addr_size;
 	int port_number;
-	char* username;
+	std::string username;
 	char *ip[INET_ADDRSTRLEN];
 };
 

@@ -4,7 +4,7 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 	if (socket_init() != 0) {
 		std::cout << "socket init failed\n";
 	}
-	username = const_cast<char*>(user.c_str());
+	username = user;
 	port_number = sock;
 	client_sock = socket(AF_INET, SOCK_STREAM, 0); 
 	memset(server_addr.sin_zero, '\0', sizeof(server_addr.sin_zero));
@@ -33,7 +33,7 @@ void Client::connect_to_server(){
 		message_recived_mutex.unlock();
 		memset(msg, '\0', sizeof(msg));
 	}
-	len = send(client_sock, username, strlen(username), NULL);
+	len = send(client_sock, username.c_str(), strlen(username.c_str()), NULL);
 	if (len < 0) {
 		std::cerr << "initial identity message not sent\n";
 		exit(1);
