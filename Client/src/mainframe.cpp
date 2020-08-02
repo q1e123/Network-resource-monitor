@@ -62,20 +62,20 @@ void MainFrame::real_time(wxTimerEvent &e){
 	std::thread network_worker(&MainFrame::update_network, this);
 	std::thread process_list_worker(&MainFrame::update_process_list, this);
 	
+	if (process_list_worker.joinable()) {
+		process_list_worker.join();
+		if(main_notebook->GetSelection() == 0){
+			system_page->update_process_list(process_sort_type);
+		}
+	}
+
 	if(ram_worker.joinable() && cpu_worker.joinable() && network_worker.joinable()){
 		ram_worker.join();
 		cpu_worker.join();
 		network_worker.join();
 		performance_page->update_data();
-		if(main_notebook->GetSelection() == 0){
+		if(main_notebook->GetSelection() == 1){
 			performance_page->update_gui();	
-		}
-	}
-
-	if (process_list_worker.joinable()) {
-		process_list_worker.join();
-		if(main_notebook->GetSelection() == 0){
-			system_page->update_process_list(process_sort_type);
 		}
 	}
 	
