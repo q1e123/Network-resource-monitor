@@ -35,7 +35,6 @@ public:
 	Server(std::string name, size_t port = DEFAULT_PORT);
 	void start();
 private:
-	size_t idx;
 	std::string name;
 
 	std::thread send_worker;
@@ -46,11 +45,10 @@ private:
 	std::map<size_t, std::thread> workers;
 	std::map<std::string, std::string> systems;
 
-	struct sockaddr_in my_addr, their_addr;
-	SOCKET my_sock;
-	SOCKET their_sock;
-	socklen_t their_addr_size;
-	int portno;
+	struct sockaddr_in server_addr, client_addr;
+	SOCKET server_sock;
+	socklen_t client_addr_size;
+	int port_number;
 	char msg[500];
 	int len;
 	Client_Info cl;

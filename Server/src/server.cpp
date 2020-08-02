@@ -15,24 +15,24 @@ Server::Server(std::string name, size_t sock) {
 
 	this->name = name;
 	disc_users = "d;";
-	portno = sock;
-	my_sock = socket(AF_INET, SOCK_STREAM, 0);
-	memset(my_addr.sin_zero, '\0', sizeof(my_addr.sin_zero));
-	my_addr.sin_family = AF_INET;
-	my_addr.sin_port = htons(portno);
+	port_number = sock;
+	server_sock = socket(AF_INET, SOCK_STREAM, 0);
+	memset(server_addr.sin_zero, '\0', sizeof(server_addr.sin_zero));
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(port_number);
 #ifdef __linux__
-	my_addr.sin_addr.s_addr = inet_addr(LOOPBACK_ADDR);
+	server_addr.sin_addr.s_addr = inet_addr(LOOPBACK_ADDR);
 #elif defined _WIN32 || defined _WIN64
-	InetPton(AF_INET, (PCWSTR)LOOPBACK_ADDR, &my_addr.sin_addr.s_addr);
+	InetPton(AF_INET, (PCWSTR)LOOPBACK_ADDR, &server_addr.sin_addr.s_addr);
 #endif
-	their_addr_size = sizeof(their_addr);
+	client_addr_size = sizeof(client_addr);
 
-	if (bind(my_sock, (struct sockaddr*)&my_addr, sizeof(my_addr)) != 0) {
+	if (bind(server_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
 		std::cerr << "binding uunsuccessful\n";
 		exit(1);
 	}
 
-	if (listen(my_sock, 5) != 0) {
+	if (listen(server_sock, 5) != 0) {
 		std::cerr << "listening unsuccessful\n";
 		exit(1);
 	}
@@ -41,16 +41,17 @@ Server::Server(std::string name, size_t sock) {
 void Server::start() {
 	send_worker = std::thread(&Server::send_to_all, this);
 	while (1) {
-		their_sock = accept(my_sock, (struct sockaddr*)&their_addr, &their_addr_size);
-		if (!socket_check(their_sock)) {
+		SOCKET client_sock;
+		client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &client_addr_size);
+		if (!socket_check(client_sock)) {
 			std::cerr << "accept unsuccessful";
-			socket_close(their_sock);
+			socket_close(client_sock);
 			socket_quit();
 			break;
 		}
 		mtx.lock();
-		inet_ntop(AF_INET, (struct sockaddr*)&their_addr, ip, INET_ADDRSTRLEN);
-		Client_Info client(their_sock, ip);
+		inet_ntop(AF_INET, (struct sockaddr*)&client_addr, ip, INET_ADDRSTRLEN);
+		Client_Info client(client_sock, ip);
 		const char* sv_name = this->name.c_str();
 		if (send(client.get_socket_number(), sv_name, strlen(sv_name), 0) < 0) {
 			std::cerr << "sending error\n";
@@ -65,7 +66,7 @@ void Server::start() {
 		std::cout << ip << " connected\n";
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
-		workers[their_sock] = std::move(worker);
+		workers[client_sock] = std::move(worker);
 		mtx.unlock();
 	}
 	for (auto client : clients) {
@@ -115,8 +116,6 @@ void Server::send_msg(char* msg, int curr) {
 void Server::recv_msg(Client_Info client) {
 	char msg[500], username[100];
 	int len;
-	int i;
-	int j;
 
 	len = recv(client.get_socket_number(), username, 500, 0);
 	username[len] = '\0';
