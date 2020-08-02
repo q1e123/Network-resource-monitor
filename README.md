@@ -29,7 +29,7 @@ Se poate compila folosind make.
 
 ```
 make all
-./build/Siemens
+./bin/client
 ```
 ## Windows
 Se poate compila folosind Visual Studio si dupa se poate folosi executabilul generat. [Utilizare wxWidgets in VS](https://www.youtube.com/watch?v=sRhoZcNpMb4)
@@ -42,9 +42,9 @@ Se poate compila folosind Visual Studio si dupa se poate folosi executabilul gen
 Se compileaza programul in mod asemanator si dupa se foloseste executabilul dintr-un terminal:
 ### Linux
 ```
-./build/Server nume_server port
+./bin/server nume_server port
 ```
 ### Windows
 ```
-Server.exe nume_server port
+server.exe nume_server port
 ```
