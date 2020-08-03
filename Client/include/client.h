@@ -24,6 +24,8 @@ typedef int SOCKET;
 #include <iostream>
 #include <string>
 
+#include "logger.h"
+
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
 #define MESSAGE_SIZE 500
@@ -57,6 +59,8 @@ private:
 	int port_number;
 	std::string username;
 	char *ip[INET_ADDRSTRLEN];
+
+	Logger *logger;
 };
 
 #endif

@@ -1,8 +1,9 @@
 #include "client.h"
 
 Client::Client(std::string user, std::string server_ip, size_t sock) {
+	logger = new Logger("network-logs.txt");
 	if (socket_init() != 0) {
-		std::cout << "socket init failed\n";
+		logger->add_error("socket init failed");
 	}
 	username = user;
 	port_number = sock;
@@ -15,16 +16,16 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 
 void Client::connect_to_server(){
 	if (connect(client_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
-		std::cerr << "connection not established\n";
-		exit(1);
+		logger->add_error("connection not established");
 	}
 
-	std::cout << "connected";
+	logger->add_network("RECV", "connection successful", "server");
 
 	char msg[MESSAGE_SIZE];
 	int len;
 	if ((len = recv(client_sock, msg, MESSAGE_SIZE, 0)) > 0) {
 		msg[len] = '\0';
+		logger->add_network("RECV", msg, "server");
 		server_name_mutex.lock();
 		server_name = msg;
 		server_name_mutex.unlock();
@@ -35,8 +36,7 @@ void Client::connect_to_server(){
 	}
 	len = send(client_sock, username.c_str(), strlen(username.c_str()), NULL);
 	if (len < 0) {
-		std::cerr << "initial identity message not sent\n";
-		exit(1);
+		logger->add_error("initial identity message not sent");
 	}
 }
 
@@ -49,6 +49,7 @@ void Client::recive_message() {
 	int len;
 	while ((len = recv(client_sock, message, MESSAGE_SIZE, 0)) > 0) {
 		message[len] = '\0';
+		logger->add_network("RECV", message, "server");
 		message_recived_mutex.lock();
 		message_recived = message;
 		message_recived_mutex.unlock();
@@ -59,6 +60,7 @@ void Client::recive_message() {
 Client::Client() {
 }
 Client::~Client() {
+	delete logger;
 	if(reciver.joinable()){
 		reciver.join();
 	}
@@ -71,7 +73,9 @@ void Client::send_message(std::string message) {
 	STRCAT(package, message.c_str());
 	int len = send(client_sock, package, strlen(package), NULL);
 	if (len < 0) {
-		std::cerr << "message not sent\n";
+		logger->add_error("message not sent");
+	}else{
+		logger->add_network("SEND", package, "server");
 	}
 }
 

@@ -26,6 +26,7 @@ typedef int SOCKET;
 #include <sstream>
 
 #include "client-info.h"
+#include "logger.h"
 
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
@@ -53,6 +54,8 @@ private:
 	int len;
 	Client_Info cl;
 	char ip[INET_ADDRSTRLEN];
+
+	Logger *logger;
 
 	int socket_init();
 	int socket_quit();

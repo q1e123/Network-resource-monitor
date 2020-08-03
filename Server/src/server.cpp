@@ -6,10 +6,10 @@
 #include "server.h"
 
 Server::Server(std::string name, size_t sock) {
-
+	logger = new Logger("server-logs.txt");
 	int res = socket_init();
 	if (res != 0) {
-		std::cerr << "socket init error\m";
+		logger->add_error("socket init error");
 		exit(0);
 	}
 
@@ -28,12 +28,12 @@ Server::Server(std::string name, size_t sock) {
 	client_addr_size = sizeof(client_addr);
 
 	if (bind(server_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
-		std::cerr << "binding uunsuccessful\n";
+		logger->add_error("binding uunsuccessful");
 		exit(1);
 	}
 
 	if (listen(server_sock, 5) != 0) {
-		std::cerr << "listening unsuccessful\n";
+		logger->add_error("listening unsuccessful");
 		exit(1);
 	}
 }
@@ -44,7 +44,7 @@ void Server::start() {
 		SOCKET client_sock;
 		client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &client_addr_size);
 		if (!socket_check(client_sock)) {
-			std::cerr << "accept unsuccessful";
+			logger->add_error("accept unsuccessful");
 			socket_close(client_sock);
 			socket_quit();
 			break;
@@ -54,7 +54,7 @@ void Server::start() {
 		Client_Info client(client_sock, ip);
 		const char* sv_name = this->name.c_str();
 		if (send(client.get_socket_number(), sv_name, strlen(sv_name), 0) < 0) {
-			std::cerr << "sending error\n";
+			logger->add_error("sending error");
 			continue;
 		}
 		char* msg = (char*)"";
@@ -63,7 +63,7 @@ void Server::start() {
 			client.set_user(msg);
 			memset(msg, '\0', sizeof(msg));
 		}
-		std::cout << ip << " connected\n";
+		logger->add_network("CONN", "successful", ip);
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
 		workers[client_sock] = std::move(worker);
@@ -92,8 +92,10 @@ void Server::send_to_all() {
 		char* c_pkg = const_cast<char*>(pkg.c_str());
 		for (auto client : clients) {
 			if (send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
-				std::cerr << "sending error\n";
+				logger->add_error("sending error");
 				continue;
+			}else{
+				logger->add_network("SEND", pkg, client.get_ip());
 			}
 		}
 		mtx.unlock();
@@ -105,7 +107,7 @@ void Server::send_msg(char* msg, int curr) {
 	for (auto client : clients) {
 		if (client.get_socket_number() != curr) {
 			if (send(client.get_socket_number(), msg, strlen(msg), 0) < 0) {
-				std::cerr << "sending error\n";
+				logger->add_error("sending error");
 				continue;
 			}
 		}
@@ -122,11 +124,12 @@ void Server::recv_msg(Client_Info client) {
 
 	while ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
 		msg[len] = '\0';
+		logger->add_network("RECV", msg, client.get_ip());
 		run_cmd(msg);
 		memset(msg, '\0', sizeof(msg));
 	}
+	logger->add_network("CONN", "disconnection", client.get_ip());
 	mtx.lock();
-	std::cout << client.get_ip() << " dissconnected\n";
 	disc_users += client.get_user() + ";";
 	remove_user(client.get_user());
 	mtx.unlock();
