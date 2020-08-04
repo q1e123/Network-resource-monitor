@@ -13,6 +13,9 @@ Administrator should be able to track one single system in real time.
 ### Compare a system with a previous state
 Administrator should be able to see the diferences between the current and the previus states of the machine (Maybe use the data from the plots)
 
+### Add more clients/ promote admins
+Administrators should be able to promote normal users to admins
+
 ## Get more data
 
 ### Collect
@@ -24,6 +27,7 @@ The client should be able to also collect:
 * environment variables
 * Hardware and software errors
 * IP (IPv4 and IPv6)
+
 ### Checks
 The client should be able to check:
 * if a software is installed
