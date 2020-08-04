@@ -43,6 +43,9 @@ Server should do sanity checks for the received data.
 
 ## Saving data
 Server should save the recived data. (maybe use some ini files?)
+Every client should have it's own folder with:
+* general data (if it's an admin or not)
+* reports (bigger files) 
 
 ## Request data from a client
 Server should be able to request a report from a client.
@@ -50,7 +53,7 @@ Server should be able to request a report from a client.
 # Networking
 ## Login
 The mechanism for login should be:  
-1. Client sends the user (maybe also a password)
+1. Client sends the user (maybe also a password OR MAC address)
 1. Server responds with:
     * OK if login is successful
     * OK_ADMIN if the user is also an admin
