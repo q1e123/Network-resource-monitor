@@ -33,8 +33,6 @@ The client should be able to check:
 You should be able to schedule when to send some reports to the server
 
 # Server
-## 1 to 1 communication
-Every client should be able to talk with the server without sending messages to the other clients
 
 ## Sanity checks
 Server should do sanity checks for the received data.
