@@ -102,17 +102,17 @@ void Server::send_to_all() {
 		std::this_thread::sleep_for(WAIT_PERIOD);
 	}
 }
-void Server::send_msg(char* msg, int curr) {
-	mtx.lock();
-	for (auto client : clients) {
-		if (client.get_socket_number() != curr) {
-			if (send(client.get_socket_number(), msg, strlen(msg), 0) < 0) {
-				logger->add_error("sending error");
-				continue;
-			}
+
+void Server::send_to(Client_Info client, std::string message) {
+		mtx.lock();
+		char* c_pkg = const_cast<char*>(message.c_str());
+		if (send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
+			logger->add_error("sending error");
+		}else{
+			logger->add_network("SEND", pkg, client.get_ip());
 		}
+		mtx.unlock();
 	}
-	mtx.unlock();
 }
 
 void Server::recv_msg(Client_Info client) {

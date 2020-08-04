@@ -63,7 +63,7 @@ private:
 	int socket_close(SOCKET socket);
 
 	void send_to_all();
-	void send_msg(char* msg, int curr);
+	void send_to(Client_Info client, std::string message);
 	void recv_msg(Client_Info client);
 	void remove_user(std::string user);
 
