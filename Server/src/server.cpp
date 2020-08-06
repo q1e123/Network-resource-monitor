@@ -39,7 +39,6 @@ Server::Server(std::string name, size_t sock) {
 }
 
 void Server::start() {
-	send_worker = std::thread(&Server::send_to_all, this);
 	while (1) {
 		SOCKET client_sock;
 		client_sock = accept(server_sock, (struct sockaddr*)&client_addr, &client_addr_size);
@@ -80,39 +79,36 @@ void Server::start() {
 }
 
 void Server::send_to_all() {
-	while (1) {
-		mtx.lock();
-		std::string pkg = "";
-		pkg += "s;";
-		for (auto item : systems) {
-			pkg += item.first + ";" + item.second + "|";
-		}
-		pkg += "@" + disc_users;
-		disc_users = "d;";
-		char* c_pkg = const_cast<char*>(pkg.c_str());
-		for (auto client : clients) {
-			if (send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
-				logger->add_error("sending error");
-				continue;
-			}else{
-				logger->add_network("SEND", pkg, client.get_ip());
-			}
-		}
-		mtx.unlock();
-		std::this_thread::sleep_for(WAIT_PERIOD);
+	mtx.lock();
+	std::string pkg = "";
+	pkg += "s;";
+	for (auto item : systems) {
+		pkg += item.first + ";" + item.second + "|";
 	}
-}
-
-void Server::send_to(Client_Info client, std::string message) {
-		mtx.lock();
-		char* c_pkg = const_cast<char*>(message.c_str());
+	pkg += "@" + disc_users;
+	disc_users = "d;";
+	char* c_pkg = const_cast<char*>(pkg.c_str());
+	for (auto client : clients) {
 		if (send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
 			logger->add_error("sending error");
+			continue;
 		}else{
 			logger->add_network("SEND", pkg, client.get_ip());
 		}
-		mtx.unlock();
 	}
+	mtx.unlock();
+	std::this_thread::sleep_for(WAIT_PERIOD);
+}
+
+void Server::send_to(Client_Info client, std::string message) {
+	mtx.lock();
+	char* c_pkg = const_cast<char*>(message.c_str());
+	if (send(client.get_socket_number(), c_pkg, strlen(c_pkg), 0) < 0) {
+		logger->add_error("sending error");
+	}else{
+		logger->add_network("SEND", message, client.get_ip());
+	}
+	mtx.unlock();
 }
 
 void Server::recv_msg(Client_Info client) {
