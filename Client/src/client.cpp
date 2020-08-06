@@ -33,11 +33,21 @@ void Client::connect_to_server(){
 		message_recived = msg;
 		message_recived_mutex.unlock();
 		memset(msg, '\0', sizeof(msg));
+
 	}
-	len = send(client_sock, username.c_str(), strlen(username.c_str()), NULL);
-	if (len < 0) {
-		logger->add_error("initial identity message not sent");
+	for (size_t i = 0; i < 5; i++)
+	{
+		len = send(client_sock, username.c_str(), strlen(username.c_str()), NULL);
+		if (len < 0) {
+			logger->add_error("initial identity message not sent");
+		}else
+		{
+			logger->add_network("SENT", username.c_str(), "server");
+		}
 	}
+	
+	
+	
 }
 
 void Client::start_reciver(){

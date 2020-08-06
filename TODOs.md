@@ -50,6 +50,10 @@ Every client should have it's own folder with:
 Server should be able to request a report from a client.
 
 # Networking
+
+## Create a protocol for networking
+Create a protocol for the app with checks.
+
 ## Login
 The mechanism for login should be:  
 1. Client sends the user (maybe also a password OR MAC address)
