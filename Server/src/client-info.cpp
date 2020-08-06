@@ -1,4 +1,5 @@
 #include "client-info.h"
+Client_Info::Client_Info(){}
 
 Client_Info::Client_Info(size_t socket_number, char ip[INET_ADDRSTRLEN]) {
 	this->socket_number = socket_number;
@@ -22,4 +23,6 @@ void Client_Info::set_user(std::string user) {
 	this->user = user;
 }
 
-Client_Info::Client_Info(){}
+bool Client_Info::is_admin(){
+	return admin;
+}

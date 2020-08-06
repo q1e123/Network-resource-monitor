@@ -24,6 +24,8 @@ public:
 	void set_user(std::string user);
 	std::string get_user();
 	char* get_ip();
+	bool is_admin();
+	bool admin;
 private:
 	SOCKET socket_number;
 	std::string user;

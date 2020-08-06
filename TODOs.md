@@ -44,7 +44,6 @@ Server should do sanity checks for the received data.
 ## Saving data
 Server should save the recived data. (maybe use some ini files?)
 Every client should have it's own folder with:
-* general data (if it's an admin or not)
 * reports (bigger files) 
 
 ## Request data from a client
@@ -56,7 +55,7 @@ The mechanism for login should be:
 1. Client sends the user (maybe also a password OR MAC address)
 1. Server responds with:
     * OK if login is successful
-    * OK_ADMIN if the user is also an admin
+    * OK_ADMIN if the user is also an admin (maybe ini?)
     * RETRY if login wasn't successful
 1. If login was not successful the GUI should show a messsage and the user should be able to try again to login
 1. If login was successful the GUI should change show the network (name, maybe other users without data)

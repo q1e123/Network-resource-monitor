@@ -80,7 +80,6 @@ void MainFrame::real_time(wxTimerEvent &e){
 	}
 	
 	if(connected){
-		send_update();
 		if(main_notebook->GetSelection() == 2){
 			std::string package = client->get_message_recived();
 			Recv_Package recv_package(package);

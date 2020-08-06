@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(PROJECT_NAME "server")
-project(${PROJECT_NAME})
+add_definitions(-DUNICODE -D_UNICODE)
+project(server)
 
 find_package( Threads REQUIRED )
 
-include_directories(include)
+include_directories(include
+                    ../Third-party/simpleini
+)
+
 file(GLOB SOURCES "src/*.cpp")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
