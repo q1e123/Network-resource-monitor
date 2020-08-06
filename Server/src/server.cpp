@@ -56,8 +56,12 @@ void Server::start() {
 			logger->add_error("sending error");
 			continue;
 		}
-//		char* msg = (char*)"";
-
+		char* msg = (char*)"";
+		if ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
+			msg[len] = '\0';
+			client.set_user(msg);
+			memset(msg, '\0', sizeof(msg));
+		}
 		logger->add_network("CONN", "successful", ip);
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
@@ -112,7 +116,6 @@ void Server::recv_msg(Client_Info client) {
 	int len;
 
 	len = recv(client.get_socket_number(), username, 500, 0);
-	logger->add_network("RECV", msg, client.get_user());
 	username[len] = '\0';
 
 	while ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
