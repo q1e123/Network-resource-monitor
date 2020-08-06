@@ -1,50 +1,71 @@
-# Proiect pentru practica
-Acesta este repository-ul pentru proiectul de la practica.
+# Network resource monitoring tool
+This is a cross-platform tool that can help you monitor a network's resources.  
+Project made during Siemens internship.
 
-# Biblioteci
+# 3rd party libraries
 * [wxWidgets 3.1.3](https://www.wxwidgets.org/downloads/)
-* wxMathPlot (este inclusa in proiect pentru ca a trebuit sa fac mici modificari pentru compatibilitate)
+* wxMathPlot (it's included with the project since I needed to do small changes to solve compatibility issues)
+* SimpleIni (it's included with the project)
 
-# Implementari
-* Detectarea sistemului de operare
-* Detectare ram (total, folositi, liberi)
-* Detectarea si reprezentarea grafica in timp real a utilizarii procesorului, a memoriei ram si a unei interfete de retea
-* Detectarea rx si tx a unei interfete de retea 
-* Listarea proceselor impreuna cu PID, consum CPU si RAM
-* Transmiterea datelor prin retele folosind socket-uri folosind un server pe post de centralizator (aplicatia care ruelaza pe server nu are GUI)
-	* Utilizare fiecare CPU
-	* Ram
-		* Total
-		* Folosit
-		* Valabil
+# Features
+* OS detection
+* RAM detection (total, avalabile, used)
+* CPU usage detection (all cores)
+* rx and tx detection for a network interface
+* Real time plotting of CPU, RAM and network usage
+* Running processes detection with their PID and CPU and RAM usage 
+* Transmition of data through network using sockets
+	* CPU usage
+	* RAM
+		* total
+		* used
+		* avalabile
 	* OS
 	* User
-* Afisarea acestor date pe fiecare client conectat
+* Displaying this data on the client GUI
 
-# Rulare
-## Client
-Se compileaza programul si dupa se foloseste executabilul.
+## New features
+For a list with features that I am currently working on you can check [TODOs file](TODOs.md)
+
+# Compilation
+You can either compile client and server at the same time or each one at a time by using their CMake files.
+
+## Prerequisites
+You need to have installed wxWidgets library.  
+[Compioling wxWidgets](https://wiki.wxwidgets.org/Compiling_and_getting_started)  
+[How to setup wxWidgets in Visual Studio](https://www.youtube.com/watch?v=sRhoZcNpMb4)  
+
 ## Linux
-Se poate compila folosind make.
-
+You can use the make to compile it.
 ```
 make all
-./bin/client
+```
+
+If you don't want to use that Makefile you can also do:
+```
+mkdir build
+cd build
+cmake ..
+make all
 ```
 ## Windows
-Se poate compila folosind Visual Studio si dupa se poate folosi executabilul generat. [Utilizare wxWidgets in VS](https://www.youtube.com/watch?v=sRhoZcNpMb4)
+You can compiling using Visual Studio.
 
-**Declarati urmatoarele definitii pentru preprocese din *Project settings*:**
-* **_WINSOCK_DEPRECATED_NO_WARNINGS** (pentru folosirea functilor care sunt asemanatoare cu functiile unix)
-* **_WINSOCKAPI** (pentru folosirea winsock2)
+**Define next in *Project settings*:**
+* **_WINSOCK_DEPRECATED_NO_WARNINGS** (using the functions that are alike the ones in unix)
+* **_WINSOCKAPI** (using winsock2)
+
+# Usage
+## Client
+### Linux and Windows
+Use the binary file that resulted from compilation
 
 ## Server
-Se compileaza programul in mod asemanator si dupa se foloseste executabilul dintr-un terminal:
 ### Linux
 ```
-./bin/server nume_server port
+./bin/server <instance_name> <port>
 ```
 ### Windows
 ```
-server.exe nume_server port
+server.exe <instance_name> <port>
 ```
