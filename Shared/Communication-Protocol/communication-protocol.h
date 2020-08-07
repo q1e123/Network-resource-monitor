@@ -28,30 +28,34 @@ namespace Communication_Protocol{
         right = BUFFER_SIZE;
 
         send(socket, &message_size, sizeof(message_size), 0);
+        logger->add_network("SEND", std::to_string(message_size), "<RECIVER>");
 
         while (left < message_size){
             std::string msg = message.substr(left, right);
             char *msg_c =  const_cast<char*>(msg.c_str());
-            send(socket, &message_size, sizeof(msg_c), 0);
-            logger->add_network("SEND", msg, "<RECIVER>");
+            send(socket, msg_c, sizeof(msg_c), 0);
+            logger->add_network("SEND", msg_c, "<RECIVER>");
             left = right;
             right += BUFFER_SIZE;
         } 
     }
 
-    std::string recv_message(SOCKET socket){
-        std::string message;
+    std::string recv_message(SOCKET socket, Logger *logger){
+        std::string message = "";
         size_t left, right;
         left = 0;
 
         size_t message_size;
         recv(socket, &message_size, sizeof(message_size), 0);
+        logger->add_network("RECV", std::to_string(message_size), "<SENDER>");
 
         while (left < message_size){
             std::string msg;
-            char *msg_c[BUFFER_SIZE]);
+            char msg_c[BUFFER_SIZE];
             size_t len = recv(socket, &msg_c, sizeof(msg_c), 0);
-            msg_c[len] = "\0";
+            msg_c[len] = '\0';
+            message += std::string(msg_c);
+            logger->add_network("RECV", msg_c, "<SENDER>");
             left += BUFFER_SIZE;
         } 
     }

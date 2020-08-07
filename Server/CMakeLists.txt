@@ -8,6 +8,8 @@ find_package( Threads REQUIRED )
 include_directories(include
                     ../Third-party/SimpleIni
                     ../Shared/Logger
+                    ../Shared/Communication-Protocol
+
 )
 
 file(GLOB SOURCES "src/*.cpp")

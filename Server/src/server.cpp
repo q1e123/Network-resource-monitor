@@ -1,6 +1,8 @@
 #include <iostream>
 #include <chrono>
 
+#include "communication-protocol.h"
+
 #define WAIT_PERIOD std::chrono::milliseconds(500)
 
 #include "server.h"
@@ -51,17 +53,9 @@ void Server::start() {
 		mtx.lock();
 		inet_ntop(AF_INET, (struct sockaddr*)&client_addr, ip, INET_ADDRSTRLEN);
 		Client_Info client(client_sock, ip);
-		const char* sv_name = this->name.c_str();
-		if (send(client.get_socket_number(), sv_name, strlen(sv_name), 0) < 0) {
-			logger->add_error("sending error");
-			continue;
-		}
-		char* msg = (char*)"";
-		if ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
-			msg[len] = '\0';
-			client.set_user(msg);
-			memset(msg, '\0', sizeof(msg));
-		}
+		Communication_Protocol::send_message(client_sock, name, logger);
+		std::string user = Communication_Protocol::recv_message(client_sock, logger);
+		client.set_user(user);
 		logger->add_network("CONN", "successful", ip);
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
@@ -112,17 +106,10 @@ void Server::send_to(Client_Info client, std::string message) {
 }
 
 void Server::recv_msg(Client_Info client) {
-	char msg[500], username[100];
-	int len;
-
-	len = recv(client.get_socket_number(), username, 500, 0);
-	username[len] = '\0';
-
-	while ((len = recv(client.get_socket_number(), msg, 500, 0)) > 0) {
-		msg[len] = '\0';
-		logger->add_network("RECV", msg, client.get_ip());
-		run_cmd(msg);
-		memset(msg, '\0', sizeof(msg));
+	while (true) {
+		std::string package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+		logger->add_network("RECV", package, client.get_ip());
+		run_cmd(package);
 	}
 	logger->add_network("CONN", "disconnection", client.get_ip());
 	mtx.lock();

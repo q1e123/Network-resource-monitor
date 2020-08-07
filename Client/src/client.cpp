@@ -1,5 +1,7 @@
 #include "client.h"
 
+#include "communication-protocol.h"
+
 Client::Client(std::string user, std::string server_ip, size_t sock) {
 	logger = new Logger("network-logs.txt");
 	if (socket_init() != 0) {
@@ -20,24 +22,9 @@ void Client::connect_to_server(){
 	}
 
 	logger->add_network("RECV", "connection successful", "server");
-
-	char msg[MESSAGE_SIZE];
-	int len;
-	if ((len = recv(client_sock, msg, MESSAGE_SIZE, 0)) > 0) {
-		msg[len] = '\0';
-		logger->add_network("RECV", msg, "server");
-		server_name_mutex.lock();
-		server_name = msg;
-		server_name_mutex.unlock();
-		message_recived_mutex.lock();
-		message_recived = msg;
-		message_recived_mutex.unlock();
-		memset(msg, '\0', sizeof(msg));
-	}
-	len = send(client_sock, username.c_str(), strlen(username.c_str()), NULL);
-	if (len < 0) {
-		logger->add_error("initial identity message not sent");
-	}
+	server_name = Communication_Protocol::recv_message(client_sock, logger);
+	Communication_Protocol::send_message(client_sock, username, logger);
+	
 }
 
 void Client::start_reciver(){
@@ -47,13 +34,9 @@ void Client::start_reciver(){
 void Client::recive_message() {
 	char message[MESSAGE_SIZE];
 	int len;
-	while ((len = recv(client_sock, message, MESSAGE_SIZE, 0)) > 0) {
-		message[len] = '\0';
-		logger->add_network("RECV", message, "server");
-		message_recived_mutex.lock();
-		message_recived = message;
-		message_recived_mutex.unlock();
-		memset(message, '\0', sizeof(message));
+
+	while (true){
+		std::string package = Communication_Protocol::recv_message(client_sock, logger);
 	}
 }
 

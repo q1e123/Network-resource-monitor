@@ -8,6 +8,7 @@ include(${wxWidgets_USE_FILE})
 
 include_directories(include
                     ../Shared/Logger
+                    ../Shared/Communication-Protocol
 )
 file(GLOB SOURCES "src/*.cpp")
 
