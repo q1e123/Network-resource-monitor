@@ -6,7 +6,8 @@ project(server)
 find_package( Threads REQUIRED )
 
 include_directories(include
-                    ../Third-party/simpleini
+                    ../Third-party/SimpleIni
+                    ../Shared/Logger
 )
 
 file(GLOB SOURCES "src/*.cpp")

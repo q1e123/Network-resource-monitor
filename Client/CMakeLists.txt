@@ -6,7 +6,9 @@ project(${PROJECT_NAME})
 find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 
-include_directories(include)
+include_directories(include
+                    ../Shared/Logger
+)
 file(GLOB SOURCES "src/*.cpp")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
