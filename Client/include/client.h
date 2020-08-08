@@ -37,21 +37,21 @@ public:
 	void send_message(std::string message);
 	void connect_to_server();
 	void start_reciver();
+
 	std::string message_recived;
 	~Client();
 	std::string get_message_recived();
 	std::string get_server_name();
 	std::string get_user();
 private:
+	std::string server_name;
 	void recive_message();
-
 	int socket_init();
 	int socket_quit();
 	bool socket_check(SOCKET socket);
 	int socket_close(SOCKET socket);
 	std::thread reciver;
 	std::mutex server_name_mutex, message_recived_mutex;
-	std::string server_name;
 	struct sockaddr_in server_addr;
 	SOCKET client_sock;
 	SOCKET server_sock;

@@ -81,7 +81,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	
 	if(connected){
 		if(main_notebook->GetSelection() == 2){
-			/*std::string package = client->get_message_recived();
+		/*	std::string package = client->get_message_recived();
 			Recv_Package recv_package(package);
 			network_management_page->update_user_cards(recv_package);*/
 		}
@@ -146,9 +146,9 @@ void MainFrame::sort_by_ram(wxCommandEvent &e){
 }
 
 void MainFrame::send_update(){
-	/*std::string package;
+	std::string package;
 	package = Network_Package::send_package(system->serilize(), client->get_user());
-	client->send_message(package);*/
+	client->send_message(package);
 }
 void MainFrame::connect(wxCommandEvent &e){
 	connected = true;
@@ -156,9 +156,11 @@ void MainFrame::connect(wxCommandEvent &e){
 	string user = network_management_page->get_user();
 	string ip = network_management_page->get_ip();
 	client = new Client(user, ip, port);
+	if(client == nullptr){
+		std::cout << "no client\n";
+	}
 	client->connect_to_server();
-	//client->start_reciver();
-    /*std::this_thread::sleep_for (std::chrono::milliseconds(5));
+	client->start_reciver();
 	std::string server_name = client->get_server_name();
-	network_management_page->change_to_connected_gui(server_name);*/
+	network_management_page->change_to_connected_gui(server_name);
 }

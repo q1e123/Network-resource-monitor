@@ -14,6 +14,7 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(port_number);
 	server_addr.sin_addr.s_addr = inet_addr(server_ip.c_str());
+	server_name = "NOT RECEIVED";
 }
 
 void Client::connect_to_server(){

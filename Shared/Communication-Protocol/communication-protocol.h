@@ -57,7 +57,8 @@ namespace Communication_Protocol{
             message += std::string(msg_c);
             logger->add_network("RECV", msg_c, "<SENDER>");
             left += BUFFER_SIZE;
-        } 
+        }
+        return message;
     }
 }
 
