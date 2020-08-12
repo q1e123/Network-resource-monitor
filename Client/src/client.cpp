@@ -22,10 +22,9 @@ void Client::connect_to_server(){
 		logger->add_error("connection not established");
 	}
 
-	logger->add_network("RECV", "connection successful", "server");
+	logger->add_network("CONN", "successful", "server");
 	server_name = Communication_Protocol::recv_message(client_sock, logger);
 	Communication_Protocol::send_message(client_sock, username, logger);
-	
 }
 
 void Client::start_reciver(){
@@ -33,11 +32,9 @@ void Client::start_reciver(){
 }
 
 void Client::recive_message() {
-	char message[MESSAGE_SIZE];
-	int len;
-
-	while (true){
-		std::string package = Communication_Protocol::recv_message(client_sock, logger);
+	std::string package = "";
+	while(package != "SOCKET_DOWN"){
+		package = Communication_Protocol::recv_message(client_sock, logger);
 	}
 }
 
@@ -52,15 +49,7 @@ Client::~Client() {
 }
 
 void Client::send_message(std::string message) {
-	char package[MESSAGE_SIZE];
-
-	STRCAT(package, message.c_str());
-	int len = send(client_sock, package, strlen(package), NULL);
-	if (len < 0) {
-		logger->add_error("message not sent");
-	}else{
-		logger->add_network("SEND", package, "server");
-	}
+	Communication_Protocol::send_message(client_sock, message, logger);
 }
 
 std::string Client::get_user() {

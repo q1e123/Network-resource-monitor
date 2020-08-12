@@ -52,11 +52,13 @@ void Server::start() {
 		}
 		mtx.lock();
 		inet_ntop(AF_INET, (struct sockaddr*)&client_addr, ip, INET_ADDRSTRLEN);
+		logger->add_network("CONN", "successful", ip);
+
 		Client_Info client(client_sock, ip);
 		Communication_Protocol::send_message(client_sock, name, logger);
 		std::string user = Communication_Protocol::recv_message(client_sock, logger);
+
 		client.set_user(user);
-		logger->add_network("CONN", "successful", ip);
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
 		workers[client_sock] = std::move(worker);
@@ -66,9 +68,6 @@ void Server::start() {
 		if (workers[client.get_socket_number()].joinable()) {
 			workers[client.get_socket_number()].join();
 		}
-	}
-	if (send_worker.joinable()) {
-		send_worker.join();
 	}
 }
 
@@ -106,9 +105,13 @@ void Server::send_to(Client_Info client, std::string message) {
 }
 
 void Server::recv_msg(Client_Info client) {
-	while (true) {
-		std::string package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-		logger->add_network("RECV", package, client.get_ip());
+	logger->add("RECIVER STARTED FOR " + client.get_user());
+	std::string package = "";
+	package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+	logger->add("BIG MESSAGE: " + package);
+
+	while(package != "SOCKET_DOWN"){
+		package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
 		run_cmd(package);
 	}
 	logger->add_network("CONN", "disconnection", client.get_ip());
