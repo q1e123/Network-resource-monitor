@@ -10,6 +10,7 @@
 #include <cstring>
 #include <vector>
 #include <exception>
+
 #ifdef __linux__
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -26,6 +27,19 @@ typedef int SOCKET;
 #include "../Logger/logger.h"
 
 #define BUFFER_SIZE 512
+
+class Socket_Error_Exception: public std::exception{
+  virtual const char* what() const throw(){
+    return "Unknown socket error";
+  }
+};
+
+class Client_Down_Exception: public std::exception{
+  virtual const char* what() const throw(){
+    return "Client down";
+  }
+};
+
 namespace Communication_Protocol{
     std::string add_size(std::string message){
         std::stringstream stream;
@@ -45,15 +59,13 @@ namespace Communication_Protocol{
             size= std::stol(encapsulated_size);
         }catch(const std::exception& e){
             std::cerr << encapsulated_size << " " << e.what() << '\n';
-        }
-        
+        }        
               
         return size;
     }
 
     void send_message(SOCKET socket, std::string message, Logger *logger){
-
-        std::string encapsulated_string = message;//add_size(message);
+        std::string encapsulated_string = message;
         size_t total_bytes_sent = 0;
         size_t bytes_sent = 0;
         size_t size = encapsulated_string.size();
@@ -78,8 +90,10 @@ namespace Communication_Protocol{
             memset(recv_buffer, '\0', BUFFER_SIZE);
             size_t len = recv(socket, recv_buffer, size - bytes_recived, 0);
             if(len < 0){
-                //logger->add_error("Socket down");
-                return "SOCKET_DOWN";
+                throw Socket_Error_Exception();
+            }
+            if(len == 0){
+                throw Client_Down_Exception();
             }
             recv_buffer[len] = '\0';
             std::string recv_msg = std::string(recv_buffer); 
@@ -93,9 +107,6 @@ namespace Communication_Protocol{
         return message;        
     }
     std::string recv_message(SOCKET socket, Logger *logger){
-        //std::string encapsulated_size = get_message(socket, sizeof(char) * 10);
-       // logger->add_network("RECV", "SIZE = " + encapsulated_size, "<SENDER>");
-
         size_t message_size;
         recv(socket, &message_size, sizeof(message_size), 0);
         logger->add_network("RECV", "SIZE = " + std::to_string(message_size), "<SENDER>");
