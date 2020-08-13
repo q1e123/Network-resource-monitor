@@ -53,7 +53,8 @@ Server should be able to request a report from a client.
 
 ## Login
 The mechanism for login should be:  
-1. Client sends the user (maybe also a password OR MAC address)
+1. Client sends the user and MAC Address 
+1. Server checks if the MAC Address is allowed
 1. Server responds with:
     * OK if login is successful
     * OK_ADMIN if the user is also an admin (maybe ini?)
@@ -61,10 +62,6 @@ The mechanism for login should be:
 1. If login was not successful the GUI should show a messsage and the user should be able to try again to login
 1. If login was successful the GUI should change show the network (name, maybe other users without data)
     * if user is also an admin the GUI should show more data
-
-## Send text files
-You should be able to send text file thourgh the network for sending bigger reports.  
-Use a buffer.
 
 ## Commands
 The networking is done by sending and reciving commands from another system.
