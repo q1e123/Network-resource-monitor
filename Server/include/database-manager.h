@@ -8,9 +8,9 @@
 #include "logger.h"
 
 enum User_Role{
+    NEW = -1,
     NORMAL,
-    ADMINISTRATOR,
-    NEW
+    ADMINISTRATOR
 };
 
 class Database_Manager{
@@ -31,7 +31,6 @@ private:
     void create_tables();
     void create_users_table();
     void create_systems_table();
-    void run_query(std::string file);
     std::string get_query(std::string file);
     
 };

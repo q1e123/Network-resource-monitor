@@ -52,12 +52,21 @@ void Database_Manager::create_tables(){
 }
 
 void Database_Manager::create_users_table(){
-    run_query("../SQL/create-users-table.sql");
+    connection.open(type, connection_string);
     
+    std::string query = get_query("../SQL/create-users-table.sql");
+    connection << query;
+
+    connection.close();
 }
 
 void Database_Manager::create_systems_table(){
-    run_query("../SQL/create-systems-table.sql");
+    connection.open(type, connection_string);
+    
+    std::string query = get_query("../SQL/create-systems-table.sql");
+    connection << query;
+
+    connection.close();
 }
 
 std::string Database_Manager::get_query(std::string file){
@@ -72,12 +81,19 @@ std::string Database_Manager::get_query(std::string file){
     return query;    
 }
 
-void Database_Manager::run_query(std::string file){
+
+int Database_Manager::get_user_role(std::string user){
     connection.open(type, connection_string);
-    
-    std::string query = get_query(file);
-    connection << query;
+
+    int role;
+    soci::indicator ind;
+
+    std::string query = get_query("../SQL/get-user-role.sql");
+    connection << query, soci::into(role, ind), soci::use(user);
+
     connection.close();
+
+    return role;
 }
 
 const char* Database_Exception::what() const throw(){
