@@ -27,6 +27,7 @@ typedef int SOCKET;
 
 #include "client-info.h"
 #include "logger.h"
+#include "database-manager.h"
 
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
@@ -56,7 +57,7 @@ private:
 	char ip[INET_ADDRSTRLEN];
 
 	Logger *logger;
-
+	Database_Manager database_manager;
 	int socket_init();
 	int socket_quit();
 	bool socket_check(SOCKET socket);

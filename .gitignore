@@ -3,3 +3,4 @@ interfaces
 *.swp
 settings.json
 bin/
+Init/database.ini

@@ -9,6 +9,7 @@
 
 Server::Server(std::string name, size_t sock) {
 	logger = new Logger("server-logs.txt");
+	database_manager.init();
 	int res = socket_init();
 	if (res != 0) {
 		logger->add_error("socket init error");
