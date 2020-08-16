@@ -25,8 +25,8 @@ void Client::connect_to_server(){
 	logger->add_network("CONN", "successful", "server");
 	Communication_Protocol::send_message(client_sock, username, logger);
 	server_name = Communication_Protocol::recv_message(client_sock, logger);
-	role = std::stoi(Communication_Protocol::recv_message(client_sock, logger));
-	logger->add("ROLE=" + std::to_string(role));
+	role = Communication_Protocol::recv_message(client_sock, logger);
+	logger->add("ROLE=" + role);
 }
 
 void Client::start_reciver(){

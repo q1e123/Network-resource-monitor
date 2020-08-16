@@ -59,10 +59,22 @@ void Server::start() {
 		std::string user = Communication_Protocol::recv_message(client_sock, logger);
 		client.set_user(user);
 
-		int user_role = database_manager.get_user_role(user);
-
 		Communication_Protocol::send_message(client_sock, this->name, logger);
-		Communication_Protocol::send_message(client_sock, std::to_string(user_role), logger);
+
+		int user_role = database_manager.get_user_role(user);
+		std::string login_message;
+		switch (user_role){
+			case 0:
+				login_message = "OK";
+				break;
+			case 1:
+				login_message = "OK_ADMIN";
+				break;			
+			default:
+				login_message = "RETRY";
+				break;
+		}
+		Communication_Protocol::send_message(client_sock, login_message, logger);
 
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
