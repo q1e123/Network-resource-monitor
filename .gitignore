@@ -4,3 +4,4 @@ interfaces
 settings.json
 bin/
 Init/database.ini
+.vscode/
