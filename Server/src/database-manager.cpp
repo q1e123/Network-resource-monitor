@@ -81,7 +81,6 @@ std::string Database_Manager::get_query(std::string file){
     return query;    
 }
 
-
 int Database_Manager::get_user_role(std::string user){
     connection.open(type, connection_string);
 
@@ -96,6 +95,19 @@ int Database_Manager::get_user_role(std::string user){
     return role;
 }
 
+void Database_Manager::update_user_role(std::string user, ints user_role){
+    connection.open(type, connection_string);
+
+    int role;
+
+    std::string query = get_query("../SQL/uptate-user-role.sql");
+    connection << query, soci::use(user, "user"), soci::use(user_role, "user_role");
+
+    connection.close();
+}
+
+
 const char* Database_Exception::what() const throw(){
     return "Database error";
 }
+

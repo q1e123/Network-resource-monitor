@@ -20,7 +20,7 @@ public:
     void init();
 
     int get_user_role(std::string user);
-    void update_user_role(std::string user, User_Role user_role);
+    void update_user_role(std::string user, int user_role);
     
 private:
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
