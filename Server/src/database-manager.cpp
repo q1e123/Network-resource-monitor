@@ -11,9 +11,7 @@ Database_Manager::Database_Manager(){
 void Database_Manager::init(){
 	get_login_data();
     get_create_data();
-    create_tables();
-    connection.open("mysql", "db=Siemens user=" + this->user + " password=" + this->password);
-    
+    create_tables();    
 }
 
 void Database_Manager::get_login_data(){
@@ -70,12 +68,12 @@ void Database_Manager::create_systems_table(){
 }
 
 std::string Database_Manager::get_query(std::string file){
-    std::string query;
+    std::string query = "";
 
     std::fstream query_file(file);
     std::string line;
     while (getline(query_file, line)){
-        query += line;
+        query += line + " ";
     }
 
     return query;    
@@ -92,10 +90,13 @@ int Database_Manager::get_user_role(std::string user){
 
     connection.close();
 
-    return role;
+    if(ind == soci::i_ok){
+        return role;
+    }
+    return -1;
 }
 
-void Database_Manager::update_user_role(std::string user, ints user_role){
+void Database_Manager::update_user_role(std::string user, int user_role){
     connection.open(type, connection_string);
 
     int role;

@@ -38,6 +38,7 @@ public:
 	void connect_to_server();
 	void start_reciver();
 
+	int role;
 	std::string message_recived;
 	~Client();
 	std::string get_message_recived();

@@ -26,7 +26,7 @@ typedef int SOCKET;
 
 #include "../Logger/logger.h"
 
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 1024
 
 class Socket_Error_Exception: public std::exception{
   virtual const char* what() const throw(){
@@ -72,7 +72,7 @@ namespace Communication_Protocol{
         send(socket, &size, sizeof(size), 0);
         while (total_bytes_sent < encapsulated_string.size()){
             std::string message_left = encapsulated_string.substr(bytes_sent);
-            bytes_sent = send(socket, message_left.c_str(), sizeof(message_left.c_str()), 0);
+            bytes_sent = send(socket, message_left.c_str(), message_left.size(), 0);
             total_bytes_sent += bytes_sent;
             logger->add_network("SEND", encapsulated_string.substr(total_bytes_sent - bytes_sent, total_bytes_sent), "<RECIVER>");
             if(bytes_sent < 0){
@@ -95,23 +95,23 @@ namespace Communication_Protocol{
             if(len == 0){
                 throw Client_Down_Exception();
             }
-            recv_buffer[len] = '\0';
             std::string recv_msg = std::string(recv_buffer); 
             message += recv_msg;
-            if(recv_msg.size() > 1){
-                //logger->add_network("RECV", recv_msg, "<SENDER>");
-            }
             bytes_recived += len;
         }
         delete recv_buffer;
         return message;        
     }
     std::string recv_message(SOCKET socket, Logger *logger){
-        size_t message_size;
-        recv(socket, &message_size, sizeof(message_size), 0);
-        logger->add_network("RECV", "SIZE = " + std::to_string(message_size), "<SENDER>");
-        std::string message = get_message(socket, message_size);
-        logger->add_network("RECV", "BODY = " + message, "<SENDER>");
+        long message_size;
+        std::string message = "";
+        size_t recv_len = recv(socket, &message_size, sizeof(message_size), 0);
+        if (recv_len > 0){
+            logger->add_network("RECV", "SIZE = " + std::to_string(message_size), "<SENDER>");
+            message = get_message(socket, message_size);
+            logger->add_network("RECV", "BODY = " + message, "<SENDER>");
+        }
+        
         return message;
     }
     

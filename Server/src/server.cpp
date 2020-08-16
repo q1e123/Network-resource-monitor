@@ -56,10 +56,14 @@ void Server::start() {
 		logger->add_network("CONN", "successful", ip);
 
 		Client_Info client(client_sock, ip);
-		Communication_Protocol::send_message(client_sock, name, logger);
 		std::string user = Communication_Protocol::recv_message(client_sock, logger);
-
 		client.set_user(user);
+
+		int user_role = database_manager.get_user_role(user);
+
+		Communication_Protocol::send_message(client_sock, this->name, logger);
+		Communication_Protocol::send_message(client_sock, std::to_string(user_role), logger);
+
 		clients.push_back(client);
 		std::thread worker(&Server::recv_msg, this, client);
 		workers[client_sock] = std::move(worker);
@@ -109,7 +113,6 @@ void Server::recv_msg(Client_Info client) {
 	logger->add("RECIVER STARTED FOR " + client.get_user());
 	std::string package = "";
 	package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-	logger->add("BIG MESSAGE: " + package);
 
 	while(package != "SOCKET_DOWN"){
 		package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
