@@ -6,6 +6,7 @@ Project made during Siemens internship.
 * [wxWidgets 3.1.3](https://www.wxwidgets.org/downloads/)
 * wxMathPlot (it's included with the project since I needed to do small changes to solve compatibility issues)
 * SimpleIni (it's included with the project)
+* [MySQL connector](https://www.mysql.com/products/connector/)
 * [SOCI](https://github.com/SOCI/soci)
 
 # Features
