@@ -62,6 +62,9 @@ You can compiling using Visual Studio.
 Use the binary file that resulted from compilation
 
 ## Server
+### Setup ini file
+Go to [database_template.ini](Init/database_template.ini) and add the database type, it's name, user and password.  
+If it's the first time you run this change all keys from create to **on** so the tables will be created. if it's not the first time change it to **off**.
 ### Linux
 ```
 ./bin/server <instance_name> <port>
