@@ -152,7 +152,6 @@ void MainFrame::send_update(){
 	client->send_message(package);
 }
 void MainFrame::connect(wxCommandEvent &e){
-	connected = true;
 	size_t port = network_management_page->get_port();
 	string user = network_management_page->get_user();
 	string ip = network_management_page->get_ip();
@@ -160,7 +159,18 @@ void MainFrame::connect(wxCommandEvent &e){
 	if(client == nullptr){
 		std::cout << "no client\n";
 	}
-	client->connect_to_server();
+	try{
+		client->connect_to_server();
+	}catch(const Server_Down_Exception& e){
+		wxMessageBox("Server down\nVerify if you've put the correct ip and port. If you still get "
+						"this error despite those being correct, contact admin.");
+		return;
+	}catch(const Login_Exception& e){
+		wxMessageBox("Login failed\nIf you think you should be able to connect to this network " 
+						"conntact admin.");
+		return;
+	}
+	connected = true;
 	client->start_reciver();
 	
 	std::string server_name = client->get_server_name();

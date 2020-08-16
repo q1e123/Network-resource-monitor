@@ -29,6 +29,19 @@ typedef int SOCKET;
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
 #define MESSAGE_SIZE 500
+
+class Server_Down_Exception: public std::exception{
+public:
+    virtual const char* what() const throw();
+private:
+};
+
+class Login_Exception: public std::exception{
+public:
+    virtual const char* what() const throw();
+private:
+};
+
 class Client {
 public:
 	Client();

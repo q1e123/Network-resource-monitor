@@ -17,16 +17,19 @@ Client::Client(std::string user, std::string server_ip, size_t sock) {
 	server_name = "NOT RECEIVED";
 }
 
-void Client::connect_to_server(){
+void Client::connect_to_server(){	
 	if (connect(client_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
 		logger->add_error("connection not established");
+		throw Server_Down_Exception();
 	}
 
 	logger->add_network("CONN", "successful", "server");
 	Communication_Protocol::send_message(client_sock, username, logger);
 	server_name = Communication_Protocol::recv_message(client_sock, logger);
 	role = Communication_Protocol::recv_message(client_sock, logger);
-	logger->add("ROLE=" + role);
+	if(role == "RETRY"){
+		throw Login_Exception();
+	}
 }
 
 void Client::start_reciver(){
@@ -112,3 +115,14 @@ int Client::socket_close(SOCKET socket) {
 #endif
 	return status;
 }
+
+const char* Server_Down_Exception::what() const throw(){
+    return "Server down";
+}
+
+const char* Login_Exception::what() const throw(){
+    return "Retry login";
+}
+
+
+
