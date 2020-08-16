@@ -23,6 +23,9 @@ Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, Syst
 	network_text->SetFont(Fonts::h1);
 	network_text->SetForegroundColour(Colors::white);
 	network_text->Hide();
+	user_role_text->SetFont(Fonts::h1);
+	user_role_text->SetForegroundColour(Colors::white);
+	user_role_text->Hide();
 
 	connect_box_sizer->Add(user_input, 0, wxALL | wxEXPAND, 5);
 	connect_box_sizer->Add(ip_input, 0, wxALL | wxEXPAND, 5);
@@ -61,6 +64,8 @@ void Network_Management_Page::update_user_cards(Recv_Package recv_package){
 void Network_Management_Page::change_to_connected_gui(std::string server_name){
     network_text->SetLabel("Connected to: " + server_name);
 	network_text->Show();
+	user_role_text->SetLabel("Role: " + this->user_role);
+	user_role_text->Show();
 	port_input->Hide();
 	user_input->Hide();
 	ip_input->Hide();
@@ -83,4 +88,8 @@ std::string Network_Management_Page::get_ip(){
 size_t Network_Management_Page::get_port(){
     size_t port = std::stol(port_input->GetValue().ToStdString());
     return port;
+}
+
+void Network_Management_Page::set_user_role(std::string role){
+	this->user_role = user_role;
 }

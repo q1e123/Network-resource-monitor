@@ -25,12 +25,15 @@ public:
     std::string get_user();
     std::string get_ip();
     size_t get_port();
+
+    void set_user_role(std::string role);
 private:
+    std::string user_role;
     System *system;
     wxNotebookPage *page;
     wxBoxSizer *box_sizer, *connect_box_sizer, *user_cards_box_sizer;
     wxStaticBox *static_box;
-    wxStaticText *header_text, *network_text;
+    wxStaticText *header_text, *network_text, *user_role_text;
     wxTextCtrl *user_input, *ip_input, *port_input;
     wxButton *connect_button;
     std::map<std::string, User_Card> user_cards;

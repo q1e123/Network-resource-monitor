@@ -26,9 +26,14 @@ void Client::connect_to_server(){
 	logger->add_network("CONN", "successful", "server");
 	Communication_Protocol::send_message(client_sock, username, logger);
 	server_name = Communication_Protocol::recv_message(client_sock, logger);
-	role = Communication_Protocol::recv_message(client_sock, logger);
-	if(role == "RETRY"){
+	std::string login_response = Communication_Protocol::recv_message(client_sock, logger);
+	if(login_response == "RETRY"){
 		throw Login_Exception();
+	}
+	if(login_response == "OK"){
+		this->role = "Normal user";
+	}else if(login_response == "OK_ADMIN"){
+		this->role = "Administrator";
 	}
 }
 

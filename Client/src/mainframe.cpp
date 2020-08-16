@@ -174,5 +174,6 @@ void MainFrame::connect(wxCommandEvent &e){
 	client->start_reciver();
 	
 	std::string server_name = client->get_server_name();
+	network_management_page->set_user_role(client->role);
 	network_management_page->change_to_connected_gui(server_name);
 }
