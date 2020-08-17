@@ -23,6 +23,7 @@ Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, Syst
 	network_text->SetFont(Fonts::h1);
 	network_text->SetForegroundColour(Colors::white);
 	network_text->Hide();
+	user_role_text = new wxStaticText(page,wxID_ANY,"");
 	user_role_text->SetFont(Fonts::h1);
 	user_role_text->SetForegroundColour(Colors::white);
 	user_role_text->Hide();
