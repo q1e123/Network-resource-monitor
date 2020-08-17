@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <map>
 #include "network-usage.h"
-#include "process.h"
+#include "my-process.h"
 
 #ifdef __linux__
 	#define OS Linux

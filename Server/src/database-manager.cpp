@@ -51,16 +51,14 @@ void Database_Manager::create_tables(){
 
 void Database_Manager::create_users_table(){
     connection.open(type, connection_string);
-    
     std::string query = get_query("../SQL/create-users-table.sql");
     connection << query;
-
     connection.close();
 }
 
 void Database_Manager::create_systems_table(){
     connection.open(type, connection_string);
-    
+
     std::string query = get_query("../SQL/create-systems-table.sql");
     connection << query;
 
@@ -69,7 +67,6 @@ void Database_Manager::create_systems_table(){
 
 std::string Database_Manager::get_query(std::string file){
     std::string query = "";
-
     std::fstream query_file(file);
     std::string line;
     while (getline(query_file, line)){

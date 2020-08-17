@@ -1,5 +1,10 @@
 #ifndef DATABASE_MANAGER_H
 #define DATABASE_MANAGER_H
+
+#if defined _WIN32 || defined _WIN64
+#include <winsock2.h>
+#endif
+
 #include <soci/soci.h>
 #include <soci/mysql/soci-mysql.h>
 

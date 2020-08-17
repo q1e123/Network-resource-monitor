@@ -5,10 +5,13 @@ project(server)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    find_package(mysql REQUIRED)
+    find_package(mysqlcppconn REQUIRED)
+endif()
 
 find_package(Threads REQUIRED)
-find_package(mysql REQUIRED)
-find_package(mysqlcppconn REQUIRED)
+
 
 include_directories (${MYSQL_INCLUDE_DIR})
 
@@ -24,6 +27,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
-target_link_libraries(${PROJECT_NAME} pthread soci_core soci_mysql)
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_libraries(${PROJECT_NAME} pthread soci_core soci_mysql)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_link_libraries(${PROJECT_NAME} soci_core soci_mysql)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+endif()

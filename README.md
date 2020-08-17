@@ -33,10 +33,11 @@ For a list with features that I am currently working on you can check [TODOs fil
 You can either compile client and server at the same time or each one at a time by using their CMake files.
 
 ## Prerequisites
-You need to have installed wxWidgets library.  
+You need to have installed wxWidgets library, SOCI and the database you want to use.  
 [Compioling wxWidgets](https://wiki.wxwidgets.org/Compiling_and_getting_started)  
 [How to setup wxWidgets in Visual Studio](https://www.youtube.com/watch?v=sRhoZcNpMb4)  
 
+You can compile the project using cmake.
 ## Linux
 You can use the make to compile it.
 ```
@@ -51,11 +52,39 @@ cmake ..
 make all
 ```
 ## Windows
-You can compiling using Visual Studio.
+You can compile it using Visual Studio.
 
-**Define next in *Project settings*:**
-* **_WINSOCK_DEPRECATED_NO_WARNINGS** (using the functions that are alike the ones in unix)
-* **_WINSOCKAPI** (using winsock2)
+### Preprocessor definitions
+Go to *Project settings - C/C++ - Preprocessor* and make sure you **only** have the following preprocessor definitions:
+```
+NOMINMAX
+_WINSOCK_DEPRECATED_NO_WARNINGS
+_WINSOCKAPI_
+<different options>
+```
+### Subsystem
+#### Client
+
+Go to *Project settings - Linker - System* and change **Subsystem** to Windows
+
+#### Server
+Go to *Project settings - Linker - System* and change **Subsystem** to Console
+
+### Propriety sheet
+Only for client.
+Go to *Propriety manager - Add existing propriety sheet* and select the propriety sheet that is in the root directory of wxWidgets. (wxwidgets.props)
+
+### Windows SDK Version
+Go to *Propriety manager - General* and change Windows SDK Version to 10.0 (latest installed version)
+
+### Build mode
+Compile it as Release (wxMathPlot does not have support for Debug)
+
+### SOCI
+Only for server.
+Go to *Propriety manager - VC++ Directories*.  
+Add at **include directories** SOCI's include directory.  
+Add at **Library directories** SOCI's library directory.
 
 # Usage
 ## Client

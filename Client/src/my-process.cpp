@@ -1,4 +1,4 @@
-#include "process.h"
+#include "my-process.h"
 #include <algorithm>
 
 Process::Process(size_t pid, string name,size_t ram, double cpu_usage){

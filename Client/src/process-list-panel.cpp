@@ -7,7 +7,7 @@
 #include "colors.h"
 #include "fonts.h"
 #include "gui-element-id.h"
-#include "process.h"
+#include "my-process.h"
 #include "utils.h"
 
 Process_List_Panel::Process_List_Panel(){}

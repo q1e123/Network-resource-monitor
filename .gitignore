@@ -1,4 +1,5 @@
 build/
+build-sln/
 interfaces
 *.swp
 settings.json

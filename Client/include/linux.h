@@ -10,7 +10,7 @@
 
 #include "jiffy.h"
 #include "network-usage.h"
-#include "process.h"
+#include "my-process.h"
 
 using std::vector;
 using std::string;

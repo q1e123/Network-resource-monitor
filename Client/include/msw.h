@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 #include "network-usage.h"
-#include "process.h"
+#include "my-process.h"
 #include <windows.h>
 using std::string;
 using std::map;

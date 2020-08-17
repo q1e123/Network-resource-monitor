@@ -40,9 +40,9 @@ void Network_Plot::shrink(){
     }
 }
 
-void Network_Plot::update_gui(std::string interface){
-    auto rx = y_points_rx[interface];
-    auto tx = y_points_tx[interface];
+void Network_Plot::update_gui(std::string network_interface){
+    auto rx = y_points_rx[network_interface];
+    auto tx = y_points_tx[network_interface];
     rx_plot->SetData(x_points, rx);
     tx_plot->SetData(x_points, tx);
     double min_y = std::min(*std::min_element(rx.begin(), rx.end()), *std::min_element(tx.begin(), tx.end()));

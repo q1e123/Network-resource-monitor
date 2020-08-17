@@ -12,6 +12,11 @@ typedef int SOCKET;
 #elif defined _WIN32 || defined _WIN64
 #define STRCAT strcat_s
 #include "msw.h"
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _WINSOCKAPI_
+#pragma comment( lib, "ws2_32.lib")
+#include <winsock2.h>
+#include <Ws2tcpip.h>
 #endif
 
 

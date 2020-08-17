@@ -20,8 +20,8 @@ Network_Performance::Network_Performance(wxNotebookPage *page, System *system){
 
     plot = new Network_Plot(page);
 
-	for(auto interface : system->get_network_interfaces()){
-		choices.push_back(interface);
+	for(auto network_interface : system->get_network_interfaces()){
+		choices.push_back(network_interface);
 	}
 	interface_combo_box = new wxComboBox(page, wxID_ANY, "Select interface");
 	interface_combo_box->Set(choices);

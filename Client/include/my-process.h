@@ -1,5 +1,5 @@
-#ifndef PROCESS_H
-#define PROCESS_H
+#ifndef MY_PROCESS_H
+#define MY_PROCESS_H
 
 #include <cstdio>
 #include <string>
