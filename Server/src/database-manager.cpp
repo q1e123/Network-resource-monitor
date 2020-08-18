@@ -38,6 +38,7 @@ void Database_Manager::get_create_data(){
     
     this->users_table = ini.GetValue("create", "users_table");
     this->systems_table = ini.GetValue("create", "systems_table");
+    this->data_usage_table = ini.GetValue("create", "data_usage_table");
 }
 
 void Database_Manager::create_tables(){
@@ -46,6 +47,9 @@ void Database_Manager::create_tables(){
     }
     if(this->users_table == "on"){
         create_users_table();
+    }
+    if(this->data_usage_table == "on"){
+        create_data_usage_table();
     }
 }
 
@@ -100,6 +104,14 @@ void Database_Manager::update_user_role(std::string user, int user_role){
 
     std::string query = get_query("../SQL/uptate-user-role.sql");
     connection << query, soci::use(user, "user"), soci::use(user_role, "user_role");
+
+    connection.close();
+}
+void Database_Manager::create_data_usage_table(){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/create-usage_data-table.sql");
+    connection << query;
 
     connection.close();
 }

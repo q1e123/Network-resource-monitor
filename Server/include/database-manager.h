@@ -29,6 +29,7 @@ public:
     
 private:
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
+    std::string data_usage_table;
     soci::session connection; 
 
     void get_login_data();
@@ -36,6 +37,7 @@ private:
     void create_tables();
     void create_users_table();
     void create_systems_table();
+    void create_data_usage_table();
     std::string get_query(std::string file);
     
 };
