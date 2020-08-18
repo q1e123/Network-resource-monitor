@@ -12,6 +12,7 @@ System::System(){
 	network_interfaces = OS::get_network_interfaces();
 	process_list = OS::get_process_list();
 	machine_id = OS::get_machine_id();
+	current_user = OS::get_current_user();
 }
 
 string System::get_os(){
@@ -121,4 +122,8 @@ System::System(std::string serialization){
 
 std::string System::get_machine_id(){
 	return this->machine_id;
+}
+
+std::string System::get_current_user(){
+	return this->current_user;
 }

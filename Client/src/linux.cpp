@@ -333,4 +333,9 @@ std::string Linux::get_machine_id(){
 	return machine_id;
 }
 
+std::string get_current_user(){
+	std::string user = utils::execute("whoami");
+}
+
+
 #endif

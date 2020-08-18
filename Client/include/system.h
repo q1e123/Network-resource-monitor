@@ -52,9 +52,11 @@ public:
 	std::string serilize();
 
 	std::string get_machine_id();
+
+	std::string get_current_user();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
-	string os, ip;
+	string os, ip, current_user;
 	vector<string> network_interfaces;
 	map<string, double> cpu_usage;
 	map<string, Network_Usage> network_usage;
