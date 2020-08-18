@@ -1,7 +1,9 @@
 #include "database-manager.h"
 
+#include <ctime>
 #include <iostream>
 #include <fstream>
+
 #include "SimpleIni.h"
 
 Database_Manager::Database_Manager(){
@@ -116,7 +118,60 @@ void Database_Manager::create_data_usage_table(){
     connection.close();
 }
 
+void Database_Manager::insert_system(std::string machine_id){
+    connection.open(type, connection_string);
 
+    int role;
+
+    std::string query = get_query("../SQL/insert-system.sql");
+    connection << query, soci::use(machine_id, "machine_id");
+
+    connection.close();
+}
+
+void Database_Manager::insert_user(std::string user, std::string user_rank, std::string machine_id){
+    connection.open(type, connection_string);
+
+    int role;
+
+    std::string query = get_query("../SQL/insert-system.sql");
+    connection << query, soci::use(user, "user"), soci::use(user_rank, "user_rank"),soci::use(machine_id, "machine_id");
+
+    connection.close();
+}
+void Database_Manager::insert_usage_data(std::string user, double cpu_usage, double ram_usage, double network_usage_rx, double network_usage_tx){
+    std::time_t t = std::time(0);   // get time now
+    std::tm *timestamp = std::localtime(&t);
+
+    int system_id = get_system_id_from(user);
+
+    connection.open(type, connection_string);
+
+    int role;
+    std::string query = get_query("../SQL/insert-usage-data.sql");
+    connection << query, soci::use(cpu_usage, "cpu_usage"), soci::use(ram_usage, "ram_usage"),
+                soci::use(network_usage_rx, "network_usage_rx"), soci::use(network_usage_tx, "network_usage_tx"),
+                soci::use(*timestamp, "timestamp"), soci::use(system_id, "system_id");
+
+    connection.close();
+}
+
+int Database_Manager::get_system_id_from(std::string user){
+    connection.open(type, connection_string);
+
+    int system_id;
+    soci::indicator ind;
+
+    std::string query = get_query("../SQL/get-system-id-from-user.sql");
+    connection << query, soci::into(system_id, ind), soci::use(user);
+
+    connection.close();
+
+    if(ind == soci::i_ok){
+        return system_id;
+    }
+    return -1;
+}
 const char* Database_Exception::what() const throw(){
     return "Database error";
 }
