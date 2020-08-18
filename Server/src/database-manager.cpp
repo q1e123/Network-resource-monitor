@@ -159,7 +159,7 @@ int Database_Manager::get_user_role(std::string user, std::string machine_id){
     soci::indicator ind;
 
     std::string query = get_query("../SQL/get-user-role.sql");
-    connection << query, soci::into(role, ind), soci::use(user, "user"), soci::user(machine_id, "machine_id");
+    connection << query, soci::into(role, ind), soci::use(user, "user"), soci::use(machine_id, "machine_id");
 
     connection.close();
 

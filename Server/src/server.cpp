@@ -57,11 +57,12 @@ void Server::start() {
 
 		Client_Info client(client_sock, ip);
 		std::string user = Communication_Protocol::recv_message(client_sock, logger);
+		std::string machine_id = Communication_Protocol::recv_message(client_sock, logger);
 		client.set_user(user);
 
 		Communication_Protocol::send_message(client_sock, this->name, logger);
 
-		int user_role = database_manager.get_user_role(user);
+		int user_role = database_manager.get_user_role(user, machine_id);
 		std::string login_message;
 		switch (user_role){
 			case 0:

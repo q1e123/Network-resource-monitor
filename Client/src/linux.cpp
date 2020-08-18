@@ -335,6 +335,7 @@ std::string Linux::get_machine_id(){
 
 std::string Linux::get_current_user(){
 	std::string user = utils::execute("whoami");
+	user = utils::remove_char_str(user, '\n');
 	return user;
 }
 

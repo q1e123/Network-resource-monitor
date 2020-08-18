@@ -152,10 +152,11 @@ void MainFrame::send_update(){
 	client->send_message(package);
 }
 void MainFrame::connect(wxCommandEvent &e){
+	std::string user = system->get_current_user();
 	size_t port = network_management_page->get_port();
-	string user = network_management_page->get_user();
-	string ip = network_management_page->get_ip();
-	client = new Client(user, ip, port);
+	std::string ip = network_management_page->get_ip();
+	std::string machine_id = system->get_machine_id();
+	client = new Client(user, machine_id, ip, port);
 	if(client == nullptr){
 		std::cout << "no client\n";
 	}

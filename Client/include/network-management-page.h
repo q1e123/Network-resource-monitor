@@ -22,7 +22,6 @@ public:
     void change_to_connected_gui(std::string server_name);
     void update_user_cards(Recv_Package recv_package);
 
-    std::string get_user();
     std::string get_ip();
     size_t get_port();
 
@@ -34,7 +33,7 @@ private:
     wxBoxSizer *box_sizer, *connect_box_sizer, *user_cards_box_sizer;
     wxStaticBox *static_box;
     wxStaticText *header_text, *network_text, *user_role_text;
-    wxTextCtrl *user_input, *ip_input, *port_input;
+    wxTextCtrl *ip_input, *port_input;
     wxButton *connect_button;
     std::map<std::string, User_Card> user_cards;
 
