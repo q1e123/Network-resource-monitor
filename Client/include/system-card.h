@@ -19,7 +19,7 @@ private:
     System *system;
     wxStaticBoxSizer *static_box_sizer;
     wxStaticBox *static_box;
-    wxStaticText *os_text, *header_text, *machine_id_text;
+    wxStaticText *os_text, *header_text, *machine_id_text, *current_user_text;
 };
 
 #endif

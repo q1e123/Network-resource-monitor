@@ -328,14 +328,14 @@ std::string Linux::get_machine_id(){
 	std::string machine_id;
 	machine_id = utils::execute("cat /etc/machine-id");
 	machine_id += "-";
-	machine_id += utils::execute("cat /sys/class/dmi/id/product_uuid");
+	machine_id += utils::execute("sudo cat /sys/class/dmi/id/product_uuid");
 	machine_id = utils::remove_char_str(machine_id, '\n');
 	return machine_id;
 }
 
-std::string get_current_user(){
+std::string Linux::get_current_user(){
 	std::string user = utils::execute("whoami");
+	return user;
 }
-
 
 #endif
