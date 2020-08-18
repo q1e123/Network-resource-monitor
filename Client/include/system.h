@@ -50,6 +50,8 @@ public:
 	// os;total_ram;avalabile_ram;used_ram;<cpu_usage>
 	// cpu_usage = cpu_name_0:usage_0-cpu_name_1:usage_1-...-cpu_name_n:usage_n
 	std::string serilize();
+
+	std::string get_machine_id();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip;
@@ -57,5 +59,6 @@ private:
 	map<string, double> cpu_usage;
 	map<string, Network_Usage> network_usage;
 	vector<Process> process_list;
+	std::string machine_id;
 };
 #endif

@@ -1,6 +1,7 @@
 #include "system-header.h"
 
 #include "colors.h"
+#include "fonts.h"
 #include "gui-element-id.h"
 
 System_Header::System_Header(){}

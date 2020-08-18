@@ -32,7 +32,6 @@ namespace Linux{
 	void shutdown();
 	void restart();
 
-	string get_ip();
 	vector<string> get_network_interfaces();
 	Network_Usage get_interface_usage(string interface);
 	map<string, Network_Usage> get_network_usage();
@@ -40,6 +39,8 @@ namespace Linux{
 	void get_proc_info(size_t pid, Process &process);
 	vector<size_t> get_pids();
 	vector<Process> get_process_list();
+
+	std::string get_machine_id();
 };
 
 #endif

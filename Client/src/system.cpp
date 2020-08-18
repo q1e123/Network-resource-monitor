@@ -8,10 +8,10 @@ System::System(){
 	total_ram = OS::get_total_ram();
 	avalabile_ram = OS::get_avalabile_ram();
 	cpu_usage = OS::get_cpu_usage();
-	ip = OS::get_ip();
 	network_usage = OS::get_network_usage();
 	network_interfaces = OS::get_network_interfaces();
 	process_list = OS::get_process_list();
+	machine_id = OS::get_machine_id();
 }
 
 string System::get_os(){
@@ -117,4 +117,8 @@ System::System(std::string serialization){
 		}
 		++pos;
 	}
+}
+
+std::string System::get_machine_id(){
+	return this->machine_id;
 }

@@ -86,9 +86,6 @@ void Msw::restart(){
 	utils::execute("shutdown -r -t 0");
 }
 
-string Msw::get_ip(){
-	return "0.0.0.0";
-}
 
 void setup_iftable(MIB_IFROW *if_table, DWORD&dw_size){
 
@@ -274,6 +271,15 @@ vector<Process> Msw::get_process_list() {
     }
 
     return proc_list;
+}
+
+std::string Msw::get_machine_id(){
+	std::string machine_id;
+	machine_id = utils::execute("cat /sys/class/dmi/id/board_serial");
+	machine_id += utils::execute("cat /sys/class/dmi/id/product_uuid");
+	machine_id = utils::remove_char_str(machine_id, '\n');
+	return machine_id;
+}
 }
 
 #endif

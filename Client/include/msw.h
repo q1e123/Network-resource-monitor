@@ -22,12 +22,13 @@ namespace Msw{
 	void shutdown();
 	void restart();
 	
-	string get_ip();
 	vector<string> get_network_interfaces();
 	map<string, Network_Usage> get_network_usage();
 	
 	void get_proc_info(DWORD pid, Process &process);
 	vector<Process> get_process_list();
+
+	std::string get_machine_id();
 };
 
 #endif
