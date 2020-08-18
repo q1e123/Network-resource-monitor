@@ -24,7 +24,7 @@ public:
     
     void init();
 
-    int get_user_role(std::string user);
+    int get_user_role(std::string user, std::string machine_id);
     void update_user_role(std::string user, int user_role);
 
     void insert_system(std::string machine_id);
@@ -32,6 +32,7 @@ public:
     void insert_usage_data(std::string user, double cpu_usage, double ram_usage, double network_usage_rx, double network_usage_tx);
     
     int get_system_id_from(std::string user);
+
 private:
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
     std::string data_usage_table;

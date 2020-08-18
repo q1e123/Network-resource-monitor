@@ -2,13 +2,14 @@
 
 #include "communication-protocol.h"
 
-Client::Client(std::string user, std::string server_ip, size_t sock) {
+Client::Client(std::string user, std::string machine_id, std::string server_ip, size_t sock) {
 	logger = new Logger("network-logs.txt");
 	if (socket_init() != 0) {
 		logger->add_error("socket init failed");
 	}
 	username = user;
 	port_number = sock;
+	this->machine_id = machine_id;
 	client_sock = socket(AF_INET, SOCK_STREAM, 0); 
 	memset(server_addr.sin_zero, '\0', sizeof(server_addr.sin_zero));
 	server_addr.sin_family = AF_INET;
@@ -25,6 +26,7 @@ void Client::connect_to_server(){
 
 	logger->add_network("CONN", "successful", "server");
 	Communication_Protocol::send_message(client_sock, username, logger);
+	Communication_Protocol::send_message(client_sock, machine_id, logger);
 	server_name = Communication_Protocol::recv_message(client_sock, logger);
 	std::string login_response = Communication_Protocol::recv_message(client_sock, logger);
 	if(login_response == "RETRY"){
@@ -79,7 +81,6 @@ std::string Client::get_server_name() {
 std::string Client::get_role(){
 	return role;
 }
-
 
 int Client::socket_init() {
 #ifdef __linux__

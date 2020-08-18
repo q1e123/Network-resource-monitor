@@ -152,14 +152,14 @@ std::string Database_Manager::get_query(std::string file){
     return query;    
 }
 
-int Database_Manager::get_user_role(std::string user){
+int Database_Manager::get_user_role(std::string user, std::string machine_id){
     connection.open(type, connection_string);
 
     int role;
     soci::indicator ind;
 
     std::string query = get_query("../SQL/get-user-role.sql");
-    connection << query, soci::into(role, ind), soci::use(user);
+    connection << query, soci::into(role, ind), soci::use(user), soci::user(user);
 
     connection.close();
 

@@ -50,7 +50,7 @@ private:
 class Client {
 public:
 	Client();
-	Client(std::string user, std::string server_ip, size_t socket);
+	Client(std::string user, std::string machine_id , std::string server_ip, size_t socket);
 	void start();
 	void send_message(std::string message);
 	void connect_to_server();
@@ -62,9 +62,11 @@ public:
 	std::string get_server_name();
 	std::string get_user();
 	std::string get_role();
+
 private:
 	std::string server_name;
 	std::string role;
+	std::string machine_id;
 	
 	void recive_message();
 	int socket_init();
