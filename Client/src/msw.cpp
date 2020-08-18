@@ -272,14 +272,15 @@ vector<Process> Msw::get_process_list() {
 
     return proc_list;
 }
-
+#include <fstream>
 std::string Msw::get_machine_id(){
-	std::string machine_id;
-	machine_id = utils::execute("cat /sys/class/dmi/id/board_serial");
-	machine_id += utils::execute("cat /sys/class/dmi/id/product_uuid");
-	machine_id = utils::remove_char_str(machine_id, '\n');
-	return machine_id;
-}
+
+	std::string serial_number = utils::execute("wmic DISKDRIVE get SerialNumber");   
+    serial_number = serial_number.substr(23, 19);
+	std::string motherboard_id = utils::execute("wmic csproduct get UUID");
+    motherboard_id = motherboard_id.substr(40, 74);
+    std::string machine_id = serial_number + "-" +motherboard_id;
+    return machine_id;
 }
 #endif
 
