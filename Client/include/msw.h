@@ -29,6 +29,8 @@ namespace Msw{
 	vector<Process> get_process_list();
 
 	std::string get_machine_id();
+
+	std::string get_current_user();
 };
 
 #endif

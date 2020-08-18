@@ -10,6 +10,8 @@
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 
 #include <windows.h>
+#include <Lmcons.h>
+
 #include <thread>
 #include <chrono>
 #include <iostream>
@@ -272,7 +274,7 @@ vector<Process> Msw::get_process_list() {
 
     return proc_list;
 }
-#include <fstream>
+
 std::string Msw::get_machine_id(){
 
 	std::string serial_number = utils::execute("wmic DISKDRIVE get SerialNumber");   
@@ -281,6 +283,15 @@ std::string Msw::get_machine_id(){
     motherboard_id = motherboard_id.substr(40, 74);
     std::string machine_id = serial_number + "-" +motherboard_id;
     return machine_id;
+}
+
+std::string Msw::get_current_user(){
+    char username_c[UNLEN + 1];
+    DWORD username_len = UNLEN + 1;
+    GetUserNameA(username_c, &username_len);
+
+    std::string user = std::string(username_c);
+    return user;
 }
 #endif
 
