@@ -281,6 +281,5 @@ std::string Msw::get_machine_id(){
 	return machine_id;
 }
 }
-
 #endif
 
