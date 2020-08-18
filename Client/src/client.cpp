@@ -34,6 +34,8 @@ void Client::connect_to_server(){
 		this->role = "Normal user";
 	}else if(login_response == "OK_ADMIN"){
 		this->role = "Administrator";
+	}else{
+		this->role = "Contact dev";
 	}
 }
 
@@ -73,6 +75,11 @@ std::string Client::get_message_recived() {
 std::string Client::get_server_name() {
 	return server_name;
 }
+
+std::string Client::get_role(){
+	return role;
+}
+
 
 int Client::socket_init() {
 #ifdef __linux__
@@ -128,6 +135,3 @@ const char* Server_Down_Exception::what() const throw(){
 const char* Login_Exception::what() const throw(){
     return "Retry login";
 }
-
-
-

@@ -6,6 +6,8 @@
 Network_Management_Page::Network_Management_Page(){};
 
 Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, System *system){
+	user_role = "Not set";
+
     page = new wxPanel(main_notebook, wxID_ANY);
 	box_sizer= new wxBoxSizer(wxVERTICAL);
 	connect_box_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -34,6 +36,8 @@ Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, Syst
 	connect_box_sizer->Add(connect_button, 0, wxALL | wxEXPAND, 5);
 	
 	box_sizer->Add(network_text, 0, wxALL, 5);
+	box_sizer->Add(user_role_text, 0, wxALL, 5);
+
 	box_sizer->Add(connect_box_sizer, 0, wxALL, 5);
 	page->SetSizerAndFit(box_sizer);
 }
@@ -92,5 +96,5 @@ size_t Network_Management_Page::get_port(){
 }
 
 void Network_Management_Page::set_user_role(std::string role){
-	this->user_role = user_role;
+	this->user_role = role;
 }

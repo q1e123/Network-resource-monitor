@@ -161,6 +161,8 @@ void MainFrame::connect(wxCommandEvent &e){
 	}
 	try{
 		client->connect_to_server();
+		network_management_page->set_user_role(client->get_role());
+
 	}catch(const Server_Down_Exception& e){
 		wxMessageBox("Server down\nVerify if you've put the correct ip and port. If you still get "
 						"this error despite those being correct, contact admin.");
@@ -174,6 +176,5 @@ void MainFrame::connect(wxCommandEvent &e){
 	client->start_reciver();
 	
 	std::string server_name = client->get_server_name();
-	network_management_page->set_user_role(client->role);
 	network_management_page->change_to_connected_gui(server_name);
 }

@@ -56,14 +56,16 @@ public:
 	void connect_to_server();
 	void start_reciver();
 
-	std::string role;
 	std::string message_recived;
 	~Client();
 	std::string get_message_recived();
 	std::string get_server_name();
 	std::string get_user();
+	std::string get_role();
 private:
 	std::string server_name;
+	std::string role;
+	
 	void recive_message();
 	int socket_init();
 	int socket_quit();
