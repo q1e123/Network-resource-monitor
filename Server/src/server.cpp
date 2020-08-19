@@ -158,7 +158,7 @@ void Server::cmd_sys(std::istringstream iss) {
 	if(!sys->sanity_check()){
 		throw Sanity_Check_Failed_Exception();
 	}
-	database_manager.insert_usage_data(sys);	
+	database_manager.insert_usage_data(sys);
 }
 
 void Server::remove_user(std::string user) {

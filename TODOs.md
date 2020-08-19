@@ -38,9 +38,6 @@ You should be able to schedule when to send some reports to the server
 
 # Server
 
-## Sanity checks
-Server should do sanity checks for the received data.
-
 ## Saving data
 Server should save the recived data. (maybe use some ini files?)
 Every client should have it's own folder with:
@@ -57,30 +54,6 @@ The general template for a command should be:
 ```
 TYPE;ADDITIONAL_DATA
 ```
-## Template for commands
-Description  
-
-**Sent by:**    
-**Recived by:**  
-**Template:**  
-```
-
-```
-**Response:**  
-
-## 
-Sends data about a system
- 
-**Sent by:** Client  
-**Recived by:** Server  
-**Template:** 
-```
-SYS;USER;TOTAL_RAM;AVALABILE_RAM;USED_RAM;CPU_0:USAGE-CPU_N:USAGE
-``` 
-**Responses:**  
-* **OK** if it passed sanity checks  
-* **SANITY_ERROR** if it failed sanity checks  
-
 ## Request system data
 Request data about a system
 
