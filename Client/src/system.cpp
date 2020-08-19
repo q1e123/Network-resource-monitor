@@ -85,8 +85,13 @@ std::string System::serilize(){
 		pkg += item.first + ":" + std::to_string(item.second).substr(0, std::to_string(item.second).size() - 4) + "-";
 	}
 	pkg.pop_back();
+	pkg += ";";
 	for(auto item : network_usage){
-		pkg += item.first + ":" + std::to_string(item.second).substr(0, std::to_string(item.second).size() - 4) + "-";
+		std::string tx = std::to_string(item.second.get_tx());
+		std::string rx = std::to_string(item.second.get_rx());
+
+		pkg += item.first + ":" + rx.substr(0, rx.size() - 4) + ":" +tx.substr(0, tx.size() - 4) + "-";
+
 	}
 	pkg.pop_back();
 	return pkg;
@@ -98,19 +103,23 @@ System::System(std::string serialization){
 	size_t pos = 0;
 	while(getline(iss, tmp, ';')){
 		switch(pos){
-			case 0:
+			case 0:{
 				os = tmp;
 				break;
-			case 1:
+			}
+			case 1:{
 				total_ram = std::stol(tmp);
 				break;
-			case 2:
+			}
+			case 2:{
 				avalabile_ram = std::stol(tmp);
 				break;
-			case 3:
+			}
+			case 3:{
 				used_ram = std::stol(tmp);
 				break;
-			case 4:
+			}				
+			case 4:{
 				std::istringstream proc_list_iss(tmp);
 				std::string cpu_line;
 				while(getline(proc_list_iss, cpu_line, '-')){
@@ -121,16 +130,21 @@ System::System(std::string serialization){
 					cpu_usage[cpu_name] = std::stod(usage);
 				}
 				break;
-			case 5:
+			}
+			case 5:{
 				std::istringstream network_list_iss(tmp);
 				std::string network_line;
 				while(getline(network_list_iss, network_line, '-')){
-					std::istringstream network_iss(cpu_line);
-					std::string interface, usage;
+					std::istringstream network_iss(network_line);
+					std::string interface, usage_rx, usage_tx;
 					getline(network_iss, interface, ':');
-					getline(network_iss, usage, ':');
-					cpu_usage[interface] = std::stod(usage);
+					getline(network_iss, usage_rx, ':');
+					getline(network_iss, usage_tx, ':');
+					Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));	
+					network_usage[interface] = usage;
 				}
+			}
+				
 		}
 		++pos;
 	}

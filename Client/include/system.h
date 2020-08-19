@@ -49,7 +49,7 @@ public:
 
 	// os;total_ram;avalabile_ram;used_ram;<cpu_usage>;<network_usage>
 	// cpu_usage = cpu_name_0:usage_0-cpu_name_1:usage_1-...-cpu_name_n:usage_n
-	// network_usage = network_interface_0:usage_0-network_interface_1:usage_1-...-network_interface_n:usage_n
+	// network_usage = network_interface_0:usage_rx_0:usage_tx_0-network_interface_1:usage_rx_1:usage_tx_1--...-network_interface_n:usage_rx_n:usage_tx_n
 	std::string serilize();
 
 	std::string get_machine_id();
