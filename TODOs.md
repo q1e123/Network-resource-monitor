@@ -68,19 +68,18 @@ Description
 ```
 **Response:**  
 
-## Send system data
+## 
 Sends data about a system
-
+ 
 **Sent by:** Client  
 **Recived by:** Server  
 **Template:** 
 ```
-SYS;USER;OS;TOTAL_RAM;AVALABILE_RAM;USED_RAM;CPU_0:USAGE-CPU_N:USAGE 
+SYS;USER;TOTAL_RAM;AVALABILE_RAM;USED_RAM;CPU_0:USAGE-CPU_N:USAGE
 ``` 
 **Responses:**  
 * **OK** if it passed sanity checks  
 * **SANITY_ERROR** if it failed sanity checks  
-* **CORRUPT** if the reciveed data was corrupted  
 
 ## Request system data
 Request data about a system

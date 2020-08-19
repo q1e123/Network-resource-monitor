@@ -9,7 +9,6 @@
 
 #include "system.h"
 #include "utils.h"
-#include "network-package.h"
 #include "recv-package.h"
 
 #include "mainframe.h"
@@ -144,9 +143,7 @@ void MainFrame::sort_by_ram(wxCommandEvent &e){
 }
 
 void MainFrame::send_update(){
-	std::string package;
-	package = Network_Package::send_package(system->serilize(), client->get_user());
-	client->send_message(package);
+
 }
 void MainFrame::connect(wxCommandEvent &e){
 	std::string user = system->get_current_user();
