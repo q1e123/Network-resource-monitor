@@ -30,6 +30,7 @@ typedef int SOCKET;
 #include <string>
 
 #include "logger.h"
+#include "system.h"
 
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
@@ -62,6 +63,8 @@ public:
 	std::string get_server_name();
 	std::string get_user();
 	std::string get_role();
+	
+	void send_current_resource_usage(System *system);
 
 private:
 	std::string server_name;

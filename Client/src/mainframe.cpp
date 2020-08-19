@@ -81,10 +81,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	
 	if(connected){
 		if(main_notebook->GetSelection() == 2){
-			//std::string package = client->get_message_recived();
-			//Recv_Package recv_package(package);
-			//network_management_page->update_user_cards(recv_package);
-			//send_update();
+			client->send_current_resource_usage(system);
 		}
 	}
 }

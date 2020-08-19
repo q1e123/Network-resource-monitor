@@ -129,6 +129,12 @@ int Client::socket_close(SOCKET socket) {
 	return status;
 }
 
+void Client::send_current_resource_usage(System *system){
+	std::string message = "SYS;" + this->username + ";" + system->serilize();
+	send_message(message);
+}
+
+
 const char* Server_Down_Exception::what() const throw(){
     return "Server down";
 }
