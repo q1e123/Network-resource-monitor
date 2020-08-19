@@ -28,6 +28,7 @@ typedef int SOCKET;
 #include "client-info.h"
 #include "logger.h"
 #include "database-manager.h"
+#include "system.h"
 
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
@@ -71,6 +72,11 @@ private:
 	void run_cmd(std::string cmd);
 	void cmd_sys(std::istringstream cmd);
 
+};
 
+class Sanity_Check_Failed_Exception: public std::exception{
+public:
+    virtual const char* what() const throw();
+private:
 };
 #endif

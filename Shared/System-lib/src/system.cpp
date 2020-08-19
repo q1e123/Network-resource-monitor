@@ -90,10 +90,11 @@ std::string System::serilize(){
 		std::string tx = std::to_string(item.second.get_tx());
 		std::string rx = std::to_string(item.second.get_rx());
 
-		pkg += item.first + ":" + rx.substr(0, rx.size() - 4) + ":" +tx.substr(0, tx.size() - 4) + "-";
+		pkg += item.first + ":" + rx.substr(0, rx.size() - 4) + ":" +tx.substr(0, tx.size() - 4) + "|";
 
 	}
 	pkg.pop_back();
+	pkg += ";" + this->current_user;
 	return pkg;
 }
 
@@ -134,15 +135,20 @@ System::System(std::string serialization){
 			case 5:{
 				std::istringstream network_list_iss(tmp);
 				std::string network_line;
-				while(getline(network_list_iss, network_line, '-')){
+				while(getline(network_list_iss, network_line, '|')){
 					std::istringstream network_iss(network_line);
 					std::string interface, usage_rx, usage_tx;
 					getline(network_iss, interface, ':');
 					getline(network_iss, usage_rx, ':');
 					getline(network_iss, usage_tx, ':');
-					Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));	
+					Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));
 					network_usage[interface] = usage;
 				}
+				break;
+			}
+			case 6:{
+				this->current_user = tmp;
+				break;
 			}
 				
 		}
@@ -156,4 +162,16 @@ std::string System::get_machine_id(){
 
 std::string System::get_current_user(){
 	return this->current_user;
+}
+
+bool System::sanity_check(){
+	if(total_ram < avalabile_ram + used_ram){
+		return false;
+	}
+	for(auto item : cpu_usage){
+		if(item.second > 100 || item.second < 0){
+			return false;
+		}
+	}
+	return true;
 }

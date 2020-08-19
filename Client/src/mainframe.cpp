@@ -80,7 +80,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	
 	if(connected){
 		if(main_notebook->GetSelection() == 2){
-			client->send_current_resource_usage(system);
+			client->send_system_state(system);
 		}
 	}
 }

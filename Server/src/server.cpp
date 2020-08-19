@@ -142,18 +142,23 @@ void Server::run_cmd(std::string cmd) {
 	std::istringstream iss(cmd);
 	std::string type;
 	getline(iss, type, ';');
+
 	mtx.lock();
-	if (type == "s") {
+	if (type == "SYS") {
 		cmd_sys(std::move(iss));
 	}
 	mtx.unlock();
 }
 
 void Server::cmd_sys(std::istringstream iss) {
-	std::string user, info, tmp;
+	std::string user, serialization;
 	getline(iss, user, ';');
-	getline(iss, info);
-	systems[user] = info;
+	getline(iss, serialization);
+	System *sys = new System(serialization);
+	if(!sys->sanity_check()){
+		throw Sanity_Check_Failed_Exception();
+	}
+	database_manager.insert_usage_data(sys);	
 }
 
 void Server::remove_user(std::string user) {
@@ -213,3 +218,8 @@ int Server::socket_close(SOCKET socket) {
 #endif
 	return status;
 }
+
+const char* Sanity_Check_Failed_Exception::what() const throw(){
+    return "Sanity check failed";
+}
+

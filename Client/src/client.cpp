@@ -129,7 +129,7 @@ int Client::socket_close(SOCKET socket) {
 	return status;
 }
 
-void Client::send_current_resource_usage(System *system){
+void Client::send_system_state(System *system){
 	std::string message = "SYS;" + this->username + ";" + system->serilize();
 	send_message(message);
 }

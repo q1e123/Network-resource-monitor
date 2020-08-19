@@ -64,7 +64,7 @@ public:
 	std::string get_user();
 	std::string get_role();
 	
-	void send_current_resource_usage(System *system);
+	void send_system_state(System *system);
 
 private:
 	std::string server_name;

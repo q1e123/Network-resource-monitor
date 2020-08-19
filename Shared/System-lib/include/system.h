@@ -55,6 +55,8 @@ public:
 	std::string get_machine_id();
 
 	std::string get_current_user();
+
+	bool sanity_check();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip, current_user;

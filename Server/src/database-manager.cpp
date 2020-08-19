@@ -42,7 +42,9 @@ void Database_Manager::get_create_data(){
     
     this->users_table = ini.GetValue("create", "users_table");
     this->systems_table = ini.GetValue("create", "systems_table");
-    this->data_usage_table = ini.GetValue("create", "data_usage_table");
+    this->usage_data_table = ini.GetValue("create", "usage_data_table");
+    this->cpu_usage_table = ini.GetValue("create", "cpu_usage_table");
+    this->network_usage_table = ini.GetValue("create", "network_usage_table");
 }
 
 void Database_Manager::get_insert_data(){
@@ -63,8 +65,14 @@ void Database_Manager::create_tables(){
     if(this->users_table == "on"){
         create_users_table();
     }
-    if(this->data_usage_table == "on"){
-        create_data_usage_table();
+    if(this->usage_data_table == "on"){
+        create_usage_data_table();
+    }
+    if(this->cpu_usage_table == "on"){
+        create_cpu_usage_table();
+    }
+    if(this->network_usage_table== "on"){
+        create_network_usage_table();
     }
 }
 
@@ -84,13 +92,33 @@ void Database_Manager::create_systems_table(){
     connection.close();
 }
 
-void Database_Manager::create_data_usage_table(){
+void Database_Manager::create_usage_data_table(){
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-usage_data-table.sql");
     connection << query;
 
     connection.close();
+}
+
+void Database_Manager::create_cpu_usage_table(){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/create-cpu_usage-table.sql");
+    connection << query;
+
+    connection.close();
+
+}
+
+void Database_Manager::create_network_usage_table(){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/create-network_usage-table.sql");
+    connection << query;
+
+    connection.close();
+
 }
 
 void Database_Manager::insert_data(){
@@ -202,19 +230,50 @@ void Database_Manager::insert_user(std::string user, int user_role, std::string 
     connection.close();
 }
 
-void Database_Manager::insert_usage_data(std::string user, double cpu_usage, double ram_usage, double network_usage_rx, double network_usage_tx){
-    std::time_t t = std::time(0);   // get time now
-    std::tm *timestamp = std::localtime(&t);
-
-    int system_id = get_system_id_from(user);
+void Database_Manager::insert_usage_data(System *system){
+    int system_id = get_system_id_from(system->get_current_user());
 
     connection.open(type, connection_string);
+    std::time_t t = std::time(0);
+    std::tm *timestamp = std::localtime(&t);
+    
+    int id;
+    std::string query = get_query("../SQL/insert-usage_data.sql");
+    
+    connection << query, soci::use(system->get_used_ram(), "ram_usage"),
+     soci::use(*timestamp, "timestamp"), soci::use(system_id, "system_id");
 
-    int role;
-    std::string query = get_query("../SQL/insert-usage-data.sql");
-    connection << query, soci::use(cpu_usage, "cpu_usage"), soci::use(ram_usage, "ram_usage"),
-                soci::use(network_usage_rx, "network_usage_rx"), soci::use(network_usage_tx, "network_usage_tx"),
-                soci::use(*timestamp, "timestamp"), soci::use(system_id, "system_id");
+
+    query = get_query("../SQL/get-last-id-usage_data.sql");
+    connection << query, soci::into(id);
+
+    connection.close();
+
+    for(auto item : system->get_cpu_usage()){
+        insert_cpu_usage(item.first, item.second, id);
+    }
+
+    for(auto item : system->get_network_usage()){
+        insert_network_usage(item.first, item.second, id);
+    }
+}
+
+void Database_Manager::insert_cpu_usage(std::string cpu_name, double usage, int usage_id){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/insert-cpu_usage.sql");
+    
+    connection << query, soci::use(cpu_name, "cpu_name"), soci::use(usage, "usage"), soci::use(usage_id, "usage_id");
+
+    connection.close();
+}
+
+void Database_Manager::insert_network_usage(std::string network_interface, Network_Usage usage, int usage_id){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/insert-network_usage.sql");
+    connection << query, soci::use(network_interface, "interface_name"), soci::use(usage.get_rx(), "rx"),
+                 soci::use(usage.get_tx(), "tx") , soci::use(usage_id, "usage_id");
 
     connection.close();
 }
