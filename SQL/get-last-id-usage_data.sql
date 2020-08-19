@@ -1,0 +1,2 @@
+SELECT LAST_INSERT_ID()
+FROM Usage_Data;

@@ -1,2 +1,2 @@
-INSERT INTO Network_Usage(rx, tx, network_interface_id)
-VALUES (:rx, :tx, :interface_id)
+INSERT INTO Network_Usage(interface_name, rx, tx, usage_id)
+VALUES (:interface_name, :rx, :tx, :usage_id);
