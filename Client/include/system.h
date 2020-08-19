@@ -47,8 +47,9 @@ public:
 	vector<Process> get_process_list();
 	void update_process_list();
 
-	// os;total_ram;avalabile_ram;used_ram;<cpu_usage>
+	// os;total_ram;avalabile_ram;used_ram;<cpu_usage>;<network_usage>
 	// cpu_usage = cpu_name_0:usage_0-cpu_name_1:usage_1-...-cpu_name_n:usage_n
+	// network_usage = network_interface_0:usage_0-network_interface_1:usage_1-...-network_interface_n:usage_n
 	std::string serilize();
 
 	std::string get_machine_id();

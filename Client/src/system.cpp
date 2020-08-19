@@ -84,6 +84,11 @@ std::string System::serilize(){
 	for(auto item : cpu_usage){
 		pkg += item.first + ":" + std::to_string(item.second).substr(0, std::to_string(item.second).size() - 4) + "-";
 	}
+	pkg.pop_back();
+	for(auto item : network_usage){
+		pkg += item.first + ":" + std::to_string(item.second).substr(0, std::to_string(item.second).size() - 4) + "-";
+	}
+	pkg.pop_back();
 	return pkg;
 }
 
@@ -114,6 +119,17 @@ System::System(std::string serialization){
 					getline(proc_iss, cpu_name, ':');
 					getline(proc_iss, usage, ':');
 					cpu_usage[cpu_name] = std::stod(usage);
+				}
+				break;
+			case 5:
+				std::istringstream network_list_iss(tmp);
+				std::string network_line;
+				while(getline(network_list_iss, network_line, '-')){
+					std::istringstream network_iss(cpu_line);
+					std::string interface, usage;
+					getline(network_iss, interface, ':');
+					getline(network_iss, usage, ':');
+					cpu_usage[interface] = std::stod(usage);
 				}
 		}
 		++pos;
