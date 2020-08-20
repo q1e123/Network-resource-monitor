@@ -12,14 +12,14 @@ endif()
 
 find_package(Threads REQUIRED)
 
-
 include_directories (${MYSQL_INCLUDE_DIR})
 
 include_directories(include
                     ../Third-party/SimpleIni
-                    ../Shared/Logger
+                    ../Shared/Logger-lib/include
                     ../Shared/Communication-Protocol
                     ../Shared/System-lib/include
+                    ../Shared/Communication-Protocol-lib/include
 )
 
 file(GLOB SOURCES "src/*.cpp")
@@ -30,7 +30,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_link_libraries(${PROJECT_NAME} pthread soci_core soci_mysql System_lib)
+    target_link_libraries(${PROJECT_NAME} pthread soci_core soci_mysql System_lib Logger_lib Communication_Protocol_lib)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_link_libraries(${PROJECT_NAME} soci_core soci_mysql System_lib)

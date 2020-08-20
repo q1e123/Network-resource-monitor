@@ -10,6 +10,8 @@
 #include "network-usage.h"
 #include "my-process.h"
 
+#include "logger.h"
+
 #ifdef __linux__
 	#define OS Linux
 	#include "linux.h"
@@ -26,6 +28,9 @@ class System{
 public:
 	System();
 	System(std::string serialization);
+	~System();
+
+	const std::string system_log_file = "system-logger.txt";
 	
 	size_t get_total_ram();
 	size_t get_avalabile_ram();
@@ -63,10 +68,13 @@ public:
 
 	bool sanity_check();
 
+	void log_init();
 	void log();
-private:
-	const std::string system_log_file = "system_log.txt";
+	std::string get_log();
 
+
+	Logger *logger;
+private:
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip, current_user;
 	vector<string> network_interfaces;

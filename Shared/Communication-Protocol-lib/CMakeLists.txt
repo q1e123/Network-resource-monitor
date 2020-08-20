@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 
-project("System_lib")
-
-ADD_DEFINITIONS(-DFELINE_DLL)
+project("Communication_Protocol_lib")
 
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/;${CMAKE_MODULE_PATH}")
 
 include_directories(include
-                    ../Utils-lib/include                    
                     ../Third-party/SimpleIni
                     ../Logger-lib/include
 )
@@ -19,7 +16,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
 SET(CMAKE_CXX_STANDARD 17)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SRC_FILES})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Utils_lib Logger_lib)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Logger_lib)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)

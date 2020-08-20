@@ -4,3 +4,5 @@ PROJECT(Libs)
 
 add_subdirectory(System-lib)
 ADD_SUBDIRECTORY(Utils-lib)
+ADD_SUBDIRECTORY(Communication-Protocol-lib)
+ADD_SUBDIRECTORY(Logger-lib)

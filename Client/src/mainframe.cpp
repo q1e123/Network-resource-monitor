@@ -28,6 +28,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 : wxFrame((wxFrame *) NULL, -1, title, pos, size){
 	SetAutoLayout(TRUE);
 	system = new System();
+	system->log_init();
 	process_sort_type = Process_Sort_Type::NAME;
 
 	main_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);

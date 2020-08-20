@@ -16,6 +16,10 @@ System::System(){
 	current_user = OS::get_current_user();
 }
 
+System::~System(){
+	delete this->logger;
+}
+
 string System::get_os(){
 	return os;
 }
@@ -187,9 +191,11 @@ std::time_t System::get_timestamp(){
 	return this->timestamp;
 }
 
+void System::log_init(){
+	logger = new Logger(this->system_log_file);
+	logger->init("../Init/system-logger.ini");
+}
+
 void System::log(){
-	std::fstream log_file;
-	log_file.open(this->system_log_file, std::fstream::out | std::fstream::app);
-	log_file << serilize() << std::endl;
-	log_file.close();
+	logger->add(serilize());
 }
