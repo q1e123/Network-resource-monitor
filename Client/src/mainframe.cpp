@@ -72,12 +72,13 @@ void MainFrame::real_time(wxTimerEvent &e){
 		ram_worker.join();
 		cpu_worker.join();
 		network_worker.join();
+		system->log();
 		performance_page->update_data();
 		if(main_notebook->GetSelection() == 1){
 			performance_page->update_gui();	
 		}
 	}
-	
+
 	if(connected){
 		if(main_notebook->GetSelection() == 2){
 			client->send_system_state(system);

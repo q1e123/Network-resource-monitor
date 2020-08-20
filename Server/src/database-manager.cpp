@@ -234,12 +234,12 @@ void Database_Manager::insert_usage_data(System *system){
     int system_id = get_system_id_from(system->get_current_user());
 
     connection.open(type, connection_string);
-    std::time_t t = std::time(0);
-    std::tm *timestamp = std::localtime(&t);
     
     int id;
     std::string query = get_query("../SQL/insert-usage_data.sql");
-    
+    std::time_t t = system->get_timestamp();
+    std::tm *timestamp = std::localtime(&t);
+
     connection << query, soci::use(system->get_used_ram(), "ram_usage"),
      soci::use(*timestamp, "timestamp"), soci::use(system_id, "system_id");
 

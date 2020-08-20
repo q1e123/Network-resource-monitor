@@ -1,7 +1,8 @@
 #include "system.h"
-#include <stdexcept>      // std::out_of_range
 
+#include <stdexcept>
 #include <sstream>
+#include <fstream>
 
 System::System(){
 	os = OS::get_os();
@@ -93,8 +94,10 @@ std::string System::serilize(){
 		pkg += item.first + ":" + rx.substr(0, rx.size() - 4) + ":" +tx.substr(0, tx.size() - 4) + "|";
 
 	}
-	pkg.pop_back();
+	pkg.pop_back();	
 	pkg += ";" + this->current_user;
+	timestamp = std::time(0);
+	pkg += ";" + std::to_string(this->timestamp);
 	return pkg;
 }
 
@@ -150,6 +153,10 @@ System::System(std::string serialization){
 				this->current_user = tmp;
 				break;
 			}
+			case 7:{
+				this->timestamp = std::stol(tmp);
+				break;
+			}
 				
 		}
 		++pos;
@@ -174,4 +181,15 @@ bool System::sanity_check(){
 		}
 	}
 	return true;
+}
+
+std::time_t System::get_timestamp(){
+	return this->timestamp;
+}
+
+void System::log(){
+	std::fstream log_file;
+	log_file.open(this->system_log_file, std::fstream::out | std::fstream::app);
+	log_file << serilize() << std::endl;
+	log_file.close();
 }

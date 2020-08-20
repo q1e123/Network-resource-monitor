@@ -1,6 +1,8 @@
 #ifndef System_H
 #define System_H
 
+#include <ctime>
+
 #include <string>
 #include <vector>
 #include <cstdio>
@@ -19,6 +21,7 @@
 using std::string;
 using std::vector;
 using std::map;
+
 class System{
 public:
 	System();
@@ -56,8 +59,14 @@ public:
 
 	std::string get_current_user();
 
+	std::time_t get_timestamp();
+
 	bool sanity_check();
+
+	void log();
 private:
+	const std::string system_log_file = "system_log.txt";
+
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip, current_user;
 	vector<string> network_interfaces;
@@ -65,5 +74,7 @@ private:
 	map<string, Network_Usage> network_usage;
 	vector<Process> process_list;
 	std::string machine_id;
+
+    std::time_t timestamp;
 };
 #endif
