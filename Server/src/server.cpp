@@ -128,7 +128,6 @@ void Server::recv_msg(Client_Info client) {
 	std::string package;
 	while(package != "SOCKET_DOWN"){
 		package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-		std::cout << "Package = " << package <<std::endl;
 		run_cmd(package);
 	}
 	logger->add_network("CONN", "disconnection", client.get_ip());
@@ -177,7 +176,6 @@ void Server::remove_user(std::string user) {
 }
 
 void Server::cmd_log(std::string user, size_t number_of_logs){
-	std::cout << user << " " <<number_of_logs << std::endl;
 	size_t pos = find_client(user);
 	Client_Info client = clients[pos];
 	for (size_t i = 0; i < number_of_logs; i++){
