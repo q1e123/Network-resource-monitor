@@ -1,11 +1,13 @@
 #include "logger.h"
 
+#include <iomanip>
 #include <iostream>
 #include "SimpleIni.h"
 
 Logger::Logger(std::string file_name){
+    this->file_name = file_name;
     this->first_line = this->last_line = 0;
-    log_file.open(file_name, std::ios_base::app);
+    log_file.open(file_name, std::fstream::in | std::fstream::out | std::fstream::app);
     std::string start_message = "LOG\tLogger has started";
     add(start_message);
 }
@@ -19,12 +21,15 @@ Logger::~Logger(){
             std::cerr << "Can't open init file for logger" << std::endl;
             exit(1);
         }
-        ini.SetValue("Proprieties", "last_value", std::to_string(this->last_line).c_str());
+        ini.SetValue("Properties", "first_line", std::to_string(this->last_line).c_str());
+        ini.SetValue("Properties", "last_line", std::to_string(this->last_line).c_str());
+        ini.SaveFile(init_file.c_str());
     }
 }
 void Logger::add(std::string message){
-    time.update();
-    log_file << time;
+    auto t = std::time(nullptr);
+    auto local_time = *std::localtime(&t);
+    log_file << std::put_time(&local_time, "%d-%m-%Y %H-%M-%S");
     log_file << "\t" << message << std::endl;
     ++(this->last_line);
 }
@@ -60,4 +65,13 @@ size_t Logger::get_first_line(){
 
 size_t Logger::get_last_line(){
     return this->last_line;
+}
+
+std::string Logger::get_file_name(){
+    return this->file_name;
+}
+
+void Logger::add_system(std::string serialization){
+    std::string log = "SYSTEM " + serialization;
+    add(log);
 }

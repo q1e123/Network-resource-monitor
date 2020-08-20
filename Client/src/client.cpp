@@ -1,5 +1,7 @@
 #include "client.h"
 
+#include <fstream>
+
 #include "communication-protocol.h"
 
 Client::Client(std::string user, std::string machine_id, std::string server_ip, size_t sock) {
@@ -134,6 +136,22 @@ void Client::send_system_state(System *system){
 	send_message(message);
 }
 
+void Client::send_log_file(Logger *logger){
+	size_t number_of_logs = logger->get_last_line() - logger->get_first_line();
+	std::string header = "LOG;" + this->username + ";" + std::to_string(number_of_logs);
+	send_message(header);
+	std::string log_file_name = logger->get_file_name();
+	std::ifstream log_file(log_file_name);
+	for (size_t i = 0; i < logger->get_first_line(); ++i){
+		std::string dummy;
+		getline(log_file, dummy);
+	}
+
+	std::string log;
+	while (getline(log_file, log)){
+		send_message(log);
+	}	
+}
 
 const char* Server_Down_Exception::what() const throw(){
     return "Server down";

@@ -38,11 +38,6 @@ You should be able to schedule when to send some reports to the server
 
 # Server
 
-## Saving data
-Server should save the recived data. (maybe use some ini files?)
-Every client should have it's own folder with:
-* reports (bigger files) 
-
 ## Request data from a client
 Server should be able to request a report from a client.
 

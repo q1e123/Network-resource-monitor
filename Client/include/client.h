@@ -65,6 +65,7 @@ public:
 	std::string get_role();
 	
 	void send_system_state(System *system);
+	void send_log_file(Logger *logger);
 
 private:
 	std::string server_name;

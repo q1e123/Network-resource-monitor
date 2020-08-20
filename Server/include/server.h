@@ -70,7 +70,10 @@ private:
 	void remove_user(std::string user);
 
 	void run_cmd(std::string cmd);
-	void cmd_sys(std::istringstream cmd);
+	void cmd_sys(std::string serialization);
+	void cmd_log(std::string user, size_t number_of_logs);
+
+	size_t find_client(std::string user);
 
 };
 

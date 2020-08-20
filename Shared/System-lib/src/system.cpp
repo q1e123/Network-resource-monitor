@@ -197,5 +197,5 @@ void System::log_init(){
 }
 
 void System::log(){
-	logger->add(serilize());
+	logger->add_system(serilize());
 }

@@ -124,11 +124,11 @@ void Server::send_to(Client_Info client, std::string message) {
 
 void Server::recv_msg(Client_Info client) {
 	logger->add("RECIVER STARTED FOR " + client.get_user());
-	std::string package = "";
-	package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
 
+	std::string package;
 	while(package != "SOCKET_DOWN"){
 		package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+		std::cout << "Package = " << package <<std::endl;
 		run_cmd(package);
 	}
 	logger->add_network("CONN", "disconnection", client.get_ip());
@@ -145,15 +145,24 @@ void Server::run_cmd(std::string cmd) {
 
 	mtx.lock();
 	if (type == "SYS") {
-		cmd_sys(std::move(iss));
+		std::string user, serialization;
+		getline(iss, user, ';');
+		getline(iss, serialization);		
+		cmd_sys(serialization);
+	} else if (type == "LOG"){
+		std::string user;
+		getline(iss, user, ';');
+		std::string log_size_str;
+		getline(iss, log_size_str, ';');
+		size_t log_size = std::stol(log_size_str);
+		cmd_log(user, log_size);
+	}else{
+		
 	}
 	mtx.unlock();
 }
 
-void Server::cmd_sys(std::istringstream iss) {
-	std::string user, serialization;
-	getline(iss, user, ';');
-	getline(iss, serialization);
+void Server::cmd_sys(std::string serialization) {
 	System *sys = new System(serialization);
 	if(!sys->sanity_check()){
 		throw Sanity_Check_Failed_Exception();
@@ -162,14 +171,29 @@ void Server::cmd_sys(std::istringstream iss) {
 }
 
 void Server::remove_user(std::string user) {
-	size_t pos;
-	for (pos = 0; pos < clients.size(); ++pos) {
+	size_t pos = find_client(user);
+	clients.erase(clients.begin() + pos);
+	systems.erase(user);
+}
+
+void Server::cmd_log(std::string user, size_t number_of_logs){
+	std::cout << user << " " <<number_of_logs << std::endl;
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+	for (size_t i = 0; i < number_of_logs; i++){
+		std::string log = Communication_Protocol::recv_message(client.get_socket_number(), logger);	
+		size_t start = log.find("SYSTEM");
+		std::string serialization = log.substr(start + 7);
+		cmd_sys(serialization);
+	}
+}
+
+size_t Server::find_client(std::string user){	
+	for (size_t pos = 0; pos < clients.size(); ++pos) {
 		if (clients[pos].get_user() == user) {
-			clients.erase(clients.begin() + pos);
-			break;
+			return pos;
 		}
 	}
-	systems.erase(user);
 }
 
 int Server::socket_init() {

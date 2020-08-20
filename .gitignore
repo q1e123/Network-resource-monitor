@@ -5,4 +5,5 @@ interfaces
 settings.json
 bin/
 Init/database.ini
+Init/system-logger.ini
 .vscode/

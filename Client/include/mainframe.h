@@ -19,7 +19,7 @@
 class MainFrame : public wxFrame{
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
-	
+	~MainFrame();
 	void exit(wxCommandEvent &e);
 	void real_time(wxTimerEvent &e);
 	void shutdown(wxCommandEvent &e);
@@ -46,6 +46,7 @@ private:
 	Client *client;
 	std::thread worker;	
 	std::mutex mtx;
+	size_t zxc = 0;
 
 	System_Page *system_page;
 	Performance_Page *performance_page;
