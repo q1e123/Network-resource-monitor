@@ -20,7 +20,7 @@ public:
 
     wxNotebookPage* get_all();
     void change_to_connected_gui(std::string server_name);
-    void update_user_cards(Recv_Package recv_package);
+    void update_user_cards(std::vector<System*> active_systems, std::vector<std::string> inactives);
 
     std::string get_ip();
     size_t get_port();

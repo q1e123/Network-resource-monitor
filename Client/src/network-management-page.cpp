@@ -43,22 +43,23 @@ wxNotebookPage* Network_Management_Page::get_all(){
     return page;
 }
 
-void Network_Management_Page::update_user_cards(Recv_Package recv_package){
-	for(auto item : recv_package.get_user_data()){
-		if(user_cards.find(item.first) != user_cards.end()){
-			if(!user_cards[item.first].is_active()){
-				user_cards[item.first].set_active();
+void Network_Management_Page::update_user_cards(std::vector<System*> active_systems, std::vector<std::string> inactives){
+	for(auto system : active_systems){
+		std::string id = system->get_machine_id();
+		if(user_cards.find(id) != user_cards.end()){
+			if(!user_cards[id].is_active()){
+				user_cards[id].set_active();
 			}
-			user_cards[item.first].update(System(item.second));
+			user_cards[id].update(*system);
 		}else{
-			User_Card uc = User_Card(page, wxID_ANY, item.first, System(item.second));
+			User_Card uc = User_Card(page, wxID_ANY, id, *system);
 			uc.set_active();
 			user_cards_box_sizer->Add(uc.get_items(), 1, wxALL | wxEXPAND, 5);
-			user_cards[item.first] = uc;
+			user_cards[id] = uc;
 		}
 	}
-	for(auto inactive : recv_package.get_inactive_users()){
-		user_cards[inactive].set_inactive();
+	for(auto id : inactives){
+		user_cards[id].set_inactive();
 	}
 	page->SetSizerAndFit(box_sizer);
 }
