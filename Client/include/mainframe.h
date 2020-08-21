@@ -28,7 +28,6 @@ public:
 	void sort_by_pid(wxCommandEvent &e);
 	void sort_by_cpu(wxCommandEvent &e);
 	void sort_by_ram(wxCommandEvent &e);
-	void connect(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 
@@ -58,6 +57,7 @@ private:
 	void update_cpu();
 	void update_network();
 	void update_process_list();
+	void connect();
 };
 
 #endif

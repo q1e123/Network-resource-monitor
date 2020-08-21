@@ -2,21 +2,24 @@
 
 #include <fstream>
 
+#include "SimpleIni.h"
+
 #include "communication-protocol.h"
 
-Client::Client(std::string user, std::string machine_id, std::string server_ip, size_t sock) {
+Client::Client(std::string user, std::string machine_id) {
 	logger = new Logger("network-logs.txt");
 	if (socket_init() != 0) {
 		logger->add_error("socket init failed");
 	}
+
+	init();
 	username = user;
-	port_number = sock;
 	this->machine_id = machine_id;
 	client_sock = socket(AF_INET, SOCK_STREAM, 0); 
 	memset(server_addr.sin_zero, '\0', sizeof(server_addr.sin_zero));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(port_number);
-	server_addr.sin_addr.s_addr = inet_addr(server_ip.c_str());
+	server_addr.sin_addr.s_addr = inet_addr(ip_std.c_str());
 	server_name = "NOT RECEIVED";
 }
 
@@ -151,6 +154,17 @@ void Client::send_log_file(Logger *logger){
 	while (getline(log_file, log)){
 		send_message(log);
 	}	
+}
+
+void Client::init(){
+	CSimpleIniA ini;
+	if (ini.LoadFile("../Init/client.ini") < 0) {
+		std::cerr << "Can't open init file for client" << std::endl;
+		exit(1);
+	}
+
+    this->ip_std = ini.GetValue("Network", "server_ip");
+	this->port_number = std::stoi(ini.GetValue("Network",  "server_port"));
 }
 
 const char* Server_Down_Exception::what() const throw(){

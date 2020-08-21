@@ -11,6 +11,7 @@ include_directories(include
                     ../Shared/Utils-lib/include
                     ../Shared/Logger-lib/include
                     ../Shared/Communication-Protocol-lib/include
+                    ../Third-party/SimpleIni
 )
 file(GLOB SOURCES "src/*.cpp")
 

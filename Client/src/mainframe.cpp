@@ -21,7 +21,6 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_BUTTON(BUTTON_SORT_PROC_PID, MainFrame::sort_by_pid)
 	EVT_BUTTON(BUTTON_SORT_PROC_CPU, MainFrame::sort_by_cpu)
 	EVT_BUTTON(BUTTON_SORT_PROC_RAM, MainFrame::sort_by_ram)
-	EVT_BUTTON(BUTTON_CONNECT, MainFrame::connect)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -29,6 +28,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	SetAutoLayout(TRUE);
 	system = new System();
 	system->log_init();
+
+	connect();
+
 	process_sort_type = Process_Sort_Type::NAME;
 
 	main_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
@@ -45,9 +47,12 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	performance_page = new Performance_Page(main_notebook, system);
 	main_notebook->AddPage(performance_page->get_all(), "Performance");
 
-	network_management_page = new Network_Management_Page(main_notebook, system);
-	main_notebook->AddPage(network_management_page->get_all(), "Network Management");
-
+	if(client  != nullptr && client->get_role() == "Administrator"){
+		network_management_page = new Network_Management_Page(main_notebook, system);
+		network_management_page->set_user_role(client->get_role());
+		main_notebook->AddPage(network_management_page->get_all(), "Network Management");
+	}
+	
     box_sizer->Add(main_notebook, 1, wxEXPAND);
     main_panel->SetSizer(box_sizer);
 }
@@ -83,7 +88,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	
 
 	if(connected){
-		client->send_system_state(system);
+		//client->send_system_state(system);
 	}
 }
 void MainFrame::shutdown(wxCommandEvent &e){
@@ -147,19 +152,13 @@ void MainFrame::sort_by_ram(wxCommandEvent &e){
 void MainFrame::send_update(){
 
 }
-void MainFrame::connect(wxCommandEvent &e){
-	std::string user = system->get_current_user();
-	size_t port = network_management_page->get_port();
-	std::string ip = network_management_page->get_ip();
-	std::string machine_id = system->get_machine_id();
-	client = new Client(user, machine_id, ip, port);
+void MainFrame::connect(){
+	client = new Client(system->get_current_user(), system->get_machine_id());
 	if(client == nullptr){
 		std::cout << "no client\n";
 	}
 	try{
 		client->connect_to_server();
-		network_management_page->set_user_role(client->get_role());
-
 	}catch(const Server_Down_Exception& e){
 		wxMessageBox("Server down\nVerify if you've put the correct ip and port. If you still get "
 						"this error despite those being correct, contact admin.");
@@ -171,9 +170,6 @@ void MainFrame::connect(wxCommandEvent &e){
 	}
 	connected = true;
 	client->start_reciver();
-	
-	std::string server_name = client->get_server_name();
-	network_management_page->change_to_connected_gui(server_name);
 }
 
 MainFrame::~MainFrame(){

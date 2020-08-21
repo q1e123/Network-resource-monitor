@@ -51,7 +51,7 @@ private:
 class Client {
 public:
 	Client();
-	Client(std::string user, std::string machine_id , std::string server_ip, size_t socket);
+	Client(std::string user, std::string machine_id);
 	void start();
 	void send_message(std::string message);
 	void connect_to_server();
@@ -71,6 +71,7 @@ private:
 	std::string server_name;
 	std::string role;
 	std::string machine_id;
+	std::string ip_std;
 	
 	void recive_message();
 	int socket_init();
@@ -88,6 +89,8 @@ private:
 	char *ip[INET_ADDRSTRLEN];
 
 	Logger *logger;
+
+	void init();
 };
 
 #endif
