@@ -1,9 +1,8 @@
 CREATE TABLE Usage_Data(
     id int PRIMARY KEY AUTO_INCREMENT,
-    cpu_usage double,
-    ram_usage double,
-    network_usage_rx double,
-    network_usage_tx double,
+    total_ram int,
+    used_ram int,
+    free_ram int,
     timestamp datetime,
 
     system_id int,
