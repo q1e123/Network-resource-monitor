@@ -1,2 +1,2 @@
-INSERT INTO Usage_Data(ram_usage, timestamp, system_id)
-VALUES (:ram_usage, :timestamp, :system_id);
+INSERT INTO Usage_Data(total_ram, used_ram, free_ram, timestamp, current_user, system_id)
+VALUES (:total_ram, :used_ram, :free_ram,, :timestamp, :current_user, :system_id);
