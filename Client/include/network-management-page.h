@@ -29,6 +29,7 @@ public:
 private:
     std::string user_role;
     System *system;
+   	wxNotebook *main_notebook;
     wxNotebookPage *page;
     wxBoxSizer *box_sizer, *connect_box_sizer, *user_cards_box_sizer;
     wxStaticBox *static_box;
