@@ -50,9 +50,9 @@ void Network_Management_Page::update_user_cards(std::vector<System*> active_syst
 			if(!user_cards[id].is_active()){
 				user_cards[id].set_active();
 			}
-			user_cards[id].update(*system);
+			user_cards[id].update(system);
 		}else{
-			User_Card uc = User_Card(page, wxID_ANY, id, *system);
+			User_Card uc = User_Card(page, wxID_ANY, id, system);
 			uc.set_active();
 			user_cards_box_sizer->Add(uc.get_items(), 1, wxALL | wxEXPAND, 5);
 			user_cards[id] = uc;

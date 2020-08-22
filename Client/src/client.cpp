@@ -11,7 +11,6 @@ Client::Client(std::string user, std::string machine_id) {
 	if (socket_init() != 0) {
 		logger->add_error("socket init failed");
 	}
-
 	init();
 	username = user;
 	this->machine_id = machine_id;
@@ -54,7 +53,61 @@ void Client::recive_message() {
 	std::string package = "";
 	while(package != "SOCKET_DOWN"){
 		package = Communication_Protocol::recv_message(client_sock, logger);
+		run_commannd(package);
 	}
+}
+
+void Client::run_commannd(std::string command){
+	std::istringstream iss(command);
+	std::string type;
+	getline(iss, type, ';');
+
+	if (type == "SEND") {
+		std::string request_type;
+		getline(iss, request_type, ';');
+		if(request_type == "SYS_A"){
+			size_t number_of_systems;
+			std::string number_of_systems_str;
+			getline(iss, number_of_systems_str,';');
+			number_of_systems = std::stol(number_of_systems_str);
+			run_get_systems_active(number_of_systems);
+		}else if (request_type == "SYS_I"){
+			size_t number_of_systems;
+			std::string number_of_systems_str;
+			getline(iss, number_of_systems_str,';');
+			number_of_systems = std::stol(number_of_systems_str);
+			run_get_systems_inactive(number_of_systems);
+		}
+	}else if (type == "REQ") {
+		std::string request_type, user;
+		getline(iss, request_type, ';');
+		getline(iss, user, ';');
+	}
+}
+
+void Client::run_get_systems_active(size_t number_of_systems){
+	active_systems.clear();
+	for (size_t i = 0; i < number_of_systems; i++){
+		std::string serialization = Communication_Protocol::recv_message(this->client_sock, logger);
+		System *sys = new System(serialization);
+		active_systems.push_back(sys);
+	}
+}
+
+void Client::run_get_systems_inactive(size_t number_of_systems){
+	inactive_systems.clear();
+	for (size_t i = 0; i < number_of_systems; i++){
+		std::string machine_id = Communication_Protocol::recv_message(this->client_sock, logger);
+		inactive_systems.push_back(machine_id);
+	}
+}
+
+std::vector<System*> Client::get_active_systems(){
+	return this->active_systems;
+}
+
+std::vector<std::string> Client::get_inactive_systems(){
+	return this->inactive_systems;
 }
 
 Client::Client() {
@@ -165,6 +218,14 @@ void Client::init(){
 
     this->ip_std = ini.GetValue("Network", "server_ip");
 	this->port_number = std::stoi(ini.GetValue("Network",  "server_port"));
+}
+
+void Client::request_active_systems(){
+	send_message("REQ;SYS_A");
+}
+
+void Client::request_inactive_systems(){
+	send_message("REQ;SYS_I");
 }
 
 const char* Server_Down_Exception::what() const throw(){

@@ -85,11 +85,14 @@ void MainFrame::real_time(wxTimerEvent &e){
 			performance_page->update_gui();	
 		}
 	}
+	client->send_system_state(system);
+	if(client->get_role() == "Administrator"){
+		client->request_active_systems();
+		client->request_inactive_systems();
+		std::vector<System*> actives= client->get_active_systems();
+		std::vector<std::string> inactives = client->get_inactive_systems();
+		network_management_page->update_user_cards(actives, inactives);
 
-	
-
-	if(connected){
-		//client->send_system_state(system);
 	}
 }
 void MainFrame::shutdown(wxCommandEvent &e){

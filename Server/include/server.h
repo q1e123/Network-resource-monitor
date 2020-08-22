@@ -72,6 +72,10 @@ private:
 	void run_cmd(std::string cmd);
 	void cmd_sys(std::string serialization);
 	void cmd_log(std::string user, size_t number_of_logs);
+	void cmd_req_sys_a(std::string user);
+	void cmd_req_sys_i(std::string user);
+
+	System* build_system(int id);
 
 	size_t find_client(std::string user);
 

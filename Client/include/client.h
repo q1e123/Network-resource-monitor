@@ -63,6 +63,11 @@ public:
 	std::string get_server_name();
 	std::string get_user();
 	std::string get_role();
+	std::vector<System*> get_active_systems();
+	std::vector<std::string> get_inactive_systems();
+
+	void request_active_systems();
+	void request_inactive_systems();
 	
 	void send_system_state(System *system);
 	void send_log_file(Logger *logger);
@@ -72,6 +77,8 @@ private:
 	std::string role;
 	std::string machine_id;
 	std::string ip_std;
+	std::vector<System*> active_systems;
+	std::vector<std::string> inactive_systems;
 	
 	void recive_message();
 	int socket_init();
@@ -91,6 +98,10 @@ private:
 	Logger *logger;
 
 	void init();
+
+	void run_commannd(std::string command);
+	void run_get_systems_active(size_t number_of_systems);
+	void run_get_systems_inactive(size_t number_of_systems);
 };
 
 #endif

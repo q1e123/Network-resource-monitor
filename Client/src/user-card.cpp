@@ -2,23 +2,23 @@
 #include "colors.h"
 #include "fonts.h"
 
-User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System system){
+User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System *system){
 	sizer = new wxBoxSizer(wxVERTICAL);
 	card_static = new wxStaticBox(parent, id, "");
 	user_text = new wxStaticText(parent, wxID_ANY, user); 
 	user_text->SetForegroundColour(Colors::black);
 	user_text->SetFont(Fonts::h1);
-	os_text = new wxStaticText(parent, wxID_ANY, system.get_os()); 
+	os_text = new wxStaticText(parent, wxID_ANY, system->get_os()); 
 	os_text->SetForegroundColour(Colors::black);
 	os_text->SetFont(Fonts::normal);
 
 	std::string ram = "";
-	ram += "Total ram: " + std::to_string(system.get_total_ram()) + "\t";
-	ram += "Avalabile ram: " + std::to_string(system.get_avalabile_ram()) + "\t";
-	ram += "Used ram: " + std::to_string(system.get_used_ram());
+	ram += "Total ram: " + std::to_string(system->get_total_ram()) + "\t";
+	ram += "Avalabile ram: " + std::to_string(system->get_avalabile_ram()) + "\t";
+	ram += "Used ram: " + std::to_string(system->get_used_ram());
 
 	std::string cpu = "";
-	for(auto item : system.get_cpu_usage()){
+	for(auto item : system->get_cpu_usage()){
 		cpu+= item.first + ": " + std::to_string(item.second) + "%\t";
 	}
 
@@ -36,14 +36,14 @@ User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System s
 	card_sbox->Add(cpu_text, 1, wxALL | wxEXPAND, 5);
 }
 
-void User_Card::update(System system){
+void User_Card::update(System *system){
 	std::string ram = "";
-	ram += "Total ram: " + std::to_string(system.get_total_ram()) + "\t";
-	ram += "Avalabile ram: " + std::to_string(system.get_avalabile_ram()) + "\t";
-	ram += "Used ram: " + std::to_string(system.get_used_ram());
+	ram += "Total ram: " + std::to_string(system->get_total_ram()) + "\t";
+	ram += "Avalabile ram: " + std::to_string(system->get_avalabile_ram()) + "\t";
+	ram += "Used ram: " + std::to_string(system->get_used_ram());
 
 	std::string cpu = "";
-	for(auto item : system.get_cpu_usage()){
+	for(auto item : system->get_cpu_usage()){
 		cpu+= item.first + ": " + std::to_string(item.second) + "%\t";
 	}
 

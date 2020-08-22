@@ -76,10 +76,14 @@ void Server::start() {
 				break;
 		}
 		Communication_Protocol::send_message(client_sock, login_message, logger);
-
-		clients.push_back(client);
-		std::thread worker(&Server::recv_msg, this, client);
-		workers[client_sock] = std::move(worker);
+		if(login_message == "OK" || login_message == "OK_ADMIN"){
+			int system_id = database_manager.get_system_id_from(user);
+			database_manager.update_system_status(system_id, 1);
+			clients.push_back(client);
+			std::thread worker(&Server::recv_msg, this, client);
+			workers[client_sock] = std::move(worker);
+		}
+		
 		mtx.unlock();
 	}
 	for (auto client : clients) {
@@ -126,15 +130,20 @@ void Server::recv_msg(Client_Info client) {
 	logger->add("RECIVER STARTED FOR " + client.get_user());
 
 	std::string package;
-	while(package != "SOCKET_DOWN"){
-		package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-		run_cmd(package);
+	try{
+		while(package != "SOCKET_DOWN"){
+				package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+				run_cmd(package);
+		}
+	} catch (Client_Down_Exception e){
+			int system_id = database_manager.get_system_id_from(client.get_user());
+			database_manager.update_system_status(system_id, 0);
+			logger->add_network("CONN", "disconnection", client.get_ip());
+			mtx.lock(); 
+			disc_users += client.get_user() + ";";
+			remove_user(client.get_user());
+			mtx.unlock();
 	}
-	logger->add_network("CONN", "disconnection", client.get_ip());
-	mtx.lock();
-	disc_users += client.get_user() + ";";
-	remove_user(client.get_user());
-	mtx.unlock();
 }
 
 void Server::run_cmd(std::string cmd) {
@@ -148,14 +157,22 @@ void Server::run_cmd(std::string cmd) {
 		getline(iss, user, ';');
 		getline(iss, serialization);		
 		cmd_sys(serialization);
-	} else if (type == "LOG"){
+	} else if (type == "LOG") {
 		std::string user;
 		getline(iss, user, ';');
 		std::string log_size_str;
 		getline(iss, log_size_str, ';');
 		size_t log_size = std::stol(log_size_str);
 		cmd_log(user, log_size);
-	}else{
+	}else if (type == "REQ") {
+		std::string request_type, user;
+		getline(iss, request_type, ';');
+		getline(iss, user, ';');
+		if(request_type == "SYS_A"){
+			cmd_req_sys_a(user);
+		}else if (request_type == "SYS_I"){
+			cmd_req_sys_i(user);
+		}
 		
 	}
 	mtx.unlock();
@@ -169,12 +186,6 @@ void Server::cmd_sys(std::string serialization) {
 	database_manager.insert_usage_data(sys);
 }
 
-void Server::remove_user(std::string user) {
-	size_t pos = find_client(user);
-	clients.erase(clients.begin() + pos);
-	systems.erase(user);
-}
-
 void Server::cmd_log(std::string user, size_t number_of_logs){
 	size_t pos = find_client(user);
 	Client_Info client = clients[pos];
@@ -184,6 +195,37 @@ void Server::cmd_log(std::string user, size_t number_of_logs){
 		std::string serialization = log.substr(start + 7);
 		cmd_sys(serialization);
 	}
+}
+
+void Server::cmd_req_sys_a(std::string user){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+
+	std::vector<std::string> systems = database_manager.get_active_systems();
+	size_t number_of_systems = systems.size();
+	std::string message = "SEND;SYS_A;" + std::to_string(number_of_systems);
+	Communication_Protocol::send_message(client.get_socket_number() , message, logger);
+	for(auto sys : systems){
+		Communication_Protocol::send_message(client.get_socket_number(), sys, logger);
+	}
+}
+
+void Server::cmd_req_sys_i(std::string user){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+
+	std::vector<std::string> systems = database_manager.get_inactive_systems();
+	size_t number_of_systems = systems.size();
+	Communication_Protocol::send_message(client.get_socket_number() , std::to_string(number_of_systems), logger);
+	for(auto sys : systems){
+		Communication_Protocol::send_message(client.get_socket_number(), sys, logger);
+	}
+}
+
+void Server::remove_user(std::string user) {
+	size_t pos = find_client(user);
+	clients.erase(clients.begin() + pos);
+	systems.erase(user);
 }
 
 size_t Server::find_client(std::string user){	

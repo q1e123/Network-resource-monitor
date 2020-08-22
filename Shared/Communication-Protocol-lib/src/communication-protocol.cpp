@@ -19,7 +19,7 @@ size_t Communication_Protocol::get_size_from(std::string fixed_length_string) {
         size = std::stol(fixed_length_string);
     }
     catch (const std::exception& e) {
-        std::cerr << fixed_length_string << " " << e.what() << '\n';
+        std::cerr << "communication protocol: "<< e.what() << " " << fixed_length_string << '\n';
     }
 
     return size;

@@ -10,12 +10,12 @@
 
 class User_Card{
 public:
-	User_Card(wxWindow *parent, wxWindowID id, std::string user, System system);
+	User_Card(wxWindow *parent, wxWindowID id, std::string user, System *system);
 	User_Card();
 	void set_active();
 	void set_inactive();
 	wxStaticBoxSizer *get_items();
-	void update(System system);
+	void update(System *system);
 	bool is_active();
 private:
 	bool active;
