@@ -1,3 +1,3 @@
 SELECT user_role
 FROM Users
-WHERE user = :user AND machine_id =:machine_id;
+WHERE username = :user AND machine_id =:machine_id;

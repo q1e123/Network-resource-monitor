@@ -1,4 +1,5 @@
-SELECT TOP 1 id, total_ram, used_ram, free_ram, timestamp, current_user, operating_system
+SELECT id, total_ram, used_ram, free_ram, usage_timestamp, username, operating_system
 FROM Usage_Data
 WHERE system_id = :system_id
-ORDER BY timestamp DESC;
+ORDER BY usage_timestamp DESC
+LIMIT 1;

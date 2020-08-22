@@ -1,3 +1,3 @@
 SELECT machine_id
 FROM Systems
-WHERE status = 0;
+WHERE system_status = 0;

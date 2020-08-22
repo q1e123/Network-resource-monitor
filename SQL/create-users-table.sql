@@ -1,6 +1,6 @@
 CREATE TABLE Users(
     id int PRIMARY KEY AUTO_INCREMENT,
-    user varchar(256),
+    username varchar(256),
     user_role int,
     machine_id varchar(256),
     

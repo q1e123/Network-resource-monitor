@@ -1,2 +1,2 @@
-INSERT INTO Systems(machine_id, status)
+INSERT INTO Systems(machine_id, system_status)
 VALUES (:machine_id, 0);

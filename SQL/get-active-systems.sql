@@ -1,3 +1,3 @@
-SELECT id, operating_system
+SELECT id, system_status, machine_id
 FROM Systems
-WHERE status = 1;
+WHERE system_status = 1;

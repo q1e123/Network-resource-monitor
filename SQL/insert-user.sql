@@ -1,2 +1,2 @@
-INSERT INTO Users(user, user_role, machine_id)
+INSERT INTO Users(username, user_role, machine_id)
 VALUES (:user, :user_role, :machine_id);
