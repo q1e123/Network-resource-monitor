@@ -36,4 +36,12 @@ typedef struct DB_Systems{
     std::string machine_id;
 }DB_Systems;
 
+typedef struct DB_Users{
+    int id;
+    std::string username;
+    int user_rank;
+    std::strin machine_id;
+    int system_id;
+}
+
 #endif

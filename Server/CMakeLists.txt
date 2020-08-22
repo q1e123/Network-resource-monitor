@@ -20,6 +20,7 @@ include_directories(include
                     ../Shared/Communication-Protocol
                     ../Shared/System-lib/include
                     ../Shared/Communication-Protocol-lib/include
+                    ../Shared/Structs
 )
 
 file(GLOB SOURCES "src/*.cpp")
