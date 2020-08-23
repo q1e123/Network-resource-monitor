@@ -13,6 +13,7 @@ include_directories(include
                     ../Shared/Communication-Protocol-lib/include
                     ../Third-party/SimpleIni
                     ../Third-party/Mathplot/include
+                    ../Shared/Structs
 )
 file(GLOB SOURCES "src/*.cpp")
 

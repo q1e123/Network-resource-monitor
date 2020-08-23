@@ -40,8 +40,8 @@ typedef struct DB_Users{
     int id;
     std::string username;
     int user_rank;
-    std::strin machine_id;
+    std::string machine_id;
     int system_id;
-}
+}DB_Users;
 
 #endif
