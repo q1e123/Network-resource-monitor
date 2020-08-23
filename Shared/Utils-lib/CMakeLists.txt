@@ -7,6 +7,7 @@ ADD_DEFINITIONS(-DFELINE_DLL)
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/;${CMAKE_MODULE_PATH}")
 
 include_directories(include
+                    ../Structs
 )
 
 file(GLOB SRC_FILES "src/*.cpp")
