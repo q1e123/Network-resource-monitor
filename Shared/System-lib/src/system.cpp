@@ -116,15 +116,29 @@ System::System(std::string serialization){
 				break;
 			}
 			case 1:{
-				total_ram = std::stol(tmp);
+				try{
+					total_ram = std::stol(tmp);
+
+				}catch(const std::exception& e) {
+					std::cerr << "System serialization error: " << e.what() << " total ram = |" << tmp <<"|" <<  std::endl;
+				}
+				
 				break;
 			}
 			case 2:{
-				avalabile_ram = std::stol(tmp);
+				try{
+					avalabile_ram = std::stol(tmp);
+				}catch(const std::exception& e) {
+					std::cerr << "System serialization error: " << e.what() << " avalabile ram = |" << tmp <<"|" <<  std::endl;
+				}	
 				break;
 			}
 			case 3:{
-				used_ram = std::stol(tmp);
+				try{
+					used_ram = std::stol(tmp);
+				}catch(const std::exception& e) {
+					std::cerr << "System serialization error: " << e.what() << " used ram = |" << tmp <<"|" <<  std::endl;
+				}
 				break;
 			}				
 			case 4:{
@@ -148,8 +162,13 @@ System::System(std::string serialization){
 					getline(network_iss, interface, ':');
 					getline(network_iss, usage_rx, ':');
 					getline(network_iss, usage_tx, ':');
-					Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));
-					network_usage[interface] = usage;
+					try{
+						Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));
+						network_usage[interface] = usage;
+					}catch(const std::exception& e) {
+						std::cerr << "System serialization error: " << e.what() << " Network usage rx = |"
+						 << usage_rx <<"| tx = |" << usage_tx << "|" << std::endl;
+					}
 				}
 				break;
 			}

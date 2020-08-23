@@ -54,6 +54,15 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		main_notebook->AddPage(network_management_page->get_all(), "Network Management");
 	}
 	
+	std::vector<DB_Users> us;
+	DB_Users u;
+	u.id = 1;
+	u.machine_id = "Zzxc";
+	u.system_id = 1;
+	u.user_rank = 1;
+	u.username = "zxczczxc";
+	us.push_back(u);
+	network_management_page->update_user_cards(us);
     box_sizer->Add(main_notebook, 1, wxEXPAND);
     main_panel->SetSizer(box_sizer);
 }

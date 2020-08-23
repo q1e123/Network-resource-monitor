@@ -11,7 +11,7 @@
 
 #include "system.h"
 #include "user-card.h"
-#include "recv-package.h"
+#include "user-management-page.h"
 
 class Network_Management_Page{
 public:
@@ -26,17 +26,18 @@ public:
     size_t get_port();
 
     void set_user_role(std::string role);
+    void update_user_cards(std::vector<DB_Users> users);
 private:
     std::string user_role;
     System *system;
-   	wxNotebook *main_notebook;
+   	wxNotebook *notebook;
     wxNotebookPage *page;
-    wxBoxSizer *box_sizer, *connect_box_sizer, *user_cards_box_sizer;
+    wxBoxSizer *box_sizer, *user_cards_box_sizer;
     wxStaticBox *static_box;
     wxStaticText *header_text, *network_text, *user_role_text;
-    wxTextCtrl *ip_input, *port_input;
-    wxButton *connect_button;
     std::map<std::string, User_Card> user_cards;
+
+    User_Management_Page *user_management_page;
 
 };
 

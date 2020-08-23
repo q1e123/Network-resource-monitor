@@ -30,10 +30,10 @@ User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System *
 	cpu_text->SetFont(Fonts::normal);
 	card_sbox = new wxStaticBoxSizer(card_static, wxVERTICAL);
 
-	card_sbox->Add(user_text, 1, wxALL | wxEXPAND, 5);
-	card_sbox->Add(os_text, 1, wxALL | wxEXPAND, 5);
-	card_sbox->Add(ram_text, 1, wxALL | wxEXPAND, 5);
-	card_sbox->Add(cpu_text, 1, wxALL | wxEXPAND, 5);
+	card_sbox->Add(user_text, 0, wxALL | wxEXPAND, 5);
+	card_sbox->Add(os_text, 0, wxALL | wxEXPAND, 5);
+	card_sbox->Add(ram_text, 0, wxALL | wxEXPAND, 5);
+	card_sbox->Add(cpu_text, 0, wxALL | wxEXPAND, 5);
 }
 
 void User_Card::update(System *system){

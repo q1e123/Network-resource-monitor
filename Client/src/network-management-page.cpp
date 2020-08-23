@@ -10,15 +10,7 @@ Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, Syst
 
     page = new wxPanel(main_notebook, wxID_ANY);
 	box_sizer= new wxBoxSizer(wxVERTICAL);
-	connect_box_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-	ip_input = new wxTextCtrl(page,wxID_ANY,"127.0.0.1");
-	ip_input->SetForegroundColour(Colors::white);
-	port_input = new wxTextCtrl(page,wxID_ANY,"50005");
-	port_input->SetForegroundColour(Colors::white);
-	connect_button = new wxButton(page, GUI_ELEMENT_ID::BUTTON_CONNECT, "Connect");
-	connect_button->SetForegroundColour(Colors::black);
-	connect_button->SetBackgroundColour(Colors::light_green);
 	network_text = new wxStaticText(page,wxID_ANY,"");
 	network_text->SetFont(Fonts::h1);
 	network_text->SetForegroundColour(Colors::white);
@@ -28,14 +20,15 @@ Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, Syst
 	user_role_text->SetForegroundColour(Colors::white);
 	user_role_text->Hide();
 
-	connect_box_sizer->Add(ip_input, 0, wxALL | wxEXPAND, 5);
-	connect_box_sizer->Add(port_input, 0, wxALL | wxEXPAND, 5);
-	connect_box_sizer->Add(connect_button, 0, wxALL | wxEXPAND, 5);
+	notebook = new wxNotebook(page, wxID_ANY);
+
+	user_management_page = new User_Management_Page(notebook);
+	notebook->AddPage(user_management_page->get_all(), "User Management", true);
 	
 	box_sizer->Add(network_text, 0, wxALL, 5);
 	box_sizer->Add(user_role_text, 0, wxALL, 5);
+    box_sizer->Add(notebook, 1, wxEXPAND);
 
-	box_sizer->Add(connect_box_sizer, 0, wxALL, 5);
 	page->SetSizerAndFit(box_sizer);
 }
 
@@ -54,7 +47,7 @@ void Network_Management_Page::update_user_cards(std::vector<System*> active_syst
 		}else{
 			User_Card uc = User_Card(page, wxID_ANY, id, system);
 			uc.set_active();
-			user_cards_box_sizer->Add(uc.get_items(), 1, wxALL | wxEXPAND, 5);
+			user_cards_box_sizer->Add(uc.get_items(),0, wxALL | wxEXPAND, 5);
 			user_cards[id] = uc;
 		}
 	}
@@ -64,27 +57,19 @@ void Network_Management_Page::update_user_cards(std::vector<System*> active_syst
 	page->SetSizerAndFit(box_sizer);
 }
 
+void Network_Management_Page::update_user_cards(std::vector<DB_Users> users){
+	user_management_page->update_user_cards(users);
+}
+
+
 void Network_Management_Page::change_to_connected_gui(std::string server_name){
     network_text->SetLabel("Connected to: " + server_name);
 	network_text->Show();
 	user_role_text->SetLabel("Role: " + this->user_role);
 	user_role_text->Show();
-	port_input->Hide();
-	ip_input->Hide();
-	connect_button->Hide();
 	user_cards_box_sizer = new wxBoxSizer(wxVERTICAL);
-	box_sizer->Add(user_cards_box_sizer, 0, wxALL, 5);
+	box_sizer->Add(user_cards_box_sizer, 0, wxALL | wxEXPAND, 5);
 	page->SetSizerAndFit(box_sizer);
-}
-
-std::string Network_Management_Page::get_ip(){
-    std::string ip = ip_input->GetValue().ToStdString();
-    return ip;
-}
-
-size_t Network_Management_Page::get_port(){
-    size_t port = std::stol(port_input->GetValue().ToStdString());
-    return port;
 }
 
 void Network_Management_Page::set_user_role(std::string role){
