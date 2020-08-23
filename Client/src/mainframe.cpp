@@ -54,15 +54,6 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		main_notebook->AddPage(network_management_page->get_all(), "Network Management");
 	}
 	
-	std::vector<DB_Users> us;
-	DB_Users u;
-	u.id = 1;
-	u.machine_id = "Zzxc";
-	u.system_id = 1;
-	u.user_rank = 1;
-	u.username = "zxczczxc";
-	us.push_back(u);
-	network_management_page->update_user_cards(us);
     box_sizer->Add(main_notebook, 1, wxEXPAND);
     main_panel->SetSizer(box_sizer);
 }
@@ -98,9 +89,13 @@ void MainFrame::real_time(wxTimerEvent &e){
 	if(client->get_role() == "Administrator"){
 		client->request_active_systems();
 		client->request_inactive_systems();
+client->request_users();
+
 		std::vector<System*> actives= client->get_active_systems();
 		std::vector<std::string> inactives = client->get_inactive_systems();
 		network_management_page->update_user_cards(actives, inactives);
+		std::vector<DB_Users> users = client->get_users();
+		network_management_page->update_user_cards(users);
 
 	}
 }

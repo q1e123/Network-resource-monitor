@@ -31,6 +31,7 @@ typedef int SOCKET;
 
 #include "logger.h"
 #include "system.h"
+#include "database-structs.h"
 
 #define LOOPBACK_ADDR	"127.0.0.1"
 #define DEFAULT_PORT 50005
@@ -65,10 +66,12 @@ public:
 	std::string get_role();
 	std::vector<System*> get_active_systems();
 	std::vector<std::string> get_inactive_systems();
+	std::vector<DB_Users> get_users();
 
 	void request_active_systems();
 	void request_inactive_systems();
-	
+	void request_users();
+
 	void send_system_state(System *system);
 	void send_log_file(Logger *logger);
 
@@ -79,6 +82,7 @@ private:
 	std::string ip_std;
 	std::vector<System*> active_systems;
 	std::vector<std::string> inactive_systems;
+	std::vector<DB_Users> users;
 	
 	void recive_message();
 	int socket_init();
@@ -102,6 +106,7 @@ private:
 	void run_commannd(std::string command);
 	void run_get_systems_active(size_t number_of_systems);
 	void run_get_systems_inactive(size_t number_of_systems);
+	void run_get_users(size_t number_of_users);
 };
 
 #endif

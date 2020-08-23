@@ -232,7 +232,9 @@ void Server::cmd_req_users(std::string user){
 
 	std::vector<DB_Users> users = database_manager.get_all_users();
 	size_t number_of_systems = users.size();
-	Communication_Protocol::send_message(client.get_socket_number() , std::to_string(number_of_systems), logger);
+	std::string message = "SEND;USERS;" + std::to_string(number_of_systems);
+
+	Communication_Protocol::send_message(client.get_socket_number() , message, logger);
 	for(auto user : users){
 		std::string serialization = Database_Structs_Utils::serialize(user);
 		Communication_Protocol::send_message(client.get_socket_number(), serialization, logger);

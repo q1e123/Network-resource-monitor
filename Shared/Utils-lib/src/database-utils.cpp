@@ -1,8 +1,10 @@
 #include "database-utils.h"
 
+#include <sstream>
+#include <iostream>
 std::string Database_Structs_Utils::serialize(DB_Users user){
-    std::string serialization = "";
-    serialization += user.id + ";" + user.username + ";" + std::to_string(user.user_rank) + 
+    std::string serialization;
+    serialization = std::to_string(user.id) + ";" + user.username + ";" + std::to_string(user.user_rank) + 
                     ";" + user.machine_id + ";" + std::to_string(user.system_id);
     return serialization;
 }
@@ -19,6 +21,7 @@ DB_Users Database_Structs_Utils::deserialize_db_users(std::string serialization)
 
     std::string user_rank_str;
     getline(iss, user_rank_str, ';');
+
     int user_rank = std::stoi(user_rank_str);
 
     std::string machine_id;
@@ -26,6 +29,7 @@ DB_Users Database_Structs_Utils::deserialize_db_users(std::string serialization)
 
     std::string system_id_str;
     getline(iss, system_id_str, ';');
+
     int system_id = std::stoi(system_id_str);
 
     DB_Users db_user;

@@ -156,16 +156,20 @@ void Database_Manager::insert_users(){
     size_t number_of_users = std::stol(ini.GetValue("users", "number_of_users_to_be_created"));
     for (size_t i = 0; i < number_of_users; ++i){
         std::string object = "user" + std::to_string(i);
+
         std::string user_key = object + ".user";
         std::string user = ini.GetValue("users", user_key.c_str());
-        std::string user_role_key = object + ".user_role";
 
+        std::string user_role_key = object + ".user_role";
         int user_role = std::stoi(ini.GetValue("users", user_role_key.c_str()));
 
         std::string machine_id_key = object + ".machine_id";
         std::string machine_id = ini.GetValue("users", machine_id_key.c_str());
 
-        insert_user(user, user_role, machine_id);
+        std::string system_id_str = object + ".system_id";
+        int system_id = std::stoi(ini.GetValue("users", system_id_str.c_str()));
+
+        insert_user(user, user_role, machine_id, system_id);
     }
 }
 
@@ -227,13 +231,14 @@ void Database_Manager::insert_system(std::string machine_id){
     connection.close();
 }
 
-void Database_Manager::insert_user(std::string user, int user_role, std::string machine_id){
+void Database_Manager::insert_user(std::string user, int user_role, std::string machine_id, int system_id){
     connection.open(type, connection_string);
 
     int role;
 
     std::string query = get_query("../SQL/insert-user.sql");
-    connection << query, soci::use(user, "user"), soci::use(user_role, "user_role"),soci::use(machine_id, "machine_id");
+    connection << query, soci::use(user, "user"), soci::use(user_role, "user_role"),soci::use(machine_id, "machine_id"),
+                soci::use(system_id, "system_id");
 
     connection.close();
 }

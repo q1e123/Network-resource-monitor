@@ -27,7 +27,7 @@ public:
     void update_system_status(int system_id, int system_status);
 
     void insert_system(std::string machine_id);
-    void insert_user(std::string user, int user_role, std::string machine_id);
+    void insert_user(std::string user, int user_role, std::string machine_id, int system_id);
     void insert_usage_data(System *system);
     
     int get_system_id_from(std::string user);

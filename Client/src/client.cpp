@@ -5,6 +5,7 @@
 #include "SimpleIni.h"
 
 #include "communication-protocol.h"
+#include "database-utils.h"
 
 Client::Client(std::string user, std::string machine_id) {
 	logger = new Logger("network-logs.txt");
@@ -71,12 +72,18 @@ void Client::run_commannd(std::string command){
 			getline(iss, number_of_systems_str,';');
 			number_of_systems = std::stol(number_of_systems_str);
 			run_get_systems_active(number_of_systems);
-		}else if (request_type == "SYS_I"){
+		} else if (request_type == "SYS_I"){
 			size_t number_of_systems;
 			std::string number_of_systems_str;
 			getline(iss, number_of_systems_str,';');
 			number_of_systems = std::stol(number_of_systems_str);
 			run_get_systems_inactive(number_of_systems);
+		} else if (request_type == "USERS"){
+			size_t number_of_users;
+			std::string number_of_users_str;
+			getline(iss, number_of_users_str,';');
+			number_of_users = std::stol(number_of_users_str);
+			run_get_users(number_of_users);
 		}
 	}else if (type == "REQ") {
 		std::string request_type, user;
@@ -102,12 +109,25 @@ void Client::run_get_systems_inactive(size_t number_of_systems){
 	}
 }
 
+void Client::run_get_users(size_t number_of_users){
+	users.clear();
+	for (size_t i = 0; i < number_of_users; i++){
+		std::string serialization = Communication_Protocol::recv_message(this->client_sock, logger);
+		DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
+		users.push_back(db_user);
+	}
+}
+
 std::vector<System*> Client::get_active_systems(){
 	return this->active_systems;
 }
 
 std::vector<std::string> Client::get_inactive_systems(){
 	return this->inactive_systems;
+}
+
+std::vector<DB_Users> Client::get_users(){
+	return this->users;
 }
 
 Client::Client() {
@@ -226,6 +246,10 @@ void Client::request_active_systems(){
 
 void Client::request_inactive_systems(){
 	send_message("REQ;SYS_I");
+}
+
+void Client::request_users(){
+	send_message("REQ;USERS");
 }
 
 const char* Server_Down_Exception::what() const throw(){
