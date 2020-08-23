@@ -446,6 +446,30 @@ std::vector<std::string> Database_Manager::get_active_systems(){
     return active_systems;
 }
 
+std::vector<DB_Users> Database_Manager::get_all_users(){
+    std::vector<DB_Users> user_list;
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/get-all-users.sql");
+    soci::rowset<soci::row> rs = (connection.prepare << query); 
+ 
+    for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) { 
+        const soci::row& r = *it;
+        DB_Users db_user;
+        db_user.id = r.get<int>(0);
+        db_user.username = r.get<std::string>(1);
+        db_user.user_rank = r.get<int>(2);
+        db_user.machine_id = r.get<std::string>(3);
+        db_user.system_id = r.get<int>(4);
+
+        user_list.push_back(db_user);
+    } 
+
+    connection.close();
+
+    return user_list;
+}
+
 const char* Database_Exception::what() const throw(){
     return "Database error";
 }

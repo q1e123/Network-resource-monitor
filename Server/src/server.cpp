@@ -1,11 +1,13 @@
+#include "server.h"
+
 #include <iostream>
 #include <chrono>
 
 #include "communication-protocol.h"
+#include "database-utils.h"
 
 #define WAIT_PERIOD std::chrono::milliseconds(500)
 
-#include "server.h"
 
 Server::Server(std::string name, size_t sock) {
 	logger = new Logger("server-logs.txt");
@@ -170,8 +172,10 @@ void Server::run_cmd(std::string cmd) {
 		getline(iss, user, ';');
 		if(request_type == "SYS_A"){
 			cmd_req_sys_a(user);
-		}else if (request_type == "SYS_I"){
+		} else if (request_type == "SYS_I"){
 			cmd_req_sys_i(user);
+		} else if (request_type == "USERS"){
+			cmd_req_users(user);
 		}
 		
 	}
@@ -219,6 +223,19 @@ void Server::cmd_req_sys_i(std::string user){
 	Communication_Protocol::send_message(client.get_socket_number() , std::to_string(number_of_systems), logger);
 	for(auto sys : systems){
 		Communication_Protocol::send_message(client.get_socket_number(), sys, logger);
+	}
+}
+
+void Server::cmd_req_users(std::string user){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+
+	std::vector<DB_Users> users = database_manager.get_all_users();
+	size_t number_of_systems = users.size();
+	Communication_Protocol::send_message(client.get_socket_number() , std::to_string(number_of_systems), logger);
+	for(auto user : users){
+		std::string serialization = Database_Structs_Utils::serialize(user);
+		Communication_Protocol::send_message(client.get_socket_number(), serialization, logger);
 	}
 }
 

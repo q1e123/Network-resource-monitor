@@ -74,6 +74,7 @@ private:
 	void cmd_log(std::string user, size_t number_of_logs);
 	void cmd_req_sys_a(std::string user);
 	void cmd_req_sys_i(std::string user);
+	void cmd_req_users(std::string user);
 
 	System* build_system(int id);
 

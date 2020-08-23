@@ -34,6 +34,7 @@ public:
 
     std::vector<std::string> get_active_systems();
     std::vector<std::string> get_inactive_systems();
+    std::vector<DB_Users> get_all_users();
 
 
 private:
