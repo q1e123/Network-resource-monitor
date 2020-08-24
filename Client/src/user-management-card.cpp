@@ -72,3 +72,14 @@ DB_Users User_Management_Card::get_db_user(){
 	}
     return db_user;
 }
+
+void User_Management_Card::update(DB_Users db_user){
+	this->db_user = db_user;
+	machine_id_input->SetValue(db_user.machine_id);
+	system_id_input->SetValue(std::to_string(db_user.system_id));
+	if(db_user.user_rank == 1){
+		user_role_checkbox->SetValue(true);
+	} else if (db_user.user_rank == 0) {
+		user_role_checkbox->SetValue(false);
+	}
+}

@@ -16,6 +16,9 @@ public:
 	wxStaticBoxSizer *get_items();
 	
     DB_Users get_db_user();
+
+	void update(DB_Users db_users);
+
 private:
     DB_Users db_user;
 	bool active;

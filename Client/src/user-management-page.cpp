@@ -43,6 +43,8 @@ void User_Management_Page::update_user_cards(std::vector<DB_Users> users){
 		std::string username = user.username;
 		if(user_cards.find(username) == user_cards.end()){
             add(user);
+		}else{
+			user_cards[username]->update(user);
 		}
 	}
 	scrolled_panel->FitInside();
