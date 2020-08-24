@@ -21,6 +21,7 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_BUTTON(BUTTON_SORT_PROC_PID, MainFrame::sort_by_pid)
 	EVT_BUTTON(BUTTON_SORT_PROC_CPU, MainFrame::sort_by_cpu)
 	EVT_BUTTON(BUTTON_SORT_PROC_RAM, MainFrame::sort_by_ram)
+	EVT_BUTTON(BUTTON_USER_MANAGEMENT_SUMBIT_CHANGES, MainFrame::send_update_users)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -57,6 +58,10 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
     box_sizer->Add(main_notebook, 1, wxEXPAND);
     main_panel->SetSizer(box_sizer);
 }
+MainFrame::~MainFrame(){
+	delete system;
+	system = nullptr;
+}
 
 void MainFrame::exit(wxCommandEvent &e){
 	Close(TRUE);
@@ -89,14 +94,13 @@ void MainFrame::real_time(wxTimerEvent &e){
 	if(client->get_role() == "Administrator"){
 		client->request_active_systems();
 		client->request_inactive_systems();
-		client->request_users();
 
 		std::vector<System*> actives= client->get_active_systems();
 		std::vector<std::string> inactives = client->get_inactive_systems();
 		network_management_page->update_user_cards(actives, inactives);
-		std::vector<DB_Users> users = client->get_users();
-		network_management_page->update_user_cards(users);
-
+			client->request_users();
+			std::vector<DB_Users> users = client->get_users();
+			network_management_page->update_user_cards(users);
 	}
 }
 void MainFrame::shutdown(wxCommandEvent &e){
@@ -180,7 +184,7 @@ void MainFrame::connect(){
 	client->start_reciver();
 }
 
-MainFrame::~MainFrame(){
-	delete system;
-	system = nullptr;
+void MainFrame::send_update_users(wxCommandEvent &e){
+	std::vector<DB_Users> user_list;
+	this->client->update_users(user_list);
 }

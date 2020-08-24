@@ -254,7 +254,6 @@ void Client::request_users(){
 
 void Client::update_users(std::vector<DB_Users> users){
 	this->users = users;
-	std::vector<DB_Users> users = database_manager.get_all_users();
 	size_t number_of_systems = users.size();
 	std::string message = "UPDATE;USERS;" + std::to_string(number_of_systems);
 

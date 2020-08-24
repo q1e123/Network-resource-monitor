@@ -479,7 +479,7 @@ void Database_Manager::update_user(DB_Users db_users){
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/update-user.sql");
-    connection << query, soci::use(db_users.id, ":id"), soci::use(db_users.user_rank. "user_role"),
+    connection << query, soci::use(db_users.id, ":id"), soci::use(db_users.user_rank, "user_role"),
                 soci::use(db_users.machine_id, "machine_id"), soci::use(db_users.system_id, ":system_id");
 
     connection.close();

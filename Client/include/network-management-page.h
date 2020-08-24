@@ -27,6 +27,8 @@ public:
 
     void set_user_role(std::string role);
     void update_user_cards(std::vector<DB_Users> users);
+
+    std::vector<DB_Users> get_db_users();
 private:
     std::string user_role;
     System *system;

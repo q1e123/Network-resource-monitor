@@ -183,7 +183,10 @@ void Server::run_cmd(std::string cmd) {
 		getline(iss, update_type, ';');
 		getline(iss, user, ';');
 		if(update_type == "USERS"){
-			cmd_update_users(user);
+			std::string number_of_users_str;
+			getline(iss, number_of_users_str,';');
+			size_t number_of_users = std::stol(number_of_users_str);
+			cmd_update_users(user, number_of_users);
 		}
 
 	}
@@ -248,13 +251,9 @@ void Server::cmd_req_users(std::string user){
 		Communication_Protocol::send_message(client.get_socket_number(), serialization, logger);
 	}
 }
-void Server::cmd_update_users(std::string user){
+void Server::cmd_update_users(std::string user, size_t number_of_users){
 	size_t pos = find_client(user);
 	Client_Info client = clients[pos];
-
-	std::string number_of_users_str;
-	getline(iss, number_of_users_str,';');
-	number_of_users = std::stol(number_of_users_str);
 
 	for (size_t i = 0; i < number_of_users; i++){
 		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);

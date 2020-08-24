@@ -16,6 +16,7 @@
 #include "process-sort-type.h"
 #include "performance-page.h"
 #include "network-management-page.h"
+
 class MainFrame : public wxFrame{
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
@@ -28,6 +29,7 @@ public:
 	void sort_by_pid(wxCommandEvent &e);
 	void sort_by_cpu(wxCommandEvent &e);
 	void sort_by_ram(wxCommandEvent &e);
+	void send_update_users(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 

@@ -75,3 +75,7 @@ void Network_Management_Page::change_to_connected_gui(std::string server_name){
 void Network_Management_Page::set_user_role(std::string role){
 	this->user_role = role;
 }
+
+std::vector<DB_Users> Network_Management_Page::get_db_users(){
+	return this->user_management_page->get_db_users();
+}
