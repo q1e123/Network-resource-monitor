@@ -19,7 +19,7 @@ public:
 private:
     DB_Users db_user;
 	bool active;
-	wxBoxSizer *sizer;
+	wxBoxSizer *sizer, *machine_id_sizer, *system_id_sizer;
 	wxStaticBox *card_static;
 	wxStaticBoxSizer *card_sbox;
     wxTextCtrl *machine_id_input, *system_id_input;

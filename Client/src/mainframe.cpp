@@ -89,7 +89,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	if(client->get_role() == "Administrator"){
 		client->request_active_systems();
 		client->request_inactive_systems();
-client->request_users();
+		client->request_users();
 
 		std::vector<System*> actives= client->get_active_systems();
 		std::vector<std::string> inactives = client->get_inactive_systems();

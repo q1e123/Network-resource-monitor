@@ -25,10 +25,13 @@ public:
 private:
     std::string user_role;
     wxNotebookPage *page;
-    wxBoxSizer *box_sizer, *user_cards_box_sizer;
+    wxBoxSizer *box_sizer, *scrolled_sizer;
     wxStaticBox *static_box;
     wxStaticText *header_text, *network_text, *user_role_text;
     wxButton *submit_changes;
+    wxScrolledWindow *scrolled_panel;
+
+
     std::map<std::string, User_Management_Card*> user_cards;
     void add(DB_Users db_user);
 
