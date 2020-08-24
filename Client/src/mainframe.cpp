@@ -22,6 +22,7 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_BUTTON(BUTTON_SORT_PROC_CPU, MainFrame::sort_by_cpu)
 	EVT_BUTTON(BUTTON_SORT_PROC_RAM, MainFrame::sort_by_ram)
 	EVT_BUTTON(BUTTON_USER_MANAGEMENT_SUMBIT_CHANGES, MainFrame::send_update_users)
+	EVT_BUTTON(BUTTON_USER_MANAGEMENT_REFRESH, MainFrame::send_req_users)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -98,9 +99,6 @@ void MainFrame::real_time(wxTimerEvent &e){
 		std::vector<System*> actives= client->get_active_systems();
 		std::vector<std::string> inactives = client->get_inactive_systems();
 		network_management_page->update_user_cards(actives, inactives);
-			client->request_users();
-			std::vector<DB_Users> users = client->get_users();
-			network_management_page->update_user_cards(users);
 	}
 }
 void MainFrame::shutdown(wxCommandEvent &e){
@@ -185,6 +183,12 @@ void MainFrame::connect(){
 }
 
 void MainFrame::send_update_users(wxCommandEvent &e){
-	std::vector<DB_Users> user_list;
+	std::vector<DB_Users> user_list = network_management_page->get_db_users();
 	this->client->update_users(user_list);
+}
+
+void MainFrame::send_req_users(wxCommandEvent &e){
+	this->client->request_users();
+	std::vector<DB_Users> users = client->get_users();
+	network_management_page->update_user_cards(users);
 }

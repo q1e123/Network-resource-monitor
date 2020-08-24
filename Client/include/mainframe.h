@@ -30,6 +30,7 @@ public:
 	void sort_by_cpu(wxCommandEvent &e);
 	void sort_by_ram(wxCommandEvent &e);
 	void send_update_users(wxCommandEvent &e);
+	void send_req_users(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 

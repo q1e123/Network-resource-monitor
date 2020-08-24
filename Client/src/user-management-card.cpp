@@ -65,6 +65,10 @@ wxStaticBoxSizer* User_Management_Card::get_items(){
 DB_Users User_Management_Card::get_db_user(){
     this->db_user.machine_id = machine_id_input->GetValue().ToStdString();
     this->db_user.system_id = std::stoi(system_id_input->GetValue().ToStdString());
-
+	if(user_role_checkbox->GetValue()){
+		this->db_user.user_rank = 1;
+	} else {
+		this->db_user.user_rank = 0;
+	}
     return db_user;
 }

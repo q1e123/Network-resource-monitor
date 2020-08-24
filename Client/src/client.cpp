@@ -241,21 +241,21 @@ void Client::init(){
 }
 
 void Client::request_active_systems(){
-	send_message("REQ;SYS_A");
+	send_message("REQ;SYS_A;" + username);
 }
 
 void Client::request_inactive_systems(){
-	send_message("REQ;SYS_I");
+	send_message("REQ;SYS_I;" + username);
 }
 
 void Client::request_users(){
-	send_message("REQ;USERS");
+	send_message("REQ;USERS;" + username);
 }
 
 void Client::update_users(std::vector<DB_Users> users){
 	this->users = users;
 	size_t number_of_systems = users.size();
-	std::string message = "UPDATE;USERS;" + std::to_string(number_of_systems);
+	std::string message = "UPDATE;USERS;" + username +  ";" + std::to_string(number_of_systems);
 
 	Communication_Protocol::send_message(this->client_sock, message, logger);
 	for(auto user : users){

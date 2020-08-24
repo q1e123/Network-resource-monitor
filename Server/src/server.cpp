@@ -257,6 +257,7 @@ void Server::cmd_update_users(std::string user, size_t number_of_users){
 
 	for (size_t i = 0; i < number_of_users; i++){
 		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+		std::cout <<serialization << std::endl;
 		DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
 		database_manager.update_user(db_user);
 	}
