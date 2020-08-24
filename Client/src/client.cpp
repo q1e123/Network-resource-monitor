@@ -252,6 +252,19 @@ void Client::request_users(){
 	send_message("REQ;USERS");
 }
 
+void Client::update_users(std::vector<DB_Users> users){
+	this->users = users;
+	std::vector<DB_Users> users = database_manager.get_all_users();
+	size_t number_of_systems = users.size();
+	std::string message = "UPDATE;USERS;" + std::to_string(number_of_systems);
+
+	Communication_Protocol::send_message(this->client_sock, message, logger);
+	for(auto user : users){
+		std::string serialization = Database_Structs_Utils::serialize(user);
+		Communication_Protocol::send_message(this->client_sock, serialization, logger);
+	}
+}
+
 const char* Server_Down_Exception::what() const throw(){
     return "Server down";
 }

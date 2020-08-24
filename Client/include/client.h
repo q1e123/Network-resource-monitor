@@ -74,6 +74,7 @@ public:
 
 	void send_system_state(System *system);
 	void send_log_file(Logger *logger);
+	void update_users(std::vector<DB_Users> users);
 
 private:
 	std::string server_name;
