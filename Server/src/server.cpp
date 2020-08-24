@@ -178,6 +178,14 @@ void Server::run_cmd(std::string cmd) {
 			cmd_req_users(user);
 		}
 		
+	} else if (type == "UPDATE") {
+		std::string update_type, user;
+		getline(iss, update_type, ';');
+		getline(iss, user, ';');
+		if(update_type == "USERS"){
+			cmd_update_users(user);
+		}
+
 	}
 	mtx.unlock();
 }
@@ -238,6 +246,20 @@ void Server::cmd_req_users(std::string user){
 	for(auto user : users){
 		std::string serialization = Database_Structs_Utils::serialize(user);
 		Communication_Protocol::send_message(client.get_socket_number(), serialization, logger);
+	}
+}
+void Server::cmd_update_users(std::string user){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+
+	std::string number_of_users_str;
+	getline(iss, number_of_users_str,';');
+	number_of_users = std::stol(number_of_users_str);
+
+	for (size_t i = 0; i < number_of_users; i++){
+		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+		DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
+		database_manager.update_user(db_user);
 	}
 }
 

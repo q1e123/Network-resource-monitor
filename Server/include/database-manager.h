@@ -25,6 +25,7 @@ public:
     int get_user_role(std::string user, std::string machine_id);
     void update_user_role(std::string user, int user_role);
     void update_system_status(int system_id, int system_status);
+    void update_user(DB_Users db_users);
 
     void insert_system(std::string machine_id);
     void insert_user(std::string user, int user_role, std::string machine_id, int system_id);

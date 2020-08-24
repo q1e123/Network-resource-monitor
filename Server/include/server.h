@@ -75,6 +75,7 @@ private:
 	void cmd_req_sys_a(std::string user);
 	void cmd_req_sys_i(std::string user);
 	void cmd_req_users(std::string user);
+	void cmd_update_users(std::string user);
 
 	System* build_system(int id);
 
