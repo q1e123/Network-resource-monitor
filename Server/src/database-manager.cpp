@@ -483,6 +483,28 @@ void Database_Manager::update_user(DB_Users db_users){
     connection.close();
 }
 
+std::vector<DB_Systems> Database_Manager::get_all_systems(){
+    std::vector<DB_Users> system_list;
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/get-all-systems.sql");
+    soci::rowset<soci::row> rs = (connection.prepare << query); 
+ 
+    for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) { 
+        const soci::row& r = *it;
+        DB_Systems db_systems;
+        db_systems.id = r.get<int>(0);
+        db_systems.status = r.get<int>(1);
+        db_systems.machine_id = r.get<std::string>(2);
+
+        system_list.push_back(db_systems);
+    } 
+
+    connection.close();
+
+    return system_list;
+}
+
 const char* Database_Exception::what() const throw(){
     return "Database error";
 }
