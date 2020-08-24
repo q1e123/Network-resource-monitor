@@ -12,6 +12,7 @@
 #include "system.h"
 #include "user-card.h"
 #include "user-management-page.h"
+#include "system-management-page.h"
 
 class Network_Management_Page{
 public:
@@ -40,6 +41,7 @@ private:
     std::map<std::string, User_Card> user_cards;
 
     User_Management_Page *user_management_page;
+    System_Management_Page *system_management_page;
 
 };
 

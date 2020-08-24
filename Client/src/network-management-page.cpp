@@ -24,6 +24,10 @@ Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, Syst
 
 	user_management_page = new User_Management_Page(notebook);
 	notebook->AddPage(user_management_page->get_all(), "User Management", true);
+
+	system_management_page = new System_Management_Page(notebook);
+	notebook->AddPage(system_management_page->get_all(), "System Management");
+
 	
 	box_sizer->Add(network_text, 0, wxALL, 5);
 	box_sizer->Add(user_role_text, 0, wxALL, 5);
