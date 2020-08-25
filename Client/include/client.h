@@ -67,14 +67,17 @@ public:
 	std::vector<System*> get_active_systems();
 	std::vector<std::string> get_inactive_systems();
 	std::vector<DB_Users> get_users();
+	std::vector<DB_Systems> get_systems();
 
 	void request_active_systems();
 	void request_inactive_systems();
 	void request_users();
+	void request_systems();
 
 	void send_system_state(System *system);
 	void send_log_file(Logger *logger);
 	void update_users(std::vector<DB_Users> users);
+	void update_systems(std::vector<DB_Systems> systems);
 
 private:
 	std::string server_name;
@@ -84,7 +87,8 @@ private:
 	std::vector<System*> active_systems;
 	std::vector<std::string> inactive_systems;
 	std::vector<DB_Users> users;
-	
+	std::vector<DB_Systems> systems;
+
 	void recive_message();
 	int socket_init();
 	int socket_quit();
@@ -108,6 +112,8 @@ private:
 	void run_get_systems_active(size_t number_of_systems);
 	void run_get_systems_inactive(size_t number_of_systems);
 	void run_get_users(size_t number_of_users);
+	void run_get_systems(size_t number_of_systems);
+
 };
 
 #endif

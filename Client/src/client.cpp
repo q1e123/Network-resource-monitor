@@ -72,18 +72,24 @@ void Client::run_commannd(std::string command){
 			getline(iss, number_of_systems_str,';');
 			number_of_systems = std::stol(number_of_systems_str);
 			run_get_systems_active(number_of_systems);
-		} else if (request_type == "SYS_I"){
+		} else if (request_type == "SYS_I") {
 			size_t number_of_systems;
 			std::string number_of_systems_str;
 			getline(iss, number_of_systems_str,';');
 			number_of_systems = std::stol(number_of_systems_str);
 			run_get_systems_inactive(number_of_systems);
-		} else if (request_type == "USERS"){
+		} else if (request_type == "USERS") {
 			size_t number_of_users;
 			std::string number_of_users_str;
 			getline(iss, number_of_users_str,';');
 			number_of_users = std::stol(number_of_users_str);
 			run_get_users(number_of_users);
+		} else if (request_type == "SYSTEMS") {
+			size_t number_of_systems;
+			std::string number_of_systems_str;
+			getline(iss, number_of_systems_str,';');
+			number_of_systems = std::stol(number_of_systems_str);
+			run_get_systems(number_of_systems);
 		}
 	}else if (type == "REQ") {
 		std::string request_type, user;
@@ -115,6 +121,15 @@ void Client::run_get_users(size_t number_of_users){
 		std::string serialization = Communication_Protocol::recv_message(this->client_sock, logger);
 		DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
 		users.push_back(db_user);
+	}
+}
+
+void Client::run_get_systems(size_t number_of_systems){
+	systems.clear();
+	for (size_t i = 0; i < number_of_systems; ++i){
+		std::string serialization = Communication_Protocol::recv_message(this->client_sock, logger);
+		DB_Systems db_systems = Database_Structs_Utils::deserialize_db_system(serialization);
+		systems.push_back(db_systems);
 	}
 }
 
@@ -158,6 +173,10 @@ std::string Client::get_server_name() {
 
 std::string Client::get_role(){
 	return role;
+}
+
+std::vector<DB_Systems> Client::get_systems(){
+	return this->systems;
 }
 
 int Client::socket_init() {
@@ -252,6 +271,10 @@ void Client::request_users(){
 	send_message("REQ;USERS;" + username);
 }
 
+void Client::request_systems(){
+	send_message("REQ;SYSTEMS;" + username);
+}
+
 void Client::update_users(std::vector<DB_Users> users){
 	this->users = users;
 	size_t number_of_systems = users.size();
@@ -260,6 +283,18 @@ void Client::update_users(std::vector<DB_Users> users){
 	Communication_Protocol::send_message(this->client_sock, message, logger);
 	for(auto user : users){
 		std::string serialization = Database_Structs_Utils::serialize(user);
+		Communication_Protocol::send_message(this->client_sock, serialization, logger);
+	}
+}
+
+void Client::update_systems(std::vector<DB_Systems> systems){
+	this->systems = systems;
+	size_t number_of_systems = users.size();
+	std::string message = "UPDATE;SYSTEMS;" + username +  ";" + std::to_string(number_of_systems);
+
+	Communication_Protocol::send_message(this->client_sock, message, logger);
+	for(auto sys : systems){
+		std::string serialization = Database_Structs_Utils::serialize(sys);
 		Communication_Protocol::send_message(this->client_sock, serialization, logger);
 	}
 }
