@@ -172,11 +172,13 @@ void Server::run_cmd(std::string cmd) {
 		getline(iss, user, ';');
 		if(request_type == "SYS_A"){
 			cmd_req_sys_a(user);
-		} else if (request_type == "SYS_I"){
+		} else if (request_type == "SYS_I") {
 			cmd_req_sys_i(user);
-		} else if (request_type == "USERS"){
+		} else if (request_type == "USERS") {
 			cmd_req_users(user);
-		}
+		} else if (request_type == "SYSTEMS") {
+			cmd_req_systems(user);
+		} 
 		
 	} else if (type == "UPDATE") {
 		std::string update_type, user;
@@ -187,6 +189,11 @@ void Server::run_cmd(std::string cmd) {
 			getline(iss, number_of_users_str,';');
 			size_t number_of_users = std::stol(number_of_users_str);
 			cmd_update_users(user, number_of_users);
+		} else if (update_type == "SYSTEMS") {
+			std::string number_of_systems_str;
+			getline(iss, number_of_systems_str,';');
+			size_t number_of_systems = std::stol(number_of_systems_str);
+			cmd_update_users(user, number_of_systems);
 		}
 
 	}
@@ -242,8 +249,8 @@ void Server::cmd_req_users(std::string user){
 	Client_Info client = clients[pos];
 
 	std::vector<DB_Users> users = database_manager.get_all_users();
-	size_t number_of_systems = users.size();
-	std::string message = "SEND;USERS;" + std::to_string(number_of_systems);
+	size_t number_of_users = users.size();
+	std::string message = "SEND;USERS;" + std::to_string(number_of_users);
 
 	Communication_Protocol::send_message(client.get_socket_number() , message, logger);
 	for(auto user : users){
@@ -251,15 +258,43 @@ void Server::cmd_req_users(std::string user){
 		Communication_Protocol::send_message(client.get_socket_number(), serialization, logger);
 	}
 }
+
+void Server::cmd_req_systems(std::string user){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+
+	std::vector<DB_Systems> system_list = database_manager.get_all_systems();
+	size_t number_of_systems = system_list.size();
+	std::string message = "SEND;SYSTEMS;" + std::to_string(number_of_systems);
+
+	Communication_Protocol::send_message(client.get_socket_number() , message, logger);
+	for(auto db_system : system_list){
+		std::string serialization = Database_Structs_Utils::serialize(db_system);
+		Communication_Protocol::send_message(client.get_socket_number(), serialization, logger);
+	}
+}
+
 void Server::cmd_update_users(std::string user, size_t number_of_users){
 	size_t pos = find_client(user);
 	Client_Info client = clients[pos];
 
-	for (size_t i = 0; i < number_of_users; i++){
+	for (size_t i = 0; i < number_of_users; ++i){
 		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
 		std::cout <<serialization << std::endl;
 		DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
 		database_manager.update_user(db_user);
+	}
+}
+
+void Server::cmd_update_systems(std::string user, size_t number_of_systems){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+
+	for (size_t i = 0; i < number_of_systems; ++i){
+		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+		std::cout << serialization << std::endl;
+		DB_Systems db_systems = Database_Structs_Utils::deserialize_db_system(serialization);
+		database_manager.update_system(db_systems);
 	}
 }
 

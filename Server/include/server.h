@@ -75,8 +75,10 @@ private:
 	void cmd_req_sys_a(std::string user);
 	void cmd_req_sys_i(std::string user);
 	void cmd_req_users(std::string user);
+	void cmd_req_systems(std::string user);
 	void cmd_update_users(std::string user, size_t number_of_users);
-
+	void cmd_update_systems(std::string user, size_t number_of_systems);
+	
 	System* build_system(int id);
 
 	size_t find_client(std::string user);
