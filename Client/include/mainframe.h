@@ -31,6 +31,8 @@ public:
 	void sort_by_ram(wxCommandEvent &e);
 	void send_update_users(wxCommandEvent &e);
 	void send_req_users(wxCommandEvent &e);
+	void send_update_systems(wxCommandEvent &e);
+	void send_req_systems(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 

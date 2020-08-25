@@ -192,3 +192,14 @@ void MainFrame::send_req_users(wxCommandEvent &e){
 	std::vector<DB_Users> users = client->get_users();
 	network_management_page->update_user_cards(users);
 }
+
+void MainFrame::send_update_systems(wxCommandEvent &e){
+	std::vector<DB_Systems> system_list = network_management_page->get_db_systems();
+	this->client->update_systems(system_list);
+}
+
+void MainFrame::send_req_systems(wxCommandEvent &e){
+	this->client->request_systems();
+	std::vector<DB_Systems> systems = client->get_systems();
+	network_management_page->update_system_cards(systems);
+}
