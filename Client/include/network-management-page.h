@@ -45,6 +45,7 @@ private:
 
     User_Management_Page *user_management_page;
     System_Management_Page *system_management_page;
+    Add_User_From *add_user_form;
 
 };
 

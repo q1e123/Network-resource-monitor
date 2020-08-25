@@ -12,6 +12,7 @@
 #include "system.h"
 #include "user-management-card.h"
 #include "database-structs.h"
+#include "add-user-form.h"
 
 class User_Management_Page{
 public:
@@ -26,6 +27,9 @@ public:
 
 private:
     std::string user_role;
+
+	Add_User_From *add_user_form;
+
     wxNotebookPage *page;
     wxBoxSizer *box_sizer, *scrolled_sizer, *buttons_sizer;
     wxStaticBox *static_box;

@@ -1,3 +1,4 @@
-SELECT user_role
+SELECT Users.user_role
 FROM Users
-WHERE username = :user AND machine_id =:machine_id;
+INNER JOIN Systems On Users.system_id = Systems.id
+WHERE username = :user AND Systems.machine_id = :machine_id;

@@ -6,6 +6,7 @@
 #endif
  
 #include <string>
+
 #include "database-structs.h"
 
 class User_Management_Card{
@@ -21,7 +22,6 @@ public:
 
 private:
     DB_Users db_user;
-	bool active;
 	wxBoxSizer *sizer, *machine_id_sizer, *system_id_sizer;
 	wxStaticBox *card_static;
 	wxStaticBoxSizer *card_sbox;

@@ -163,13 +163,15 @@ void Database_Manager::insert_users(){
         std::string user_role_key = object + ".user_role";
         int user_role = std::stoi(ini.GetValue("users", user_role_key.c_str()));
 
-        std::string machine_id_key = object + ".machine_id";
-        std::string machine_id = ini.GetValue("users", machine_id_key.c_str());
-
         std::string system_id_str = object + ".system_id";
         int system_id = std::stoi(ini.GetValue("users", system_id_str.c_str()));
 
-        insert_user(user, user_role, machine_id, system_id);
+        DB_Users db_users;
+        db_users.username = user;
+        db_users.user_role = user_role;
+        db_users.system_id = system_id;
+
+        insert_user(db_users);
     }
 }
 
@@ -191,7 +193,8 @@ int Database_Manager::get_user_role(std::string user, std::string machine_id){
     soci::indicator ind;
 
     std::string query = get_query("../SQL/get-user-role.sql");
-    connection << query, soci::into(role, ind), soci::use(user, "user"), soci::use(machine_id, "machine_id");
+    connection << query, soci::into(role, ind), soci::use(user, "user"),
+                soci::use(machine_id, "machine_id");
 
     connection.close();
 
@@ -200,16 +203,6 @@ int Database_Manager::get_user_role(std::string user, std::string machine_id){
     }
     return -1;
 }
-
-void Database_Manager::update_user_role(std::string user, int user_role){
-    connection.open(type, connection_string);
-
-    std::string query = get_query("../SQL/uptate-user-role.sql");
-    connection << query, soci::use(user, "user"), soci::use(user_role, "user_role");
-
-    connection.close();
-}
-
 
 void Database_Manager::update_system_status(int system_id, int system_status){
     connection.open(type, connection_string);
@@ -231,14 +224,14 @@ void Database_Manager::insert_system(std::string machine_id){
     connection.close();
 }
 
-void Database_Manager::insert_user(std::string user, int user_role, std::string machine_id, int system_id){
+void Database_Manager::insert_user(DB_Users db_user){
     connection.open(type, connection_string);
 
     int role;
 
     std::string query = get_query("../SQL/insert-user.sql");
-    connection << query, soci::use(user, "user"), soci::use(user_role, "user_role"),soci::use(machine_id, "machine_id"),
-                soci::use(system_id, "system_id");
+    connection << query, soci::use(db_user.username, "user"), soci::use(db_user.user_role, "user_role"),
+                soci::use(db_user.system_id, "system_id");
 
     connection.close();
 }
@@ -463,9 +456,8 @@ std::vector<DB_Users> Database_Manager::get_all_users(){
         DB_Users db_user;
         db_user.id = r.get<int>(0);
         db_user.username = r.get<std::string>(1);
-        db_user.user_rank = r.get<int>(2);
-        db_user.machine_id = r.get<std::string>(3);
-        db_user.system_id = r.get<int>(4);
+        db_user.user_role = r.get<int>(2);
+        db_user.system_id = r.get<int>(3);
 
         user_list.push_back(db_user);
     } 
@@ -478,8 +470,8 @@ std::vector<DB_Users> Database_Manager::get_all_users(){
 void Database_Manager::update_user(DB_Users db_users){  
     connection.open(type, connection_string);
     std::string query = get_query("../SQL/update-user.sql");
-    connection << query, soci::use(db_users.id, "id"), soci::use(db_users.user_rank, "user_role"),
-                soci::use(db_users.machine_id, "machine_id"), soci::use(db_users.system_id, "system_id");
+    connection << query, soci::use(db_users.id, "id"), soci::use(db_users.user_role, "user_role"),
+                soci::use(db_users.system_id, "system_id");
     connection.close();
 }
 
