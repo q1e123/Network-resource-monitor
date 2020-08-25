@@ -79,6 +79,8 @@ public:
 	void update_users(std::vector<DB_Users> users);
 	void update_systems(std::vector<DB_Systems> systems);
 
+	void insert_user(DB_Users db_user);
+
 private:
 	std::string server_name;
 	std::string role;

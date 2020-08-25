@@ -32,6 +32,8 @@ public:
 
     std::vector<DB_Users> get_db_users();
     std::vector<DB_Systems> get_db_systems();
+
+    DB_Users get_new_user();
     
 private:
     std::string user_role;

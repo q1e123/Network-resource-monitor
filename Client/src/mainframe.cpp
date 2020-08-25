@@ -205,3 +205,8 @@ void MainFrame::send_req_systems(wxCommandEvent &e){
 	std::vector<DB_Systems> systems = client->get_systems();
 	network_management_page->update_system_cards(systems);
 }
+
+void MainFrame::insert_new_user(wxCommandEvent &e){
+	DB_Users db_user = network_management_page->get_new_user();
+	client->insert_user(db_user);
+}

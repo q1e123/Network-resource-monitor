@@ -66,3 +66,7 @@ std::vector<DB_Users> User_Management_Page::get_db_users(){
 	}
 	return user_list;
 }
+
+DB_Users User_Management_Page::get_new_user(){
+	return this->add_user_form->get_db_user();
+}

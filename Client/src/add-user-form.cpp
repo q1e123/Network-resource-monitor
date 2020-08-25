@@ -45,3 +45,17 @@ Add_User_From::~Add_User_From(){
 wxStaticBoxSizer* Add_User_From::get_all(){
     return static_box_sizer;
 }
+
+DB_Users Add_User_From::get_db_user(){
+	DB_Users db_user;
+	
+	db_user.username = username_input->->GetValue().ToStdString();
+	db_user.system_id = std::stoi(system_id_input->GetValue().ToStdString());
+	if(user_role_checkbox->GetValue()){
+		db_user.user_role = 1;
+	} else {
+		db_user.user_role = 0;
+	}
+
+	return db_user;
+}

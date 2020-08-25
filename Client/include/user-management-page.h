@@ -24,6 +24,7 @@ public:
     void update_user_cards(std::vector<DB_Users> users);
 
     std::vector<DB_Users> get_db_users();
+    DB_Users get_new_user();
 
 private:
     std::string user_role;

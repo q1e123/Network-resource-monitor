@@ -8,6 +8,7 @@
 #include <wx/notebook.h>
 
 #include "gui-element-id.h"
+#include "database-structs.h"
 
 class Add_User_From{
 public:
@@ -16,6 +17,9 @@ public:
     ~Add_User_From();
 
     wxStaticBoxSizer* get_all();
+
+    DB_Users get_db_user();
+    
 private:
     wxBoxSizer *sizer, *system_id_sizer, *username_sizer;
     wxStaticBoxSizer *static_box_sizer;
