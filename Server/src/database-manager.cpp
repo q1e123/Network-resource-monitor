@@ -505,6 +505,13 @@ std::vector<DB_Systems> Database_Manager::get_all_systems(){
     return system_list;
 }
 
+void Database_Manager::update_system(DB_Systems db_systems){
+    connection.open(type, connection_string);
+    std::string query = get_query("../SQL/update-system.sql");
+    connection << query, soci::use(db_users.id, "id"), soci::use(db_users.machine_id, "machine_id");
+    connection.close();
+}
+
 const char* Database_Exception::what() const throw(){
     return "Database error";
 }
