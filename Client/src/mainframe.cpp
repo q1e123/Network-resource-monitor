@@ -23,6 +23,8 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_BUTTON(BUTTON_SORT_PROC_RAM, MainFrame::sort_by_ram)
 	EVT_BUTTON(BUTTON_USER_MANAGEMENT_SUMBIT_CHANGES, MainFrame::send_update_users)
 	EVT_BUTTON(BUTTON_USER_MANAGEMENT_REFRESH, MainFrame::send_req_users)
+	EVT_BUTTON(BUTTON_SYSTEM_MANAGEMENT_SUMBIT_CHANGES, MainFrame::send_update_systems)
+	EVT_BUTTON(BUTTON_SYSTEM_MANAGEMENT_REFRESH, MainFrame::send_req_systems)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)

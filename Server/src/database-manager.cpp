@@ -484,7 +484,7 @@ void Database_Manager::update_user(DB_Users db_users){
 }
 
 std::vector<DB_Systems> Database_Manager::get_all_systems(){
-    std::vector<DB_Users> system_list;
+    std::vector<DB_Systems> system_list;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/get-all-systems.sql");
@@ -508,7 +508,7 @@ std::vector<DB_Systems> Database_Manager::get_all_systems(){
 void Database_Manager::update_system(DB_Systems db_systems){
     connection.open(type, connection_string);
     std::string query = get_query("../SQL/update-system.sql");
-    connection << query, soci::use(db_users.id, "id"), soci::use(db_users.machine_id, "machine_id");
+    connection << query, soci::use(db_systems.id, "id"), soci::use(db_systems.machine_id, "machine_id");
     connection.close();
 }
 

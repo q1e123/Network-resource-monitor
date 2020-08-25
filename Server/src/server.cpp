@@ -193,7 +193,7 @@ void Server::run_cmd(std::string cmd) {
 			std::string number_of_systems_str;
 			getline(iss, number_of_systems_str,';');
 			size_t number_of_systems = std::stol(number_of_systems_str);
-			cmd_update_users(user, number_of_systems);
+			cmd_update_systems(user, number_of_systems);
 		}
 
 	}
@@ -280,7 +280,6 @@ void Server::cmd_update_users(std::string user, size_t number_of_users){
 
 	for (size_t i = 0; i < number_of_users; ++i){
 		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-		std::cout <<serialization << std::endl;
 		DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
 		database_manager.update_user(db_user);
 	}

@@ -289,7 +289,7 @@ void Client::update_users(std::vector<DB_Users> users){
 
 void Client::update_systems(std::vector<DB_Systems> systems){
 	this->systems = systems;
-	size_t number_of_systems = users.size();
+	size_t number_of_systems = systems.size();
 	std::string message = "UPDATE;SYSTEMS;" + username +  ";" + std::to_string(number_of_systems);
 
 	Communication_Protocol::send_message(this->client_sock, message, logger);

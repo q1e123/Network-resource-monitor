@@ -64,7 +64,9 @@ void Network_Management_Page::update_user_cards(std::vector<System*> active_syst
 void Network_Management_Page::update_user_cards(std::vector<DB_Users> users){
 	user_management_page->update_user_cards(users);
 }
-
+void Network_Management_Page::update_system_cards(std::vector<DB_Systems> systems){
+	system_management_page->update_system_cards(systems);
+}
 
 void Network_Management_Page::change_to_connected_gui(std::string server_name){
     network_text->SetLabel("Connected to: " + server_name);
@@ -82,4 +84,8 @@ void Network_Management_Page::set_user_role(std::string role){
 
 std::vector<DB_Users> Network_Management_Page::get_db_users(){
 	return this->user_management_page->get_db_users();
+}
+
+std::vector<DB_Systems> Network_Management_Page::get_db_systems(){
+	return this->system_management_page->get_db_systems();
 }
