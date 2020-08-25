@@ -41,3 +41,34 @@ DB_Users Database_Structs_Utils::deserialize_db_users(std::string serialization)
 
     return db_user;
 }
+
+
+std::string Database_Structs_Utils::serialize(DB_Systems db_system){
+    std::string serialization;
+    serialization = std::to_string(db_system.id) + ";" + std::to_string(db_system.status) + ";" +
+                    db_system.machine_id;
+    return serialization;
+}
+
+DB_Systems Database_Structs_Utils::deserialize_db_system(std::string serialization){
+    std::istringstream iss(serialization);
+    
+    std::string id_str;
+    getline(iss, id_str, ';');
+    int id = std::stoi(id_str);
+
+    std::string status_str;
+    getline(iss, status_str, ';');
+
+    int status = std::stoi(status_str);
+
+    std::string machine_id;
+    getline(iss, machine_id, ';');
+
+    DB_Systems db_system;
+    db_system.id = id;
+    db_system.status = status;
+    db_system.machine_id = machine_id;
+
+    return db_system;
+}
