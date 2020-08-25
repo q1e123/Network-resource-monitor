@@ -33,6 +33,7 @@ public:
 	void send_req_users(wxCommandEvent &e);
 	void send_update_systems(wxCommandEvent &e);
 	void send_req_systems(wxCommandEvent &e);
+	void insert_new_user(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 
