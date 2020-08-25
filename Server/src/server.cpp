@@ -195,7 +195,13 @@ void Server::run_cmd(std::string cmd) {
 			size_t number_of_systems = std::stol(number_of_systems_str);
 			cmd_update_systems(user, number_of_systems);
 		}
-
+	} else if (type == "INSERT") {
+		std::string insert_type, user;
+		getline(iss, insert_type, ';');
+		getline(iss, user, ';');
+		if(insert_type == "USERS"){
+			cmd_insert_user(user);
+		}
 	}
 	mtx.unlock();
 }
@@ -295,6 +301,15 @@ void Server::cmd_update_systems(std::string user, size_t number_of_systems){
 		DB_Systems db_systems = Database_Structs_Utils::deserialize_db_system(serialization);
 		database_manager.update_system(db_systems);
 	}
+}
+
+void Server::cmd_insert_user(std::string user){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+	std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+	std::cout << serialization << std::endl;
+	DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
+	database_manager.insert_user(db_user);
 }
 
 void Server::remove_user(std::string user) {

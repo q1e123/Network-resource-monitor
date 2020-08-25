@@ -31,8 +31,13 @@ Add_User_From::Add_User_From(wxWindow *parent){
 	username_sizer->Add(username_input, 1, wxALL | wxEXPAND, 5);
 	system_id_sizer->Add(system_id_text, 0, wxALL, 5);
 	system_id_sizer->Add(system_id_input, 1, wxALL | wxEXPAND, 5);
+	user_role_checkbox = new wxCheckBox(parent, wxID_ANY, "Administrator");
+	user_role_checkbox->SetForegroundColour(Colors::black);
+
 	sizer->Add(username_sizer, 1, wxALL | wxEXPAND, 5);
 	sizer->Add(system_id_sizer, 1, wxALL | wxEXPAND, 5);
+	sizer->Add(user_role_checkbox, 1, wxALL | wxEXPAND, 5);
+
 
 	static_box_sizer = new wxStaticBoxSizer(static_box,wxVERTICAL);
 	static_box_sizer->Add(sizer, 0, wxALL | wxEXPAND, 5);
@@ -49,7 +54,7 @@ wxStaticBoxSizer* Add_User_From::get_all(){
 DB_Users Add_User_From::get_db_user(){
 	DB_Users db_user;
 	
-	db_user.username = username_input->->GetValue().ToStdString();
+	db_user.username = username_input->GetValue().ToStdString();
 	db_user.system_id = std::stoi(system_id_input->GetValue().ToStdString());
 	if(user_role_checkbox->GetValue()){
 		db_user.user_role = 1;
