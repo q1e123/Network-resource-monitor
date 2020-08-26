@@ -24,7 +24,11 @@ Project made during Siemens internship.
 		* avalabile
 	* OS
 	* User
-* Displaying this data on the client GUI
+* Real time tracking of a system
+* User roles (normal and administrator)
+* Adding new users and systems or changing cuurent data via admin interface
+* Client can create local usage data log and send it after to the server to put it in the database
+* Storing usage data in a database
 
 ## New features
 For a list with features that I am currently working on you can check [TODOs file](TODOs.md)
