@@ -32,7 +32,7 @@ User_Management_Page::User_Management_Page(wxNotebook *main_notebook){
 
 	box_sizer->Add(add_user_form->get_all(), 0, wxALL | wxEXPAND, 5);
 	box_sizer->Add(buttons_sizer, 0, wxALL | wxEXPAND, 5);
-	box_sizer->Add(scrolled_sizer, 1, wxALL | wxEXPAND, 5);
+	box_sizer->Add(scrolled_panel, 1, wxALL | wxEXPAND, 5);
 	page->SetSizerAndFit(box_sizer);
 }
 
@@ -53,7 +53,7 @@ void User_Management_Page::update_user_cards(std::vector<DB_Users> users){
 }
 
 void User_Management_Page::add(DB_Users db_users){
-    User_Management_Card *umc = new User_Management_Card(page, db_users);
+    User_Management_Card *umc = new User_Management_Card(scrolled_panel, db_users);
     scrolled_sizer->Add(umc->get_items(),  0, wxALL | wxEXPAND, 5);
     user_cards[db_users.username] = umc;
 }

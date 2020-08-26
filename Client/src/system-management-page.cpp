@@ -31,7 +31,7 @@ System_Management_Page::System_Management_Page(wxNotebook *main_notebook){
 
 	box_sizer->Add(add_system_form->get_all(), 0, wxALL | wxEXPAND, 5);
 	box_sizer->Add(buttons_sizer, 0, wxALL | wxEXPAND, 5);
-	box_sizer->Add(scrolled_sizer, 1, wxALL | wxEXPAND, 5);
+	box_sizer->Add(scrolled_panel, 1, wxALL | wxEXPAND, 5);
 	page->SetSizerAndFit(box_sizer);
 }
 
@@ -52,7 +52,7 @@ void System_Management_Page::update_system_cards(std::vector<DB_Systems> systems
 }
 
 void System_Management_Page::add(DB_Systems db_systems){
-    System_Management_Card *smc = new System_Management_Card(page, db_systems);
+    System_Management_Card *smc = new System_Management_Card(scrolled_panel, db_systems);
     scrolled_sizer->Add(smc->get_items(),  0, wxALL | wxEXPAND, 5);
     system_cards[db_systems.id] = smc;
 }

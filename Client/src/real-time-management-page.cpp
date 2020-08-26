@@ -17,7 +17,7 @@ Real_Time_Management_Page::Real_Time_Management_Page(wxNotebook *main_notebook){
 	scrolled_panel->FitInside();
 	scrolled_panel->SetScrollRate(20,20);
 
-	box_sizer->Add(scrolled_sizer, 1, wxALL | wxEXPAND, 5);
+	box_sizer->Add(scrolled_panel, 1, wxALL | wxEXPAND, 5);
 	page->SetSizerAndFit(box_sizer);
 }
 
@@ -32,9 +32,9 @@ void Real_Time_Management_Page::update_real_time_cards(std::vector<System*> acti
 			real_time_cards[id].set_active();
 			real_time_cards[id].update(system);
 		}else{
-			Real_Time_Management_Card rt = Real_Time_Management_Card(page, system);
+			Real_Time_Management_Card rt = Real_Time_Management_Card(scrolled_panel, system);
 			rt.set_active();
-			scrolled_sizer->Add(rt.get_items(),0, wxALL | wxEXPAND, 5);
+			scrolled_sizer->Add(rt.get_items(), 0, wxALL | wxEXPAND, 5);
 			real_time_cards[id] = rt;
 		}
 	}
