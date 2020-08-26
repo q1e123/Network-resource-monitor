@@ -27,7 +27,7 @@ public:
     void update_user(DB_Users db_users);
     void update_system(DB_Systems db_systems);
 
-    void insert_system(std::string machine_id);
+    void insert_system(DB_Systems db_system);
     void insert_user(DB_Users db_user);
     void insert_usage_data(System *system);
     

@@ -142,7 +142,9 @@ void Database_Manager::insert_systems(){
         std::string object = "system" + std::to_string(i);
         std::string key = object + ".machine_id";
         std::string machine_id = ini.GetValue("systems", key.c_str());
-        insert_system(machine_id);
+        DB_Systems sys;
+        sys.machine_id = machine_id;
+        insert_system(sys);
     }
 
 }
@@ -213,21 +215,17 @@ void Database_Manager::update_system_status(int system_id, int system_status){
     connection.close();
 }
 
-void Database_Manager::insert_system(std::string machine_id){
+void Database_Manager::insert_system(DB_Systems db_system){
     connection.open(type, connection_string);
 
-    int role;
-
     std::string query = get_query("../SQL/insert-system.sql");
-    connection << query, soci::use(machine_id, "machine_id");
+    connection << query, soci::use(db_system.machine_id, "machine_id");
 
     connection.close();
 }
 
 void Database_Manager::insert_user(DB_Users db_user){
     connection.open(type, connection_string);
-
-    int role;
 
     std::string query = get_query("../SQL/insert-user.sql");
     connection << query, soci::use(db_user.username, "user"), soci::use(db_user.user_role, "user_role"),

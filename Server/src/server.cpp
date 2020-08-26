@@ -201,6 +201,8 @@ void Server::run_cmd(std::string cmd) {
 		getline(iss, user, ';');
 		if(insert_type == "USERS"){
 			cmd_insert_user(user);
+		} else if (insert_type == "SYSTEMS"){
+			cmd_insert_system(user);
 		}
 	}
 	mtx.unlock();
@@ -307,9 +309,16 @@ void Server::cmd_insert_user(std::string user){
 	size_t pos = find_client(user);
 	Client_Info client = clients[pos];
 	std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-	std::cout << serialization << std::endl;
 	DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
 	database_manager.insert_user(db_user);
+}
+
+void Server::cmd_insert_system(std::string user){
+	size_t pos = find_client(user);
+	Client_Info client = clients[pos];
+	std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
+	DB_Systems db_system = Database_Structs_Utils::deserialize_db_system(serialization);
+	database_manager.insert_system(db_system);
 }
 
 void Server::remove_user(std::string user) {
