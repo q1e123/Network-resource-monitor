@@ -27,6 +27,9 @@ System_Management_Page::System_Management_Page(wxNotebook *main_notebook){
 	scrolled_panel->FitInside();
 	scrolled_panel->SetScrollRate(20,20);
 
+	this->add_system_form = new Add_System_From(page);
+
+	box_sizer->Add(add_system_form->get_all(), 0, wxALL | wxEXPAND, 5);
 	box_sizer->Add(buttons_sizer, 0, wxALL | wxEXPAND, 5);
 	box_sizer->Add(scrolled_sizer, 1, wxALL | wxEXPAND, 5);
 	page->SetSizerAndFit(box_sizer);
@@ -61,4 +64,8 @@ std::vector<DB_Systems> System_Management_Page::get_db_systems(){
 		system_list.push_back(db_system);
 	}
 	return system_list;
+}
+
+DB_Systems System_Management_Page::get_new_system(){
+	return this->add_system_form->get_db_systems();
 }

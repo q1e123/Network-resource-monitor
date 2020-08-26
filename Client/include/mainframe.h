@@ -21,6 +21,7 @@ class MainFrame : public wxFrame{
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
 	~MainFrame();
+
 	void exit(wxCommandEvent &e);
 	void real_time(wxTimerEvent &e);
 	void shutdown(wxCommandEvent &e);
@@ -34,6 +35,7 @@ public:
 	void send_update_systems(wxCommandEvent &e);
 	void send_req_systems(wxCommandEvent &e);
 	void insert_new_user(wxCommandEvent &e);
+	void insert_new_system(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 

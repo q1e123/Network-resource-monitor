@@ -92,3 +92,7 @@ std::vector<DB_Systems> Network_Management_Page::get_db_systems(){
 DB_Users Network_Management_Page::get_new_user(){
 	return this->user_management_page->get_new_user();
 }
+
+DB_Systems Network_Management_Page::get_new_system(){
+	return this->system_management_page->get_new_system();
+}

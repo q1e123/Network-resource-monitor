@@ -12,6 +12,7 @@
 #include "system.h"
 #include "system-management-card.h"
 #include "database-structs.h"
+#include "add-system-form.h"
 
 class System_Management_Page{
 public:
@@ -23,8 +24,11 @@ public:
     void update_system_cards(std::vector<DB_Systems> systems);
 
     std::vector<DB_Systems> get_db_systems();
+    DB_Systems get_new_system();
 
 private:
+    Add_System_From *add_system_form;
+
     wxNotebookPage *page;
     wxBoxSizer *box_sizer, *scrolled_sizer, *buttons_sizer;
     wxStaticBox *static_box;

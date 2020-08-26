@@ -26,6 +26,7 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_BUTTON(BUTTON_SYSTEM_MANAGEMENT_SUMBIT_CHANGES, MainFrame::send_update_systems)
 	EVT_BUTTON(BUTTON_SYSTEM_MANAGEMENT_REFRESH, MainFrame::send_req_systems)
 	EVT_BUTTON(BUTTON_ADD_NEW_USER, MainFrame::insert_new_user)
+	EVT_BUTTON(BUTTON_ADD_NEW_SYSTEM, MainFrame::insert_new_system)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -210,4 +211,9 @@ void MainFrame::send_req_systems(wxCommandEvent &e){
 void MainFrame::insert_new_user(wxCommandEvent &e){
 	DB_Users db_user = network_management_page->get_new_user();
 	client->insert_user(db_user);
+}
+
+void MainFrame::insert_new_system(wxCommandEvent &e){
+	DB_Systems db_systems = network_management_page->get_new_system();
+	client->insert_system(db_systems);
 }
