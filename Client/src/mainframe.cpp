@@ -12,6 +12,8 @@
 #include "recv-package.h"
 
 #include "mainframe.h"
+#include "tray-icon.xpm"
+
 
 BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_TIMER(TIMER, MainFrame::real_time)
@@ -36,6 +38,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	system->log_init();
 
 	connect();
+	tray_icon = new Tray_Icon(this);
 
 	process_sort_type = Process_Sort_Type::NAME;
 

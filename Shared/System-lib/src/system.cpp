@@ -158,13 +158,13 @@ System::System(std::string serialization){
 				std::string network_line;
 				while(getline(network_list_iss, network_line, '|')){
 					std::istringstream network_iss(network_line);
-					std::string interface, usage_rx, usage_tx;
-					getline(network_iss, interface, ':');
+					std::string network_interface, usage_rx, usage_tx;
+					getline(network_iss, network_interface, ':');
 					getline(network_iss, usage_rx, ':');
 					getline(network_iss, usage_tx, ':');
 					try{
 						Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));
-						network_usage[interface] = usage;
+						network_usage[network_interface] = usage;
 					}catch(const std::exception& e) {
 						std::cerr << "System serialization error: " << e.what() << " Network usage rx = |"
 						 << usage_rx <<"| tx = |" << usage_tx << "|" << std::endl;

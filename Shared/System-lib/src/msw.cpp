@@ -226,8 +226,8 @@ void Msw::get_proc_info(DWORD pid, Process& process) {
 
         GetModuleFileNameEx(process_handle, handle_module, proc_name, sizeof(proc_name) / sizeof(TCHAR));
         //GetModuleBaseName(process_handle, handle_module, proc_name, sizeof(proc_name) / sizeof(TCHAR));
-        std::wstring tmp(proc_name);
-        std::string name(tmp.begin(), tmp.end());
+        auto tmp(proc_name);
+        std::string name(tmp);
         name = name.substr(name.rfind("\\") + 1);
         size_t p, ram;
         p = pid; 

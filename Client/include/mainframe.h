@@ -1,26 +1,29 @@
 #ifndef MAINFRAME_H
 #define MAINFRAME_H
 
+#include <vector>
+#include <mutex>
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "system.h"
-#include <vector>
 #include "mathplot.h"
 #include <wx/notebook.h>
+
+#include "system.h"
 #include "client.h"
-#include <mutex>
-
-
 #include "system-page.h"
 #include "process-sort-type.h"
 #include "performance-page.h"
 #include "network-management-page.h"
+#include "tray-icon.h"
 
 class MainFrame : public wxFrame{
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size); 
 	~MainFrame();
+
+	bool gui;
 
 	void exit(wxCommandEvent &e);
 	void real_time(wxTimerEvent &e);
@@ -49,7 +52,8 @@ private:
 	wxPanel *main_panel;
 	wxBoxSizer *box_sizer;
 	wxNotebook *main_notebook;
-	
+	wxTaskBarIcon *task_bar_icon;
+
 	Client *client;
 	std::thread worker;	
 	std::mutex mtx;
@@ -58,6 +62,7 @@ private:
 	System_Page *system_page;
 	Performance_Page *performance_page;
 	Network_Management_Page *network_management_page;
+	Tray_Icon *tray_icon;
 	
 	void send_update();
 	void check_points();
