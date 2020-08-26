@@ -15,7 +15,7 @@ System_Management_Card::System_Management_Card(wxWindow *parent, DB_Systems db_s
 	id_text->SetFont(Fonts::normal_bold);
 	id_text->SetForegroundColour(Colors::black);
 
-    system_status = new wxStaticText(parent,wxID_ANY,"System status: " + db_system.status);
+    system_status = new wxStaticText(parent,wxID_ANY,"System status: " + std::to_string(db_system.status));
 	system_status->SetFont(Fonts::normal_bold);
 	system_status->SetForegroundColour(Colors::black);
 	if(db_system.status == 1){
