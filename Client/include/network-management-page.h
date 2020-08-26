@@ -10,9 +10,9 @@
 #include <string>
 
 #include "system.h"
-#include "user-card.h"
 #include "user-management-page.h"
 #include "system-management-page.h"
+#include "real-time-management-page.h"
 
 class Network_Management_Page{
 public:
@@ -21,7 +21,6 @@ public:
 
     wxNotebookPage* get_all();
     void change_to_connected_gui(std::string server_name);
-    void update_user_cards(std::vector<System*> active_systems, std::vector<std::string> inactives);
 
     std::string get_ip();
     size_t get_port();
@@ -29,6 +28,7 @@ public:
     void set_user_role(std::string role);
     void update_user_cards(std::vector<DB_Users> users);
     void update_system_cards(std::vector<DB_Systems> systems);
+    void update_real_time_cards(std::vector<System*> active_systems, std::vector<std::string> inactives);
 
     std::vector<DB_Users> get_db_users();
     std::vector<DB_Systems> get_db_systems();
@@ -44,10 +44,10 @@ private:
     wxBoxSizer *box_sizer, *user_cards_box_sizer;
     wxStaticBox *static_box;
     wxStaticText *header_text, *network_text, *user_role_text;
-    std::map<std::string, User_Card> user_cards;
 
     User_Management_Page *user_management_page;
     System_Management_Page *system_management_page;
+    Real_Time_Management_Page *real_time_management_page;
     Add_User_From *add_user_form;
 
 };

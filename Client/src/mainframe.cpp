@@ -102,7 +102,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 
 		std::vector<System*> actives= client->get_active_systems();
 		std::vector<std::string> inactives = client->get_inactive_systems();
-		network_management_page->update_user_cards(actives, inactives);
+		network_management_page->update_real_time_cards(actives, inactives);
 	}
 }
 void MainFrame::shutdown(wxCommandEvent &e){

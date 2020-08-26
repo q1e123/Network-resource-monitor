@@ -1,16 +1,20 @@
-#include "user-card.h"
+#include "real-time-management-card.h"
 #include "colors.h"
 #include "fonts.h"
 
-User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System *system){
+Real_Time_Management_Card::Real_Time_Management_Card(wxWindow *parent, System *system){
 	sizer = new wxBoxSizer(wxVERTICAL);
-	card_static = new wxStaticBox(parent, id, "");
-	user_text = new wxStaticText(parent, wxID_ANY, user); 
+	card_static = new wxStaticBox(parent, wxID_ANY, "");
+	user_text = new wxStaticText(parent, wxID_ANY, "User: " + system->get_current_user()); 
 	user_text->SetForegroundColour(Colors::black);
 	user_text->SetFont(Fonts::h1);
 	os_text = new wxStaticText(parent, wxID_ANY, system->get_os()); 
 	os_text->SetForegroundColour(Colors::black);
 	os_text->SetFont(Fonts::normal);
+	machine_id_text = new wxStaticText(parent, wxID_ANY, "Machine ID: " + system->get_machine_id()); 
+	machine_id_text->SetForegroundColour(Colors::black);
+	machine_id_text->SetFont(Fonts::normal);
+	
 
 	std::string ram = "";
 	ram += "Total ram: " + std::to_string(system->get_total_ram()) + "\t";
@@ -32,11 +36,12 @@ User_Card::User_Card(wxWindow *parent, wxWindowID id, std::string user, System *
 
 	card_sbox->Add(user_text, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(os_text, 0, wxALL | wxEXPAND, 5);
+	card_sbox->Add(machine_id_text, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(ram_text, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(cpu_text, 0, wxALL | wxEXPAND, 5);
 }
 
-void User_Card::update(System *system){
+void Real_Time_Management_Card::update(System *system){
 	std::string ram = "";
 	ram += "Total ram: " + std::to_string(system->get_total_ram()) + "\t";
 	ram += "Avalabile ram: " + std::to_string(system->get_avalabile_ram()) + "\t";
@@ -51,23 +56,23 @@ void User_Card::update(System *system){
 	cpu_text->SetLabel(cpu);
 }
 
-void User_Card::set_active(){
+void Real_Time_Management_Card::set_active(){
 	card_static->SetBackgroundColour(Colors::light_green);
 	active = true;
 }
 
-void User_Card::set_inactive(){
+void Real_Time_Management_Card::set_inactive(){
 	card_static->SetBackgroundColour(Colors::light_red);
 	active = false;
 }
 
-User_Card::User_Card(){
+Real_Time_Management_Card::Real_Time_Management_Card(){
 }
 
-wxStaticBoxSizer* User_Card::get_items(){
+wxStaticBoxSizer* Real_Time_Management_Card::get_items(){
 	return card_sbox;
 }
 
-bool User_Card::is_active(){
+bool Real_Time_Management_Card::is_active(){
 	return active;
 }
