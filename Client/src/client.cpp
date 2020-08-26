@@ -306,6 +306,13 @@ void Client::insert_user(DB_Users db_user){
 	send_message(serialization);
 }
 
+void Client::insert_system(DB_Systems db_system){
+	std::string header = "INSERT;SYSTEMS;" + username;
+	send_message(header);
+	std::string serialization = Database_Structs_Utils::serialize(db_system);
+	send_message(serialization);
+}
+
 const char* Server_Down_Exception::what() const throw(){
     return "Server down";
 }

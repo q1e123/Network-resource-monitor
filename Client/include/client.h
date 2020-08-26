@@ -80,6 +80,7 @@ public:
 	void update_systems(std::vector<DB_Systems> systems);
 
 	void insert_user(DB_Users db_user);
+	void insert_system(DB_Systems db_system);
 
 private:
 	std::string server_name;
