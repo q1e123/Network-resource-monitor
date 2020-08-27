@@ -43,4 +43,10 @@ typedef struct DB_Users{
     int system_id;
 }DB_Users;
 
+typedef struct DB_User_List{
+    int id;
+    std::string username;
+    int usage_id;
+}DB_User_List;
+
 #endif

@@ -68,3 +68,32 @@ DB_Systems Database_Structs_Utils::deserialize_db_system(std::string serializati
 
     return db_system;
 }
+
+
+std::string Database_Structs_Utils::serialize(DB_User_List user_list){
+    std::string serialization;
+    serialization = std::to_string(user_list.id) + ";" + user_list.username + ";" + std::to_string(user_list.usage_id);
+    return serialization;
+}
+
+DB_User_List Database_Structs_Utils::deserialize_db_user_list(std::string serialization){
+    std::istringstream iss(serialization);
+    
+    std::string id_str;
+    getline(iss, id_str, ';');
+    int id = std::stoi(id_str);
+
+    std::string username;
+    getline(iss, username, ';');
+
+    std::string usage_id_str;
+    getline(iss, username, ';');
+    int usage_id = std::stoi(usage_id_str);
+
+    DB_User_List user_list;
+    user_list.id = id;
+    user_list.username = username;
+    user_list.usage_id = usage_id;
+
+    return user_list;
+}
