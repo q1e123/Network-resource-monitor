@@ -339,4 +339,18 @@ std::string Linux::get_current_user(){
 	return user;
 }
 
+std::vector<std::string> Linux::get_user_list(){
+	std::vector<std::string> user_list;
+	std::ifstream passwd_file("/etc/passwd");
+
+	std::string line;
+	while(getline(passwd_file, line)){
+		std::istringstream iss(line);
+		std::string user;
+		getline(iss, user, ':');
+		user_list.push_back(user);
+	}
+	return user_list;
+}
+
 #endif
