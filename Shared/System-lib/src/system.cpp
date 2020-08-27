@@ -14,6 +14,7 @@ System::System(){
 	process_list = OS::get_process_list();
 	machine_id = OS::get_machine_id();
 	current_user = OS::get_current_user();
+	user_list = OS::get_user_list();
 }
 
 System::~System(){
@@ -102,6 +103,10 @@ std::string System::serilize(){
 	pkg += ";" + this->current_user;
 	timestamp = std::time(0);
 	pkg += ";" + std::to_string(this->timestamp);
+	for(auto user : user_list){
+		pkg += user + ":";
+	}
+	pkg.pop_back();
 	return pkg;
 }
 
@@ -180,6 +185,13 @@ System::System(std::string serialization){
 				this->timestamp = std::stol(tmp);
 				break;
 			}
+			case 8:{
+				std::istringstream user_list_iss(tmp);
+				std::string user;
+				while (getline(user_list_iss, user, ':')){
+					user_list.push_back(user);
+				}
+			}
 				
 		}
 		++pos;
@@ -217,4 +229,12 @@ void System::log_init(){
 
 void System::log(){
 	logger->add_system(serilize());
+}
+
+std::vector<std::string> System::get_user_list(){
+	return this->user_list;
+}
+
+void System::update_user_list(){
+	user_list = OS::get_user_list();
 }

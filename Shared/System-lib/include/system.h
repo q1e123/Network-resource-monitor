@@ -74,6 +74,8 @@ public:
 	void log();
 	std::string get_log();
 
+	std::vector<std::string> get_user_list();
+	void update_user_list();
 
 	Logger *logger;
 private:
@@ -84,6 +86,7 @@ private:
 	map<string, Network_Usage> network_usage;
 	vector<Process> process_list;
 	std::string machine_id;
+	std::vector<std::string> user_list;
 
     std::time_t timestamp;
 };
