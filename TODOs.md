@@ -1,7 +1,4 @@
 # Client
-## Service
-Make the client to run in the background as a service.
-You should be able to change from running in backgroud to running the client with a GUI and reverse.
 
 ## Admin interface
 ## Compare a system with a previous state
@@ -23,11 +20,6 @@ The client should be able to also collect:
 The client should be able to check:
 * if a software is installed
 * what patches/updates are installed
-
-# Server
-
-## Request data from a client
-Server should be able to request a report from a client.
 
 # Extra
 Do this only if you've finished all the others
