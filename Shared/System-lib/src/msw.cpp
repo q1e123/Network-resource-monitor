@@ -3,6 +3,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #pragma comment(lib, "IPHLPAPI.lib")
+#pragma comment(lib, "netapi32.lib")
 
 #include <iphlpapi.h>
 
@@ -11,6 +12,7 @@
 
 #include <windows.h>
 #include <Lmcons.h>
+#include <lm.h>
 
 #include <thread>
 #include <chrono>
@@ -292,6 +294,50 @@ std::string Msw::get_current_user(){
 
     std::string user = std::string(username_c);
     return user;
+}
+
+std::vector<std::string> Msw::get_user_list() {
+    std::vector<std::string> user_list;
+
+    LPUSER_INFO_0 pBuf = NULL;
+    LPUSER_INFO_0 pTmpBuf;
+    DWORD dwLevel = 0;
+    DWORD dwPrefMaxLen = MAX_PREFERRED_LENGTH;
+    DWORD dwEntriesRead = 0;
+    DWORD dwTotalEntries = 0;
+    DWORD dwResumeHandle = 0;
+    DWORD i;
+    NET_API_STATUS nStatus;
+    LPTSTR pszServerName = NULL;
+    do{
+        nStatus = NetUserEnum((LPCWSTR)pszServerName,
+            dwLevel,
+            FILTER_NORMAL_ACCOUNT,
+            (LPBYTE*)&pBuf,
+            dwPrefMaxLen,
+            &dwEntriesRead,
+            &dwTotalEntries,
+            &dwResumeHandle);
+        if ((nStatus == NERR_Success) || (nStatus == ERROR_MORE_DATA)){
+            if ((pTmpBuf = pBuf) != NULL){
+                for (i = 0; (i < dwEntriesRead); i++){
+                    std::wstring wuser(pTmpBuf->usri0_name);
+                    std::string user(wuser.begin(), wuser.end());
+                    user_list.push_back(user);
+                    pTmpBuf++;
+                }
+            }
+        }
+
+        if (pBuf != NULL)
+        {
+            NetApiBufferFree(pBuf);
+            pBuf = NULL;
+        }
+    } while (nStatus == ERROR_MORE_DATA);
+    if (pBuf != NULL)
+        NetApiBufferFree(pBuf);
+    return user_list;
 }
 #endif
 

@@ -31,6 +31,8 @@ namespace Msw{
 	std::string get_machine_id();
 
 	std::string get_current_user();
+
+	std::vector<std::string> get_user_list();
 };
 
 #endif
