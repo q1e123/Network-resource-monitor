@@ -42,26 +42,30 @@ public:
 private:
     const string init_file_name = "../Init/database.ini";
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
-    std::string usage_data_table, cpu_usage_table, network_usage_table;
+    std::string usage_data_table, cpu_usage_table, network_usage_table, user_list_table;
     std::string insert_systems_str, insert_users_str; 
     soci::session connection; 
 
     void get_login_data();
     void get_create_data();
     void get_insert_data();
+
     void create_tables();
     void create_users_table();
     void create_systems_table();
     void create_usage_data_table();
     void create_cpu_usage_table();
     void create_network_usage_table();
+    void create_user_list_table();
+
     void insert_data();
     void insert_systems();
     void insert_users();
 
     void insert_cpu_usage(std::string cpu_name, double usage, int usage_id);
     void insert_network_usage(std::string network_interface, Network_Usage usage, int usage_id);
-
+    void insert_user_list(DB_User_List db_user_list);
+    
     std::string get_query(std::string file);
 
     std::vector<DB_Systems> get_active_systems_list();
@@ -69,6 +73,7 @@ private:
     DB_Usage_Data get_usage_data(int system_id);
     std::vector<DB_Cpu_Usage> get_cpu_usage(int usage_id);
     std::vector<DB_Network_Usage> get_network_usage(int usage_id);
+    std::vector<DB_User_List> get_user_list(int usage_id);
 
 };
 

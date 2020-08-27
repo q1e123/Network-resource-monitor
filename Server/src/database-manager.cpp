@@ -45,6 +45,7 @@ void Database_Manager::get_create_data(){
     this->usage_data_table = ini.GetValue("create", "usage_data_table");
     this->cpu_usage_table = ini.GetValue("create", "cpu_usage_table");
     this->network_usage_table = ini.GetValue("create", "network_usage_table");
+    this->user_list_table = ini.GetValue("create", "user_list_table");
 }
 
 void Database_Manager::get_insert_data(){
@@ -73,6 +74,9 @@ void Database_Manager::create_tables(){
     }
     if(this->network_usage_table== "on"){
         create_network_usage_table();
+    }
+    if(this->user_list_table== "on"){
+        create_user_list_table();
     }
 }
 
@@ -119,6 +123,15 @@ void Database_Manager::create_network_usage_table(){
 
     connection.close();
 
+}
+
+void Database_Manager::create_user_list_table(){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/create-user_list-table.sql");
+    connection << query;
+
+    connection.close();
 }
 
 void Database_Manager::insert_data(){
@@ -262,6 +275,13 @@ void Database_Manager::insert_usage_data(System *system){
     for(auto item : system->get_network_usage()){
         insert_network_usage(item.first, item.second, id);
     }
+
+    for(auto user : system->get_user_list()){
+        DB_User_List db_user_list;
+        db_user_list.username = user;
+        db_user_list.usage_id = id;
+        insert_user_list(db_user_list);
+    }
 }
 
 void Database_Manager::insert_cpu_usage(std::string cpu_name, double usage, int usage_id){
@@ -280,6 +300,15 @@ void Database_Manager::insert_network_usage(std::string network_interface, Netwo
     std::string query = get_query("../SQL/insert-network_usage.sql");
     connection << query, soci::use(network_interface, "interface_name"), soci::use(usage.get_rx(), "rx"),
                  soci::use(usage.get_tx(), "tx") , soci::use(usage_id, "usage_id");
+
+    connection.close();
+}
+
+void Database_Manager::insert_user_list(DB_User_List db_user_list){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/insert-user_list.sql");
+    connection << query, soci::use(db_user_list.username, "username") , soci::use(db_user_list.usage_id, "usage_id");
 
     connection.close();
 }
@@ -326,6 +355,7 @@ System* Database_Manager::build_system(DB_Systems systems){
     DB_Usage_Data usage_data = get_usage_data(systems.id);
     std::vector<DB_Cpu_Usage> cpu_usage = get_cpu_usage(usage_data.id);
     std::vector<DB_Network_Usage> network_usage = get_network_usage(usage_data.id);
+    std::vector<DB_User_List> user_list = get_user_list(usage_data.id);
     std::string serialization;
     serialization = usage_data.operating_system;
     serialization += ";" + std::to_string(usage_data.total_ram);
@@ -347,6 +377,10 @@ System* Database_Manager::build_system(DB_Systems systems){
     serialization.pop_back();
     serialization += ";" + usage_data.current_user;
     serialization += ";" + std::to_string(std::mktime(&usage_data.timestamp));
+    for(auto db_user_list: user_list){
+        serialization += db_user_list.username + "; ";
+    }
+    serialization.pop_back();
     System *system = new System(serialization);
     return system;
 }
@@ -408,6 +442,26 @@ std::vector<DB_Network_Usage> Database_Manager::get_network_usage(int usage_id){
     connection.close();
 
     return usages;
+}
+
+std::vector<DB_User_List> Database_Manager::get_user_list(int usage_id){
+    std::vector<DB_User_List> user_list;
+    
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/get-user_list.sql");
+    soci::rowset<soci::row> rs = (connection.prepare << query, soci::use(usage_id, "usage_id")); 
+ 
+    for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) { 
+        const soci::row& r = *it;
+        DB_User_List user;
+        user.username = r.get<std::string>(0);
+        user_list.push_back(user);
+    }
+ 
+    connection.close();
+
+    return user_list;
 }
 
 std::vector<std::string> Database_Manager::get_inactive_systems(){

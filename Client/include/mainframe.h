@@ -70,6 +70,7 @@ private:
 	void update_cpu();
 	void update_network();
 	void update_process_list();
+	void update_user_list();
 	void connect();
 };
 

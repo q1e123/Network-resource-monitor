@@ -80,7 +80,8 @@ void MainFrame::real_time(wxTimerEvent &e){
 	std::thread cpu_worker(&MainFrame::update_cpu, this);
 	std::thread network_worker(&MainFrame::update_network, this);
 	std::thread process_list_worker(&MainFrame::update_process_list, this);
-	
+	std::thread user_list_worker(&MainFrame::update_user_list, this);
+
 	if (process_list_worker.joinable()) {
 		process_list_worker.join();
 		if(main_notebook->GetSelection() == 0){
@@ -98,6 +99,11 @@ void MainFrame::real_time(wxTimerEvent &e){
 			performance_page->update_gui();	
 		}
 	}
+
+	if(user_list_worker.joinable()){
+		user_list_worker.join();
+	}
+	
 	client->send_system_state(system);
 	if(client->get_role() == "Administrator"){
 		client->request_active_systems();
@@ -132,6 +138,10 @@ void MainFrame::update_network(){
 
 void MainFrame::update_process_list(){
 	system->update_process_list();
+}
+
+void MainFrame::update_user_list(){
+	system->update_user_list();
 }
 
 void MainFrame::sort_by_name(wxCommandEvent &e){

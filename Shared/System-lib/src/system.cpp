@@ -102,7 +102,7 @@ std::string System::serilize(){
 	pkg.pop_back();	
 	pkg += ";" + this->current_user;
 	timestamp = std::time(0);
-	pkg += ";" + std::to_string(this->timestamp);
+	pkg += ";" + std::to_string(this->timestamp) + ";";
 	for(auto user : user_list){
 		pkg += user + ":";
 	}
@@ -191,8 +191,7 @@ System::System(std::string serialization){
 				while (getline(user_list_iss, user, ':')){
 					user_list.push_back(user);
 				}
-			}
-				
+			}				
 		}
 		++pos;
 	}
