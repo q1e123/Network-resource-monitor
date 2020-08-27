@@ -6,7 +6,9 @@
 
 #include "timestamp.h"
 
-class Logger{
+#include "build-opts-logger.h"
+
+class LOGGER_IMPEXP Logger{
 public:
     Logger(std::string file_name = "log_file.txt");
     ~Logger();

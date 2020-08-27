@@ -58,22 +58,6 @@ make all
 ## Windows
 You can compile it using Visual Studio.
 
-### Preprocessor definitions
-Go to *Project settings - C/C++ - Preprocessor* and make sure you **only** have the following preprocessor definitions:
-```
-NOMINMAX
-_WINSOCK_DEPRECATED_NO_WARNINGS
-_WINSOCKAPI_
-<different options>
-```
-### Subsystem
-#### Client
-
-Go to *Project settings - Linker - System* and change **Subsystem** to Windows
-
-#### Server
-Go to *Project settings - Linker - System* and change **Subsystem** to Console
-
 ### Propriety sheet
 Only for client.
 Go to *Propriety manager - Add existing propriety sheet* and select the propriety sheet that is in the root directory of wxWidgets. (wxwidgets.props)

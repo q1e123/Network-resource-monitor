@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project("Logger_lib")
 
+ADD_DEFINITIONS(-DLOGGER_SHARED)
+
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/;${CMAKE_MODULE_PATH}")
 
 include_directories(include

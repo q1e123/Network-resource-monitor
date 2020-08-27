@@ -1,16 +1,20 @@
+#ifndef BUILD_OPTS_UTILS_H
+#define BUILD_OPTS_UTILS_H
 
 #if defined(_MSC_VER)
-# ifdef UTIL_DLL
+# ifdef UTILS_SHARED
 #  define UTILS_IMPEXP __declspec(dllexport)
 # else
 #  define UTILS_IMPEXP __declspec(dllimport)
-# endif //UTIL_DLL
+# endif
 #elif defined(_GCC)
-# ifdef UTIL_DLL
+# ifdef UTILS_SHARED
 #  define UTILS_IMPEXP __attribute__((visibility("default")))
 # else
 #  define UTILS_IMPEXP 
-# endif //UTIL_DLL
+# endif
 #else
 #  define UTILS_IMPEXP
+#endif
+
 #endif

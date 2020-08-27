@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project("System_lib")
 
-ADD_DEFINITIONS(-DFELINE_DLL)
+ADD_DEFINITIONS(-DSYSTEM_SHARED)
 
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/;${CMAKE_MODULE_PATH}")
 

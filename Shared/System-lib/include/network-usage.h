@@ -3,7 +3,9 @@
 
 #include<cstdio>
 
-class Network_Usage{
+#include "build-opts-system.h"
+
+class SYSTEM_IMPEXP Network_Usage{
 public:
 	Network_Usage(size_t = 0, size_t = 0);
 

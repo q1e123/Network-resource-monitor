@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project("Mathplot_lib")
 
+ADD_DEFINITIONS(-Dmathplot_EXPORTS)
+
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/;${CMAKE_MODULE_PATH}")
 
 find_package(wxWidgets COMPONENTS core base REQUIRED)

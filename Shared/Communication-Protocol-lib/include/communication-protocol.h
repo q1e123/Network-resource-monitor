@@ -28,26 +28,30 @@ typedef int SOCKET;
 
 #include "logger.h"
 
+#include "build-opts-communication-protocol.h"
+
 #define BUFFER_SIZE 1024
 #define SIZE_BYTES 10
-class Socket_Error_Exception : public std::exception {
+
+
+class COMMUNICATION_PROTOCOL_IMPEXP Socket_Error_Exception : public std::exception {
     virtual const char* what() const throw() {
         return "Unknown socket error";
     }
 };
 
-class Client_Down_Exception : public std::exception {
+class COMMUNICATION_PROTOCOL_IMPEXP Client_Down_Exception : public std::exception {
     virtual const char* what() const throw() {
         return "Client down";
     }
 };
 
 namespace Communication_Protocol {
-    std::string get_fixed_length_size(std::string message);
-    size_t get_size_from(std::string fixed_length_string);
-    void send_message(SOCKET socket, std::string message, Logger* logger);
-    std::string get_message(SOCKET socket, size_t size);
-    std::string recv_message(SOCKET socket, Logger* logger);
+    std::string COMMUNICATION_PROTOCOL_IMPEXP get_fixed_length_size(std::string message);
+    size_t COMMUNICATION_PROTOCOL_IMPEXP get_size_from(std::string fixed_length_string);
+    void COMMUNICATION_PROTOCOL_IMPEXP send_message(SOCKET socket, std::string message, Logger* logger);
+    std::string COMMUNICATION_PROTOCOL_IMPEXP get_message(SOCKET socket, size_t size);
+    std::string COMMUNICATION_PROTOCOL_IMPEXP recv_message(SOCKET socket, Logger* logger);
 
 }
 

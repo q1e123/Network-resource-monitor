@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project("Communication_Protocol_lib")
 
+ADD_DEFINITIONS(-DCOMMUNICATION_PROTOCOL_SHARED)
+
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/;${CMAKE_MODULE_PATH}")
 
 include_directories(include
@@ -21,6 +23,9 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} Logger_lib)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    ADD_DEFINITIONS(-DNOMINMAX)
+    ADD_DEFINITIONS(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
+    ADD_DEFINITIONS(-D_WINSOCKAPI_)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 

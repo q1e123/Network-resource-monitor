@@ -12,6 +12,8 @@
 
 #include "logger.h"
 
+#include "build-opts-system.h"
+
 #ifdef __linux__
 	#define OS Linux
 	#include "linux.h"
@@ -24,7 +26,7 @@ using std::string;
 using std::vector;
 using std::map;
 
-class System{
+class SYSTEM_IMPEXP System{
 public:
 	System();
 	System(std::string serialization);
