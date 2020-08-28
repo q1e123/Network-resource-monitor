@@ -47,6 +47,8 @@ namespace Linux{
 	std::vector<std::string> get_user_list();
 
 	std::map<std::string, std::string> get_environment_variables();
+
+	size_t get_avalabile_space();
 };
 
 #endif

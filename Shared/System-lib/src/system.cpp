@@ -16,6 +16,7 @@ System::System(){
 	current_user = OS::get_current_user();
 	user_list = OS::get_user_list();
 	environment_variables = OS::get_environment_variables();
+	avalabile_space = OS::get_avalabile_space();
 }
 
 System::~System(){
@@ -108,7 +109,7 @@ std::string System::serilize(){
 		pkg += user + ":";
 	}
 	pkg.pop_back();
-	pkg += ";";
+	pkg += ";" + std::to_string(this->avalabile_space) + ";";
 	for(auto item : environment_variables){
 		pkg += item.first + "\t" + item.second + "#";
 	}
@@ -197,7 +198,14 @@ System::System(std::string serialization){
 				while (getline(user_list_iss, user, ':')){
 					user_list.push_back(user);
 				}
-			}			
+			}
+			case 9:{
+				try{
+					avalabile_space = std::stol(tmp);
+				}catch(const std::exception& e) {
+					std::cerr << "System serialization error: " << e.what() << " avalabile space = |" << tmp <<"|" <<  std::endl;
+				}
+			}
 		}
 		++pos;
 	}
@@ -258,6 +266,15 @@ void System::update_user_list(){
 std::map<std::string, std::string> System::get_environment_variables(){
 	return this->environment_variables;
 }
+
 void System::update_environment_variables(){
 	this->environment_variables = OS::get_environment_variables();
+}
+
+size_t System::get_avalabile_space(){
+	return this->avalabile_space;
+}
+
+void System::update_avalabile_space(){
+	avalabile_space = OS::get_avalabile_space();
 }

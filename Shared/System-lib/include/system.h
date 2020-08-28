@@ -80,8 +80,13 @@ public:
 
 	std::map<std::string, std::string> get_environment_variables();
 	void update_environment_variables();
+
+	size_t get_avalabile_space();
+	void update_avalabile_space();
+	
 private:
 	size_t total_ram, avalabile_ram, used_ram;
+	size_t avalabile_space;
 	string os, ip, current_user;
 	vector<string> network_interfaces;
 	map<string, double> cpu_usage;

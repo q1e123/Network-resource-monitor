@@ -367,4 +367,19 @@ std::map<std::string, std::string> Linux::get_environment_variables(){
 	return environment_variables;
 }
 
+size_t Linux::get_avalabile_space(){
+	size_t total_avalabile_space = 0;
+	std::string command_result = utils::execute("df | awk '{print $4}'");
+	std::istringstream iss(command_result);
+	std::string line;
+	while (getline(iss, line, '\n')){
+		try{
+			size_t filesystem_space = std::stol(line);
+			total_avalabile_space += filesystem_space;
+		}catch(const std::exception& e){
+			continue;
+		}		
+	}
+	return total_avalabile_space;
+}
 #endif
