@@ -49,4 +49,11 @@ typedef struct DB_User_List{
     int usage_id;
 }DB_User_List;
 
+typedef struct DB_Environment_Variables{
+    int id;
+    std::string variable;
+    std::string variable_value;
+    int usage_id;
+};
+
 #endif

@@ -110,7 +110,7 @@ std::string System::serilize(){
 	pkg.pop_back();
 	pkg += ";";
 	for(auto item : environment_variables){
-		pkg += item.first + "\t" + item.second + "\n";
+		pkg += item.first + "\t" + item.second + "#";
 	}
 	pkg.pop_back();
 	return pkg;
@@ -204,7 +204,7 @@ System::System(std::string serialization){
 				while (getline(environment_variables_list, item, '\t')){
 					std::string key;
 					std::istringstream item_iss(item);
-					getline(item_iss, key, '\n');
+					getline(item_iss, key, '#');
 					std::string value;
 					getline(item_iss, value);
 					environment_variables[key] = value;

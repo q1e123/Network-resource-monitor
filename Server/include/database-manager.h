@@ -65,15 +65,18 @@ private:
     void insert_cpu_usage(std::string cpu_name, double usage, int usage_id);
     void insert_network_usage(std::string network_interface, Network_Usage usage, int usage_id);
     void insert_user_list(DB_User_List db_user_list);
+    void insert_environment_variables(DB_Environment_Variables environment_variable);
     
     std::string get_query(std::string file);
 
     std::vector<DB_Systems> get_active_systems_list();
     System* build_system(DB_Systems systems);
+
     DB_Usage_Data get_usage_data(int system_id);
     std::vector<DB_Cpu_Usage> get_cpu_usage(int usage_id);
     std::vector<DB_Network_Usage> get_network_usage(int usage_id);
     std::vector<DB_User_List> get_user_list(int usage_id);
+    std::vector<DB_Environment_Variables> get_environment_variables(int usage_id);
 
 };
 

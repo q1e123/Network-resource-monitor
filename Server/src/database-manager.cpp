@@ -282,6 +282,14 @@ void Database_Manager::insert_usage_data(System *system){
         db_user_list.usage_id = id;
         insert_user_list(db_user_list);
     }
+
+    for(auto item : system->get_environment_variables()){
+        DB_Environment_Variables environment_variable;
+        environment_variable.usage_id = id;
+        environment_variable.variable = item.first;
+        environment_variable.variable_value = item.second;
+        insert_environment_variables(environment_variable);
+    }
 }
 
 void Database_Manager::insert_cpu_usage(std::string cpu_name, double usage, int usage_id){
@@ -309,6 +317,16 @@ void Database_Manager::insert_user_list(DB_User_List db_user_list){
 
     std::string query = get_query("../SQL/insert-user_list.sql");
     connection << query, soci::use(db_user_list.username, "username") , soci::use(db_user_list.usage_id, "usage_id");
+
+    connection.close();
+}
+
+void Database_Manager::insert_environment_variables(DB_Environment_Variables environment_variable){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/insert-environment_variables.sql");
+    connection << query, soci::use(environment_variable.variable,"variable"), soci::use(environment_variable.variable_value, "variable_value"),
+                soci::use(environment_variable.usage_id, "usage_id");
 
     connection.close();
 }
@@ -356,6 +374,8 @@ System* Database_Manager::build_system(DB_Systems systems){
     std::vector<DB_Cpu_Usage> cpu_usage = get_cpu_usage(usage_data.id);
     std::vector<DB_Network_Usage> network_usage = get_network_usage(usage_data.id);
     std::vector<DB_User_List> user_list = get_user_list(usage_data.id);
+    std::vector<DB_Environment_Variables> enviroment_variables = get_environment_variables(usage_data.id);
+
     std::string serialization;
     serialization = usage_data.operating_system;
     serialization += ";" + std::to_string(usage_data.total_ram);
@@ -379,6 +399,11 @@ System* Database_Manager::build_system(DB_Systems systems){
     serialization += ";" + std::to_string(std::mktime(&usage_data.timestamp));
     for(auto db_user_list: user_list){
         serialization += db_user_list.username + "; ";
+    }
+    serialization.pop_back();
+    serialization += ";";
+    for(auto env_var : enviroment_variables){
+        serialization += env_var.variable + "\t" + env_var.variable_value + "#";
     }
     serialization.pop_back();
     System *system = new System(serialization);
@@ -462,6 +487,27 @@ std::vector<DB_User_List> Database_Manager::get_user_list(int usage_id){
     connection.close();
 
     return user_list;
+}
+
+std::vector<DB_Environment_Variables> Database_Manager::get_environment_variables(int usage_id){
+    std::vector<DB_Environment_Variables> environment_variables;
+    
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/get-environment_variables.sql");
+    soci::rowset<soci::row> rs = (connection.prepare << query, soci::use(usage_id, "usage_id")); 
+ 
+    for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) { 
+        const soci::row& r = *it;
+        DB_Environment_Variables env_var;
+        env_var.variable = r.get<std::string>(0);
+        env_var.variable_value = r.get<std::string>(1);
+        environment_variables.push_back(env_var);
+    }
+ 
+    connection.close();
+
+    return environment_variables;
 }
 
 std::vector<std::string> Database_Manager::get_inactive_systems(){
