@@ -45,6 +45,8 @@ namespace Linux{
 	std::string get_current_user();
 
 	std::vector<std::string> get_user_list();
+
+	std::map<std::string, std::string> get_environment_variables();
 };
 
 #endif

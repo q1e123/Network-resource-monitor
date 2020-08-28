@@ -33,7 +33,8 @@ public:
 	~System();
 
 	const std::string system_log_file = "system-logger.txt";
-	
+	Logger *logger;
+
 	size_t get_total_ram();
 	size_t get_avalabile_ram();
 	size_t get_used_ram();
@@ -77,7 +78,8 @@ public:
 	std::vector<std::string> get_user_list();
 	void update_user_list();
 
-	Logger *logger;
+	std::map<std::string, std::string> get_environment_variables();
+	void update_environment_variables();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	string os, ip, current_user;
@@ -87,7 +89,7 @@ private:
 	vector<Process> process_list;
 	std::string machine_id;
 	std::vector<std::string> user_list;
-
     std::time_t timestamp;
+	std::map<std::string, std::string> environment_variables;
 };
 #endif

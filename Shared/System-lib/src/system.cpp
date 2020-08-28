@@ -15,6 +15,7 @@ System::System(){
 	machine_id = OS::get_machine_id();
 	current_user = OS::get_current_user();
 	user_list = OS::get_user_list();
+	environment_variables = OS::get_environment_variables();
 }
 
 System::~System(){
@@ -107,6 +108,11 @@ std::string System::serilize(){
 		pkg += user + ":";
 	}
 	pkg.pop_back();
+	pkg += ";";
+	for(auto item : environment_variables){
+		pkg += item.first + "\t" + item.second + "\n";
+	}
+	pkg.pop_back();
 	return pkg;
 }
 
@@ -191,7 +197,19 @@ System::System(std::string serialization){
 				while (getline(user_list_iss, user, ':')){
 					user_list.push_back(user);
 				}
-			}				
+			}
+			case 9:{
+				std::istringstream environment_variables_list(tmp);
+				std::string item;
+				while (getline(environment_variables_list, item, '\t')){
+					std::string key;
+					std::istringstream item_iss(item);
+					getline(item_iss, key, '\n');
+					std::string value;
+					getline(item_iss, value);
+					environment_variables[key] = value;
+				}
+			}			
 		}
 		++pos;
 	}
@@ -236,4 +254,11 @@ std::vector<std::string> System::get_user_list(){
 
 void System::update_user_list(){
 	user_list = OS::get_user_list();
+}
+
+std::map<std::string, std::string> System::get_environment_variables(){
+	return this->environment_variables;
+}
+void System::update_environment_variables(){
+	this->environment_variables = OS::get_environment_variables();
 }

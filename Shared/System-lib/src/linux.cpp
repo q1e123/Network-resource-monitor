@@ -353,4 +353,18 @@ std::vector<std::string> Linux::get_user_list(){
 	return user_list;
 }
 
+std::map<std::string, std::string> Linux::get_environment_variables(){
+	std::map<std::string, std::string> environment_variables;
+	std::string printev_result = utils::execute("printenv");
+	std::istringstream printev_iss(printev_result);
+
+	std::string key;
+	while(getline(printev_iss, key, '=')){
+		std::string value;
+		getline(printev_iss, value, '\n');
+		environment_variables[key] = value;
+	}
+	return environment_variables;
+}
+
 #endif
