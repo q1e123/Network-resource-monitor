@@ -9,10 +9,8 @@ Administrator should be able to see the diferences between the current and the p
 ### Collect
 The client should be able to also collect:
 * storage
-* users
 * installed software
 * last logins
-* environment variables
 * Hardware and software errors
 * IP (IPv4 and IPv6)
 
