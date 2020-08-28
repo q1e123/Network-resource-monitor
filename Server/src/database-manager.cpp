@@ -46,6 +46,7 @@ void Database_Manager::get_create_data(){
     this->cpu_usage_table = ini.GetValue("create", "cpu_usage_table");
     this->network_usage_table = ini.GetValue("create", "network_usage_table");
     this->user_list_table = ini.GetValue("create", "user_list_table");
+    this->environment_variables_table = ini.GetValue("create", "environment_variables_table");
 }
 
 void Database_Manager::get_insert_data(){
@@ -72,11 +73,14 @@ void Database_Manager::create_tables(){
     if(this->cpu_usage_table == "on"){
         create_cpu_usage_table();
     }
-    if(this->network_usage_table== "on"){
+    if(this->network_usage_table == "on"){
         create_network_usage_table();
     }
-    if(this->user_list_table== "on"){
+    if(this->user_list_table == "on"){
         create_user_list_table();
+    }
+    if(this->environment_variables_table == "on"){
+        create_environment_variables_table();
     }
 }
 
@@ -129,6 +133,15 @@ void Database_Manager::create_user_list_table(){
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-user_list-table.sql");
+    connection << query;
+
+    connection.close();
+}
+
+void Database_Manager::create_environment_variables_table(){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/create-environment_variables-table.sql");
     connection << query;
 
     connection.close();
@@ -284,6 +297,8 @@ void Database_Manager::insert_usage_data(System *system){
     }
 
     for(auto item : system->get_environment_variables()){
+        std::cout << item.first << "=" << item.second << std::endl;
+
         DB_Environment_Variables environment_variable;
         environment_variable.usage_id = id;
         environment_variable.variable = item.first;

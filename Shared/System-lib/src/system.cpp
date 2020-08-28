@@ -197,21 +197,20 @@ System::System(std::string serialization){
 				while (getline(user_list_iss, user, ':')){
 					user_list.push_back(user);
 				}
-			}
-			case 9:{
-				std::istringstream environment_variables_list(tmp);
-				std::string item;
-				while (getline(environment_variables_list, item, '\t')){
-					std::string key;
-					std::istringstream item_iss(item);
-					getline(item_iss, key, '#');
-					std::string value;
-					getline(item_iss, value);
-					environment_variables[key] = value;
-				}
 			}			
 		}
 		++pos;
+	}
+
+	std::istringstream environment_variables_list(tmp);
+	std::string item;
+	while (getline(environment_variables_list, item, '#')){
+		std::string key;
+		std::istringstream item_iss(item);
+		getline(item_iss, key, '\t');
+		std::string value;
+		getline(item_iss, value);
+		environment_variables[key] = value;
 	}
 }
 

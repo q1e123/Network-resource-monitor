@@ -43,6 +43,7 @@ private:
     const string init_file_name = "../Init/database.ini";
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
     std::string usage_data_table, cpu_usage_table, network_usage_table, user_list_table;
+    std::string environment_variables_table;
     std::string insert_systems_str, insert_users_str; 
     soci::session connection; 
 
@@ -57,6 +58,7 @@ private:
     void create_cpu_usage_table();
     void create_network_usage_table();
     void create_user_list_table();
+    void create_environment_variables_table();
 
     void insert_data();
     void insert_systems();
