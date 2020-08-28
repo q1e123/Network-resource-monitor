@@ -273,7 +273,7 @@ void System::update_environment_variables(){
 	this->environment_variables = OS::get_environment_variables();
 }
 
-size_t System::get_avalabile_space(){
+double System::get_avalabile_space(){
 	return this->avalabile_space;
 }
 

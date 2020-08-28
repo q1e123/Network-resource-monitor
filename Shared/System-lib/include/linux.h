@@ -48,7 +48,7 @@ namespace Linux{
 
 	std::map<std::string, std::string> get_environment_variables();
 
-	size_t get_avalabile_space();
+	double get_avalabile_space();
 };
 
 #endif

@@ -3,7 +3,7 @@ CREATE TABLE Usage_Data(
     total_ram int,
     used_ram int,
     free_ram int,
-    avalabile_space int,
+    avalabile_space double,
     usage_timestamp datetime,
     username varchar(256),
     operating_system varchar(256),

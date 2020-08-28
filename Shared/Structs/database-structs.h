@@ -11,7 +11,7 @@ typedef struct DB_Usage_Data{
     int total_ram;
     int used_ram;
     int free_ram;
-    int avalabile_space;
+    double avalabile_space;
     std::string current_user;
     std::string operating_system;
     std::tm timestamp;
