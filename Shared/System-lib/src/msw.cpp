@@ -18,6 +18,8 @@
 #include <chrono>
 #include <iostream>
 #include <stdlib.h>
+#include <sstream>
+
 #include <psapi.h>
 #include "msw.h"
 #include "utils.h"
@@ -338,6 +340,27 @@ std::vector<std::string> Msw::get_user_list() {
     if (pBuf != NULL)
         NetApiBufferFree(pBuf);
     return user_list;
+}
+
+std::map<std::string, std::string> Msw::get_environment_variables() {
+    std::map <std::string, std::string> environment_variables;
+    LPTSTR lpszVariable;
+    LPTCH lpvEnv;
+    lpvEnv = GetEnvironmentStrings();
+    lpszVariable = (LPTSTR)lpvEnv;
+
+    while (*lpszVariable){
+        std::string line(lpszVariable);
+        std::istringstream line_iss(line);
+        std::string key, value;
+        getline(line_iss, key, '=');
+        getline(line_iss, value);
+        environment_variables[key] = value;
+        lpszVariable += lstrlen(lpszVariable) + 1;
+    }
+    FreeEnvironmentStrings(lpvEnv);
+
+    return environment_variables;
 }
 #endif
 
