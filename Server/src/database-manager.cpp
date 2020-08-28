@@ -273,7 +273,8 @@ void Database_Manager::insert_usage_data(System *system){
     connection << query, soci::use(system->get_total_ram(), "total_ram"),
                 soci::use(system->get_used_ram(), "used_ram"), soci::use(system->get_avalabile_ram(), "free_ram"),
                 soci::use(*timestamp, "usage_timestamp"), soci::use(system->get_current_user(), "user"),
-                soci::use(system->get_os(), "operating_system"), soci::use(system_id, "system_id");
+                soci::use(system->get_os(), "operating_system"), soci::use(system_id, "system_id"),
+                soci::use(system->get_avalabile_space(), "avalabile_space");
 
 
     query = get_query("../SQL/get-last-id-usage_data.sql");
@@ -297,8 +298,6 @@ void Database_Manager::insert_usage_data(System *system){
     }
 
     for(auto item : system->get_environment_variables()){
-        std::cout << item.first << "=" << item.second << std::endl;
-
         DB_Environment_Variables environment_variable;
         environment_variable.usage_id = id;
         environment_variable.variable = item.first;
@@ -413,10 +412,10 @@ System* Database_Manager::build_system(DB_Systems systems){
     serialization += ";" + usage_data.current_user;
     serialization += ";" + std::to_string(std::mktime(&usage_data.timestamp));
     for(auto db_user_list: user_list){
-        serialization += db_user_list.username + "; ";
+        serialization += db_user_list.username + ":";
     }
     serialization.pop_back();
-    serialization += ";";
+    serialization += ";" + std::to_string(usage_data.avalabile_space) + ";";
     for(auto env_var : enviroment_variables){
         serialization += env_var.variable + "\t" + env_var.variable_value + "#";
     }
@@ -434,8 +433,9 @@ DB_Usage_Data Database_Manager::get_usage_data(int system_id){
     std::string query = get_query("../SQL/get-usage_data.sql");
     connection << query, soci::into(usage_data.id), soci::into(usage_data.total_ram), 
                 soci::into(usage_data.used_ram), soci::into(usage_data.free_ram), 
-                soci::into(usage_data.timestamp), soci::into(usage_data.current_user), 
-                soci::into(usage_data.operating_system) , soci::use(system_id, "system_id");
+                soci::into(usage_data.avalabile_space), soci::into(usage_data.timestamp),
+                soci::into(usage_data.current_user), soci::into(usage_data.operating_system),
+                soci::use(system_id, "system_id");
     connection.close();
 
     return usage_data;

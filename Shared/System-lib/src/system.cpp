@@ -198,6 +198,7 @@ System::System(std::string serialization){
 				while (getline(user_list_iss, user, ':')){
 					user_list.push_back(user);
 				}
+				break;
 			}
 			case 9:{
 				try{
@@ -205,6 +206,7 @@ System::System(std::string serialization){
 				}catch(const std::exception& e) {
 					std::cerr << "System serialization error: " << e.what() << " avalabile space = |" << tmp <<"|" <<  std::endl;
 				}
+				break;
 			}
 		}
 		++pos;
