@@ -362,5 +362,41 @@ std::map<std::string, std::string> Msw::get_environment_variables() {
 
     return environment_variables;
 }
-#endif
 
+double Msw::get_avalabile_space() {
+    std::vector<std::string> drive_list = get_drive_list();
+    double avalabile_space = 0;
+    for (auto drive : drive_list) {
+        std::string cmd = "dir " + drive + " |find \"bytes free\"";
+        std::string dir_result = utils::execute(cmd.c_str());
+        std::string dir_str = "Dir(s)  ";
+        std::string bytes_str = "bytes free";
+
+        std::string avalabile_space_str = dir_result.substr(dir_result.find(dir_str) + dir_str.size());
+
+        avalabile_space_str = avalabile_space_str.substr(0, avalabile_space_str.size() - bytes_str.size() - 2);
+        avalabile_space_str = utils::remove_char_str(avalabile_space_str, '.');
+
+        avalabile_space += std::stoll(avalabile_space_str) * 1.0 / 1024 / 1024 / 1024;
+    }
+    return avalabile_space;
+}
+
+std::vector<std::string> Msw::get_drive_list() {
+    std::string fsutil_result = utils::execute("fsutil fsinfo drives");
+    std::string dummy;
+    std::istringstream iss(fsutil_result);
+    getline(iss, dummy);
+    getline(iss, dummy, ' ');
+    std::string drive;
+    std::vector<std::string> drive_list;
+    while (getline(iss, drive, ' ')) {
+        if (drive.find(":") == std::string::npos) {
+            continue;
+        }
+        drive_list.push_back(drive);
+    }
+    return drive_list;
+}
+
+#endif

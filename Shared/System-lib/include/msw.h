@@ -35,6 +35,10 @@ namespace Msw{
 	std::vector<std::string> get_user_list();
 
 	std::map<std::string, std::string> get_environment_variables();
+
+	double get_avalabile_space();
+
+	std::vector<std::string> get_drive_list();
 };
 
 #endif
