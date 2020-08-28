@@ -81,6 +81,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	std::thread network_worker(&MainFrame::update_network, this);
 	std::thread process_list_worker(&MainFrame::update_process_list, this);
 	std::thread user_list_worker(&MainFrame::update_user_list, this);
+	std::thread environment_variables_worker(&MainFrame::update_environment_variables, this);
 
 	if (process_list_worker.joinable()) {
 		process_list_worker.join();
@@ -100,8 +101,9 @@ void MainFrame::real_time(wxTimerEvent &e){
 		}
 	}
 
-	if(user_list_worker.joinable()){
+	if(user_list_worker.joinable() && environment_variables_worker.joinable()){
 		user_list_worker.join();
+		environment_variables_worker.join();
 	}
 	
 	client->send_system_state(system);
@@ -142,6 +144,10 @@ void MainFrame::update_process_list(){
 
 void MainFrame::update_user_list(){
 	system->update_user_list();
+}
+
+void MainFrame::update_environment_variables(){
+	system->update_environment_variables();
 }
 
 void MainFrame::sort_by_name(wxCommandEvent &e){

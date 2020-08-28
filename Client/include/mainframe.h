@@ -71,6 +71,7 @@ private:
 	void update_network();
 	void update_process_list();
 	void update_user_list();
+	void update_environment_variables();
 	void connect();
 };
 
