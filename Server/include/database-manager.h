@@ -43,7 +43,7 @@ private:
     const string init_file_name = "../Init/database.ini";
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
     std::string usage_data_table, cpu_usage_table, network_usage_table, user_list_table;
-    std::string environment_variables_table;
+    std::string environment_variables_table, program_list_table;
     std::string insert_systems_str, insert_users_str; 
     soci::session connection; 
 
@@ -59,6 +59,7 @@ private:
     void create_network_usage_table();
     void create_user_list_table();
     void create_environment_variables_table();
+    void create_program_list_table();
 
     void insert_data();
     void insert_systems();
@@ -68,6 +69,7 @@ private:
     void insert_network_usage(std::string network_interface, Network_Usage usage, int usage_id);
     void insert_user_list(DB_User_List db_user_list);
     void insert_environment_variables(DB_Environment_Variables environment_variable);
+    void insert_program_list(DB_Program_List program_list);
     
     std::string get_query(std::string file);
 
@@ -79,7 +81,7 @@ private:
     std::vector<DB_Network_Usage> get_network_usage(int usage_id);
     std::vector<DB_User_List> get_user_list(int usage_id);
     std::vector<DB_Environment_Variables> get_environment_variables(int usage_id);
-
+    std::vector<DB_Program_List> get_program_list(int usage_id);
 };
 
 class Database_Exception: public std::exception{

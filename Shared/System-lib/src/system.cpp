@@ -117,7 +117,7 @@ std::string System::serilize(){
 	}
 
 	pkg.pop_back();
-
+	pkg += ";";
 	for(auto item : environment_variables){
 		pkg += item.first + "\t" + item.second + "#";
 	}

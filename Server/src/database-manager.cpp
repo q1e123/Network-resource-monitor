@@ -47,6 +47,7 @@ void Database_Manager::get_create_data(){
     this->network_usage_table = ini.GetValue("create", "network_usage_table");
     this->user_list_table = ini.GetValue("create", "user_list_table");
     this->environment_variables_table = ini.GetValue("create", "environment_variables_table");
+    this->program_list_table = ini.GetValue("create", "program_list_table");
 }
 
 void Database_Manager::get_insert_data(){
@@ -81,6 +82,9 @@ void Database_Manager::create_tables(){
     }
     if(this->environment_variables_table == "on"){
         create_environment_variables_table();
+    }
+    if(this->program_list_table == "on"){
+        create_program_list_table();
     }
 }
 
@@ -142,6 +146,15 @@ void Database_Manager::create_environment_variables_table(){
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-environment_variables-table.sql");
+    connection << query;
+
+    connection.close();
+}
+
+void Database_Manager::create_program_list_table(){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/create-program_list-table.sql");
     connection << query;
 
     connection.close();
@@ -304,6 +317,13 @@ void Database_Manager::insert_usage_data(System *system){
         environment_variable.variable_value = item.second;
         insert_environment_variables(environment_variable);
     }
+
+    for(auto program : system->get_installed_programs()){
+        DB_Program_List program_list;
+        program_list.usage_id = id;
+        program_list.software = program;
+        insert_program_list(program_list);
+    }
 }
 
 void Database_Manager::insert_cpu_usage(std::string cpu_name, double usage, int usage_id){
@@ -341,6 +361,16 @@ void Database_Manager::insert_environment_variables(DB_Environment_Variables env
     std::string query = get_query("../SQL/insert-environment_variables.sql");
     connection << query, soci::use(environment_variable.variable,"variable"), soci::use(environment_variable.variable_value, "variable_value"),
                 soci::use(environment_variable.usage_id, "usage_id");
+
+    connection.close();
+}
+
+void Database_Manager::insert_program_list(DB_Program_List program_list){
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/insert-program_list.sql");
+    connection << query, soci::use(program_list.software,"software"), 
+                soci::use(program_list.usage_id, "usage_id");
 
     connection.close();
 }
@@ -389,6 +419,7 @@ System* Database_Manager::build_system(DB_Systems systems){
     std::vector<DB_Network_Usage> network_usage = get_network_usage(usage_data.id);
     std::vector<DB_User_List> user_list = get_user_list(usage_data.id);
     std::vector<DB_Environment_Variables> enviroment_variables = get_environment_variables(usage_data.id);
+    std::vector<DB_Program_List> program_list = get_program_list(usage_data.id);
 
     std::string serialization;
     serialization = usage_data.operating_system;
@@ -416,6 +447,11 @@ System* Database_Manager::build_system(DB_Systems systems){
     }
     serialization.pop_back();
     serialization += ";" + std::to_string(usage_data.avalabile_space) + ";";
+    for(auto program : program_list){
+        serialization += program.software + ":";
+    }
+    serialization.pop_back();
+    serialization += ";";
     for(auto env_var : enviroment_variables){
         serialization += env_var.variable + "\t" + env_var.variable_value + "#";
     }
@@ -523,6 +559,26 @@ std::vector<DB_Environment_Variables> Database_Manager::get_environment_variable
     connection.close();
 
     return environment_variables;
+}
+
+std::vector<DB_Program_List> Database_Manager::get_program_list(int usage_id){
+    std::vector<DB_Program_List> program_list;
+    
+    connection.open(type, connection_string);
+
+    std::string query = get_query("../SQL/get-environment_variables.sql");
+    soci::rowset<soci::row> rs = (connection.prepare << query, soci::use(usage_id, "usage_id")); 
+ 
+    for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it) { 
+        const soci::row& r = *it;
+        DB_Program_List prg;
+        prg.software = r.get<std::string>(0);
+        program_list.push_back(prg);
+    }
+ 
+    connection.close();
+
+    return program_list;
 }
 
 std::vector<std::string> Database_Manager::get_inactive_systems(){

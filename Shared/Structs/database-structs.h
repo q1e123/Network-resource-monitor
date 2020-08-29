@@ -55,6 +55,12 @@ typedef struct DB_Environment_Variables{
     std::string variable;
     std::string variable_value;
     int usage_id;
-};
+}DB_Environment_Variables;
+
+typedef struct DB_Program_List{
+    int id;
+    std::string software;
+    int usage_id;
+}Program_List;
 
 #endif

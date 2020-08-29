@@ -30,7 +30,7 @@ typedef int SOCKET;
 
 #include "build-opts-communication-protocol.h"
 
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 65536
 #define SIZE_BYTES 10
 
 
