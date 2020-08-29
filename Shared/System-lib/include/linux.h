@@ -49,6 +49,8 @@ namespace Linux{
 	std::map<std::string, std::string> get_environment_variables();
 
 	double get_avalabile_space();
+
+	std::vector<std::string> get_installed_programs();
 };
 
 #endif

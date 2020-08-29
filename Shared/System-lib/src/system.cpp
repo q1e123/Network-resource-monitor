@@ -17,6 +17,7 @@ System::System(){
 	user_list = OS::get_user_list();
 	environment_variables = OS::get_environment_variables();
 	avalabile_space = OS::get_avalabile_space();
+	installed_programs = OS::get_installed_programs();
 }
 
 System::~System(){
@@ -279,4 +280,12 @@ double System::get_avalabile_space(){
 
 void System::update_avalabile_space(){
 	avalabile_space = OS::get_avalabile_space();
+}
+
+std::vector<std::string> System::get_installed_programs(){
+	return this->installed_programs;
+}
+
+void System::update_installed_programs(){
+	installed_programs = OS::get_installed_programs();
 }

@@ -84,6 +84,8 @@ public:
 	double get_avalabile_space();
 	void update_avalabile_space();
 	
+	std::vector<std::string> get_installed_programs();
+	void update_installed_programs();	
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	double avalabile_space;
@@ -96,5 +98,6 @@ private:
 	std::vector<std::string> user_list;
     std::time_t timestamp;
 	std::map<std::string, std::string> environment_variables;
+	std::vector<std::string> installed_programs;
 };
 #endif

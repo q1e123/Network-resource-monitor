@@ -385,4 +385,19 @@ double Linux::get_avalabile_space(){
 	std::cout << total_avalabile_space << std::endl;
 	return total_avalabile_space;
 }
+
+std::vector<std::string> Linux::get_installed_programs(){
+	std::vector<std::string> installed_programs;
+	std::string ls_path_result = utils::execute("ls ${PATH//:/ }");
+	std::istringstream ls_path_iss(ls_path_result);
+	std::string program;
+	while (getline(ls_path_iss, program, '\n')){
+		if(program[0] == '/' || program.size() < 2){
+			continue;
+		}
+		installed_programs.push_back(program);
+	}
+	return installed_programs;
+	
+}
 #endif
