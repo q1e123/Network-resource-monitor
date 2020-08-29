@@ -111,6 +111,13 @@ std::string System::serilize(){
 	}
 	pkg.pop_back();
 	pkg += ";" + std::to_string(this->avalabile_space) + ";";
+
+	for(auto program : installed_programs){
+		pkg += program + ":";
+	}
+
+	pkg.pop_back();
+
 	for(auto item : environment_variables){
 		pkg += item.first + "\t" + item.second + "#";
 	}
@@ -206,6 +213,14 @@ System::System(std::string serialization){
 					avalabile_space = std::stol(tmp);
 				}catch(const std::exception& e) {
 					std::cerr << "System serialization error: " << e.what() << " avalabile space = |" << tmp <<"|" <<  std::endl;
+				}
+				break;
+			}
+			case 10:{
+				std::istringstream program_list_iss(tmp);
+				std::string program;
+				while (getline(program_list_iss, program, ':')){
+					installed_programs.push_back(program);
 				}
 				break;
 			}
