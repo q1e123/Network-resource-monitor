@@ -39,6 +39,8 @@ namespace Msw{
 	double get_avalabile_space();
 
 	std::vector<std::string> get_drive_list();
+
+	std::vector<std::string> get_installed_programs();
 };
 
 #endif

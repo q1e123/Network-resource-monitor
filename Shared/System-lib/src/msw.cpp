@@ -11,11 +11,13 @@
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 
 #include <windows.h>
+#include <tchar.h>
 #include <Lmcons.h>
 #include <lm.h>
 
 #include <thread>
 #include <chrono>
+#include <set>
 #include <iostream>
 #include <stdlib.h>
 #include <sstream>
@@ -398,5 +400,64 @@ std::vector<std::string> Msw::get_drive_list() {
     }
     return drive_list;
 }
+#include<fstream>
+std::vector<std::string> Msw::get_installed_programs() {
+    std::set<std::string> installed_programs_set;
+    std::ofstream f("test.txt");
+    HKEY hUninstKey = NULL;
+    HKEY hAppKey = NULL;
+    CHAR sAppKeyName[1024];
+    CHAR sSubKey[1024];
+    CHAR sDisplayName[1024];
+    CHAR path[] = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
+    CHAR* sRoot = path;
+    long lResult = ERROR_SUCCESS;
+    DWORD dwType = KEY_ALL_ACCESS;
+    DWORD dwBufferSize = 0;
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, sRoot, 0, KEY_READ, &hUninstKey);
 
+    for (DWORD dwIndex = 0; lResult == ERROR_SUCCESS; dwIndex++){
+        dwBufferSize = sizeof(sAppKeyName);
+        if ((lResult = RegEnumKeyEx(hUninstKey, dwIndex, sAppKeyName,
+            &dwBufferSize, NULL, NULL, NULL, NULL)) == ERROR_SUCCESS){
+            sprintf(sSubKey, "%s\\%s", sRoot, sAppKeyName);
+            RegOpenKeyEx(HKEY_LOCAL_MACHINE, sSubKey, 0, KEY_READ, &hAppKey);
+
+            dwBufferSize = sizeof(sDisplayName);
+            RegQueryValueEx(hAppKey, "DisplayName", NULL,
+                &dwType, (unsigned char*)sDisplayName, &dwBufferSize);
+                std::string str(sDisplayName);
+                installed_programs_set.insert(str);
+
+            RegCloseKey(hAppKey);
+        }
+    }
+
+    lResult = ERROR_SUCCESS;
+    CHAR path2[] = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
+    sRoot = path2;
+
+    for (DWORD dwIndex = 0; lResult == ERROR_SUCCESS; dwIndex++)
+    {
+
+        dwBufferSize = sizeof(sAppKeyName);
+        if ((lResult = RegEnumKeyEx(hUninstKey, dwIndex, sAppKeyName,
+            &dwBufferSize, NULL, NULL, NULL, NULL)) == ERROR_SUCCESS)
+        {
+
+            wsprintf(sSubKey, "%s\\%s", sRoot, sAppKeyName);
+            RegOpenKeyEx(HKEY_LOCAL_MACHINE, sSubKey, 0, KEY_READ, &hAppKey);
+
+            dwBufferSize = sizeof(sDisplayName);
+            RegQueryValueEx(hAppKey, "DisplayName", NULL, &dwType, (unsigned char*)sDisplayName, &dwBufferSize);
+                std::string str(sDisplayName);
+            RegCloseKey(hAppKey);
+        }
+    }
+
+    RegCloseKey(hUninstKey);
+
+    std::vector<std::string> installed_programs = std::vector(installed_programs_set.begin(), installed_programs_set.end());
+    return installed_programs;
+}
 #endif
