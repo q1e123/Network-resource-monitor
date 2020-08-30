@@ -1,4 +1,4 @@
-# Network resource monitoring tool
+# Network resource monitor
 This is a cross-platform tool that can help you monitor a network's resources.  
 Project made during Siemens internship.
 
@@ -10,25 +10,36 @@ Project made during Siemens internship.
 * [SOCI](https://github.com/SOCI/soci)
 
 # Features
-* OS detection
-* RAM detection (total, avalabile, used)
-* CPU usage detection (all cores)
-* rx and tx detection for a network interface
+## Data gathering 
+* OS
+* RAM (total, avalabile, used)
+* CPU usage (all cores)
+* rx and tx for a network interface
+* running processes with their PID, CPU and RAM usage
+* user list
+* installed programs
+* avalabile storage 
+* environment variables
+
+## Client
 * Real time plotting of CPU, RAM and network usage
-* Running processes detection with their PID and CPU and RAM usage 
-* Transmition of data through network using sockets
-	* CPU usage
-	* RAM
-		* total
-		* used
-		* avalabile
-	* OS
-	* User
-* Real time tracking of a system
-* User roles (normal and administrator)
-* Adding new users and systems or changing cuurent data via admin interface
-* Client can create local usage data log and send it after to the server to put it in the database
-* Storing usage data in a database
+* Real time tracking of running processes
+* Local usage data log
+
+### Admin area
+* Adding new users and machines for server
+* Real time tracking of machines
+
+## Network
+* Communication protocol at application layer based on TCP
+* Transmition of system states
+* Transmition of local logs
+* Transmition of system state (on or off)
+
+## Server
+* Storing data in a MySQL database
+* User roles (normal and admin)
+* Login based on current user and hardware id
 
 ## New features
 For a list with features that I am currently working on you can check [TODOs file](TODOs.md)
