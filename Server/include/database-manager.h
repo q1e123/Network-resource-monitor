@@ -1,15 +1,16 @@
 #ifndef DATABASE_MANAGER_H
 #define DATABASE_MANAGER_H
 
+#include <string>
+#include <vector>
+#include <thread>
+
 #if defined _WIN32 || defined _WIN64
 #include <winsock2.h>
 #endif
 
 #include <soci/soci.h>
 #include <soci/mysql/soci-mysql.h>
-
-#include <string>
-#include <vector>
 
 #include "logger.h"
 #include "system.h"
@@ -44,8 +45,7 @@ private:
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
     std::string usage_data_table, cpu_usage_table, network_usage_table, user_list_table;
     std::string environment_variables_table, program_list_table;
-    std::string insert_systems_str, insert_users_str; 
-    soci::session connection; 
+    std::string insert_systems_str, insert_users_str;
 
     void get_login_data();
     void get_create_data();
@@ -65,11 +65,11 @@ private:
     void insert_systems();
     void insert_users();
 
-    void insert_cpu_usage(std::string cpu_name, double usage, int usage_id);
-    void insert_network_usage(std::string network_interface, Network_Usage usage, int usage_id);
-    void insert_user_list(DB_User_List db_user_list);
-    void insert_environment_variables(DB_Environment_Variables environment_variable);
-    void insert_program_list(DB_Program_List program_list);
+    void insert_cpu_usage(std::vector<DB_Cpu_Usage> db_cpu_usage_list);
+    void insert_network_usage(std::vector<DB_Network_Usage> db_network_usage_list);
+    void insert_user_list(std::vector<DB_User_List> db_user_list);
+    void insert_environment_variables(std::vector<DB_Environment_Variables> db_environment_variable_list);
+    void insert_program_list(std::vector<DB_Program_List> program_list);
     
     std::string get_query(std::string file);
 

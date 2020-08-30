@@ -89,6 +89,7 @@ void Database_Manager::create_tables(){
 }
 
 void Database_Manager::create_users_table(){
+    soci::session connection;
     connection.open(type, connection_string);
     std::string query = get_query("../SQL/create-users-table.sql");
     connection << query;
@@ -96,6 +97,7 @@ void Database_Manager::create_users_table(){
 }
 
 void Database_Manager::create_systems_table(){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-systems-table.sql");
@@ -105,6 +107,7 @@ void Database_Manager::create_systems_table(){
 }
 
 void Database_Manager::create_usage_data_table(){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-usage_data-table.sql");
@@ -114,6 +117,7 @@ void Database_Manager::create_usage_data_table(){
 }
 
 void Database_Manager::create_cpu_usage_table(){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-cpu_usage-table.sql");
@@ -124,6 +128,7 @@ void Database_Manager::create_cpu_usage_table(){
 }
 
 void Database_Manager::create_network_usage_table(){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-network_usage-table.sql");
@@ -134,6 +139,7 @@ void Database_Manager::create_network_usage_table(){
 }
 
 void Database_Manager::create_user_list_table(){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-user_list-table.sql");
@@ -143,6 +149,7 @@ void Database_Manager::create_user_list_table(){
 }
 
 void Database_Manager::create_environment_variables_table(){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-environment_variables-table.sql");
@@ -152,6 +159,7 @@ void Database_Manager::create_environment_variables_table(){
 }
 
 void Database_Manager::create_program_list_table(){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/create-program_list-table.sql");
@@ -228,6 +236,7 @@ std::string Database_Manager::get_query(std::string file){
 }
 
 int Database_Manager::get_user_role(std::string user, std::string machine_id){
+    soci::session connection;
     connection.open(type, connection_string);
 
     int role;
@@ -246,6 +255,7 @@ int Database_Manager::get_user_role(std::string user, std::string machine_id){
 }
 
 void Database_Manager::update_system_status(int system_id, int system_status){
+    soci::session connection;
     connection.open(type, connection_string);
     
     std::string query = get_query("../SQL/update-system_status.sql");
@@ -255,6 +265,7 @@ void Database_Manager::update_system_status(int system_id, int system_status){
 }
 
 void Database_Manager::insert_system(DB_Systems db_system){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/insert-system.sql");
@@ -264,6 +275,7 @@ void Database_Manager::insert_system(DB_Systems db_system){
 }
 
 void Database_Manager::insert_user(DB_Users db_user){
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/insert-user.sql");
@@ -275,6 +287,7 @@ void Database_Manager::insert_user(DB_Users db_user){
 
 void Database_Manager::insert_usage_data(System *system){
     int system_id = get_system_id_from(system->get_current_user());
+    soci::session connection;
 
     connection.open(type, connection_string);
     
@@ -295,87 +308,149 @@ void Database_Manager::insert_usage_data(System *system){
 
     connection.close();
 
+    std::vector<DB_Cpu_Usage> cpu_usage_list;
     for(auto item : system->get_cpu_usage()){
-        insert_cpu_usage(item.first, item.second, id);
+        DB_Cpu_Usage data;
+        data.cpu_name = item.first;
+        data.usage = item.second;
+        data.usage_id = id;
+        cpu_usage_list.push_back(data);
     }
+    std::thread cpu_usage_worker(&Database_Manager::insert_cpu_usage, this, cpu_usage_list);
+    cpu_usage_worker.detach();
 
+    std::vector<DB_Network_Usage> network_usage_list;
     for(auto item : system->get_network_usage()){
-        insert_network_usage(item.first, item.second, id);
+        DB_Network_Usage data;
+        data.interface_name = item.first;
+        data.rx = item.second.get_rx();
+        data.tx = item.second.get_tx();
+        data.usage_id = id;
+        network_usage_list.push_back(data);
     }
+    std::thread network_usage_worker(&Database_Manager::insert_network_usage, this, network_usage_list);
+    network_usage_worker.detach();
 
+    std::vector<DB_User_List> user_list;
     for(auto user : system->get_user_list()){
-        DB_User_List db_user_list;
-        db_user_list.username = user;
-        db_user_list.usage_id = id;
-        insert_user_list(db_user_list);
+        DB_User_List data;
+        data.username = user;
+        data.usage_id = id;
+        user_list.push_back(data);
     }
+    std::thread user_worker(&Database_Manager::insert_user_list, this, user_list);
+    user_worker.detach();
 
+    std::vector<DB_Environment_Variables> environment_variable_list;
     for(auto item : system->get_environment_variables()){
-        DB_Environment_Variables environment_variable;
-        environment_variable.usage_id = id;
-        environment_variable.variable = item.first;
-        environment_variable.variable_value = item.second;
-        insert_environment_variables(environment_variable);
+        DB_Environment_Variables data;
+        data.usage_id = id;
+        data.variable = item.first;
+        data.variable_value = item.second;
+        environment_variable_list.push_back(data);
     }
-
+    std::thread environment_variable_worker(&Database_Manager::insert_environment_variables, this, environment_variable_list);
+    environment_variable_worker.detach();
+    
+    std::vector<DB_Program_List> db_program_list;
     for(auto program : system->get_installed_programs()){
         DB_Program_List program_list;
         program_list.usage_id = id;
         program_list.software = program;
-        insert_program_list(program_list);
+        db_program_list.push_back(program_list);
     }
+    std::thread program_list_worker(&Database_Manager::insert_program_list, this, db_program_list);
+    program_list_worker.detach();
 }
 
-void Database_Manager::insert_cpu_usage(std::string cpu_name, double usage, int usage_id){
+void Database_Manager::insert_cpu_usage(std::vector<DB_Cpu_Usage> db_cpu_usage_list){
+    soci::session connection;
     connection.open(type, connection_string);
-
+    DB_Cpu_Usage db_cpu_usage;
     std::string query = get_query("../SQL/insert-cpu_usage.sql");
+    soci::statement st = (connection.prepare << query, 
+                                                soci::use(db_cpu_usage.cpu_name, "cpu_name"),
+                                                soci::use(db_cpu_usage.usage, "usage"), 
+                                                soci::use(db_cpu_usage.usage_id, "usage_id"));
     
-    connection << query, soci::use(cpu_name, "cpu_name"), soci::use(usage, "usage"), soci::use(usage_id, "usage_id");
+    for(auto usage : db_cpu_usage_list){
+        db_cpu_usage = usage;
+        st.execute(true);
+    }
 
     connection.close();
 }
 
-void Database_Manager::insert_network_usage(std::string network_interface, Network_Usage usage, int usage_id){
+void Database_Manager::insert_network_usage(std::vector<DB_Network_Usage> db_network_usage_list){
+    soci::session connection;
     connection.open(type, connection_string);
+
+    DB_Network_Usage db_network_usage;
 
     std::string query = get_query("../SQL/insert-network_usage.sql");
-    connection << query, soci::use(network_interface, "interface_name"), soci::use(usage.get_rx(), "rx"),
-                 soci::use(usage.get_tx(), "tx") , soci::use(usage_id, "usage_id");
+    soci::statement st = (connection.prepare << query, 
+                                                soci::use(db_network_usage.interface_name, "interface_name"), 
+                                                soci::use(db_network_usage.rx, "rx"),
+                                                soci::use(db_network_usage.tx, "tx"),
+                                                soci::use(db_network_usage.usage_id, "usage_id"));
+    for(auto usage : db_network_usage_list){
+        db_network_usage = usage;
+        st.execute(true);
+    }
 
     connection.close();
 }
 
-void Database_Manager::insert_user_list(DB_User_List db_user_list){
+void Database_Manager::insert_user_list(std::vector<DB_User_List> db_user_list){
+    soci::session connection;
     connection.open(type, connection_string);
-
+    DB_User_List data;
     std::string query = get_query("../SQL/insert-user_list.sql");
-    connection << query, soci::use(db_user_list.username, "username") , soci::use(db_user_list.usage_id, "usage_id");
+    soci::statement st = (connection.prepare << query, 
+                                                soci::use(data.username, "username"),
+                                                soci::use(data.usage_id, "usage_id"));
+    for(auto user : db_user_list){
+        data = user;
+        st.execute(true);
+    }
 
     connection.close();
 }
 
-void Database_Manager::insert_environment_variables(DB_Environment_Variables environment_variable){
+void Database_Manager::insert_environment_variables(std::vector<DB_Environment_Variables> environment_variable_list){
+    soci::session connection;
     connection.open(type, connection_string);
-
+    DB_Environment_Variables data;
     std::string query = get_query("../SQL/insert-environment_variables.sql");
-    connection << query, soci::use(environment_variable.variable,"variable"), soci::use(environment_variable.variable_value, "variable_value"),
-                soci::use(environment_variable.usage_id, "usage_id");
+    soci::statement st = (connection.prepare << query,  
+                                                soci::use(data.variable,"variable"), 
+                                                soci::use(data.variable_value, "variable_value"),
+                                                soci::use(data.usage_id, "usage_id"));
+    for(auto variable : environment_variable_list){
+        data = variable;
+        st.execute(true);
+    }
 
     connection.close();
 }
 
-void Database_Manager::insert_program_list(DB_Program_List program_list){
+void Database_Manager::insert_program_list(std::vector<DB_Program_List> program_list){
+    soci::session connection;
     connection.open(type, connection_string);
-
+    DB_Program_List data;
     std::string query = get_query("../SQL/insert-program_list.sql");
-    connection << query, soci::use(program_list.software,"software"), 
-                soci::use(program_list.usage_id, "usage_id");
+    soci::statement st = (connection.prepare << query, soci::use(data.software,"software"), 
+                                        soci::use(data.usage_id, "usage_id"));
+    for(auto program : program_list){
+        data = program;
+        st.execute(true);
+    }
 
     connection.close();
 }
 
 int Database_Manager::get_system_id_from(std::string user){
+    soci::session connection;
     connection.open(type, connection_string);
 
     int system_id;
@@ -394,6 +469,7 @@ int Database_Manager::get_system_id_from(std::string user){
 
 std::vector<DB_Systems> Database_Manager::get_active_systems_list(){
     std::vector<DB_Systems> systems;
+    soci::session connection;
     
     connection.open(type, connection_string);
 
@@ -461,6 +537,7 @@ System* Database_Manager::build_system(DB_Systems systems){
 }
 
 DB_Usage_Data Database_Manager::get_usage_data(int system_id){
+    soci::session connection;
     connection.open(type, connection_string);
 
     DB_Usage_Data usage_data;
@@ -480,6 +557,7 @@ DB_Usage_Data Database_Manager::get_usage_data(int system_id){
 std::vector<DB_Cpu_Usage> Database_Manager::get_cpu_usage(int usage_id){
     std::vector<DB_Cpu_Usage> usages;
     
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/get-cpu_usage.sql");
@@ -501,6 +579,7 @@ std::vector<DB_Cpu_Usage> Database_Manager::get_cpu_usage(int usage_id){
 std::vector<DB_Network_Usage> Database_Manager::get_network_usage(int usage_id){
     std::vector<DB_Network_Usage> usages;
     
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/get-network_usage.sql");
@@ -522,6 +601,7 @@ std::vector<DB_Network_Usage> Database_Manager::get_network_usage(int usage_id){
 
 std::vector<DB_User_List> Database_Manager::get_user_list(int usage_id){
     std::vector<DB_User_List> user_list;
+    soci::session connection;
     
     connection.open(type, connection_string);
 
@@ -542,6 +622,7 @@ std::vector<DB_User_List> Database_Manager::get_user_list(int usage_id){
 
 std::vector<DB_Environment_Variables> Database_Manager::get_environment_variables(int usage_id){
     std::vector<DB_Environment_Variables> environment_variables;
+    soci::session connection;
     
     connection.open(type, connection_string);
 
@@ -564,6 +645,7 @@ std::vector<DB_Environment_Variables> Database_Manager::get_environment_variable
 std::vector<DB_Program_List> Database_Manager::get_program_list(int usage_id){
     std::vector<DB_Program_List> program_list;
     
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/get-environment_variables.sql");
@@ -584,6 +666,7 @@ std::vector<DB_Program_List> Database_Manager::get_program_list(int usage_id){
 std::vector<std::string> Database_Manager::get_inactive_systems(){
     std::vector<std::string> machine_ids;
     
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/get-inactive-systems.sql");
@@ -615,6 +698,7 @@ std::vector<std::string> Database_Manager::get_active_systems(){
 
 std::vector<DB_Users> Database_Manager::get_all_users(){
     std::vector<DB_Users> user_list;
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/get-all-users.sql");
@@ -637,6 +721,7 @@ std::vector<DB_Users> Database_Manager::get_all_users(){
 }
 
 void Database_Manager::update_user(DB_Users db_users){  
+    soci::session connection;
     connection.open(type, connection_string);
     std::string query = get_query("../SQL/update-user.sql");
     connection << query, soci::use(db_users.id, "id"), soci::use(db_users.user_role, "user_role"),
@@ -646,6 +731,7 @@ void Database_Manager::update_user(DB_Users db_users){
 
 std::vector<DB_Systems> Database_Manager::get_all_systems(){
     std::vector<DB_Systems> system_list;
+    soci::session connection;
     connection.open(type, connection_string);
 
     std::string query = get_query("../SQL/get-all-systems.sql");
@@ -667,6 +753,7 @@ std::vector<DB_Systems> Database_Manager::get_all_systems(){
 }
 
 void Database_Manager::update_system(DB_Systems db_systems){
+    soci::session connection;
     connection.open(type, connection_string);
     std::string query = get_query("../SQL/update-system.sql");
     connection << query, soci::use(db_systems.id, "id"), soci::use(db_systems.machine_id, "machine_id");

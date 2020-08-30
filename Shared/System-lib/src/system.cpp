@@ -169,7 +169,14 @@ System::System(std::string serialization){
 					std::string cpu_name, usage;
 					getline(proc_iss, cpu_name, ':');
 					getline(proc_iss, usage, ':');
-					cpu_usage[cpu_name] = std::stod(usage);
+					try{
+						cpu_usage[cpu_name] = std::stod(usage);
+					}catch(const std::exception& e)
+					{
+						cpu_usage[cpu_name] = 0;
+						std::cerr << "System - cpu usage " << e.what() << " " << usage << std::endl;
+					}
+					
 				}
 				break;
 			}
@@ -186,6 +193,8 @@ System::System(std::string serialization){
 						Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));
 						network_usage[network_interface] = usage;
 					}catch(const std::exception& e) {
+						Network_Usage usage(0, 0);
+						network_usage[network_interface] = 0;
 						std::cerr << "System serialization error: " << e.what() << " Network usage rx = |"
 						 << usage_rx <<"| tx = |" << usage_tx << "|" << std::endl;
 					}
