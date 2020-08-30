@@ -8,7 +8,6 @@ Administrator should be able to see the diferences between the current and the p
 ## Get more data
 ### Collect
 The client should be able to also collect:
-* installed software
 * last logins
 * Hardware and software errors
 * IP (IPv4 and IPv6)
