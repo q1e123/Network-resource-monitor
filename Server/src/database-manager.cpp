@@ -333,9 +333,14 @@ void Database_Manager::insert_usage_data(System *system){
 
     std::vector<DB_User_List> user_list;
     for(auto user : system->get_user_list()){
+        std::time_t t = user.last_login;
+        std::tm *timestamp = std::localtime(&t);
+
         DB_User_List data;
-        data.username = user;
+        data.username = user.username;
+        data.last_login = *timestamp;
         data.usage_id = id;
+        
         user_list.push_back(data);
     }
     std::thread user_worker(&Database_Manager::insert_user_list, this, user_list);
@@ -408,6 +413,7 @@ void Database_Manager::insert_user_list(std::vector<DB_User_List> db_user_list){
     std::string query = get_query("../SQL/insert-user_list.sql");
     soci::statement st = (connection.prepare << query, 
                                                 soci::use(data.username, "username"),
+                                                soci::use(data.last_login, "last_login"),
                                                 soci::use(data.usage_id, "usage_id"));
     for(auto user : db_user_list){
         data = user;
@@ -612,6 +618,7 @@ std::vector<DB_User_List> Database_Manager::get_user_list(int usage_id){
         const soci::row& r = *it;
         DB_User_List user;
         user.username = r.get<std::string>(0);
+        user.last_login = r.get<std::tm>(1);
         user_list.push_back(user);
     }
  
