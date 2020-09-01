@@ -17,6 +17,10 @@ The client should be able to check:
 * if a software is installed
 * what patches/updates are installed
 
+## Server
+### Optimize program list
+Do something so program list insertion is made faster.
+
 # Extra
 Do this only if you've finished all the others
 ## Mobile app
