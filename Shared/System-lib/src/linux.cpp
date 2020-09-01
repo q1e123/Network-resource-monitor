@@ -381,15 +381,17 @@ struct tm* Linux::get_last_login(std::string user){
 
 	std::string month_command, day_command, time_command, year_command;
 	struct tm *t = new tm;
+	std::time_t epoch = 0;
+	t = gmtime(&epoch);
+	if(check_res == "logged"){
+		return t;
+	}
 	if(months.count(check_res)){
 		month_command = "lastlog -u " + user + " | tail -1 | awk '{print $3}'";
 		day_command = "lastlog -u " + user + " | tail -1 | awk '{print $4}'";
 		time_command = "lastlog -u " + user + " | tail -1 | awk '{print $5}'";
 		year_command = "lastlog -u " + user + " | tail -1 | awk '{print $7}'";
 	}else{
-		if(check_res == "logged"){
-			return t;
-		}
 		month_command = "lastlog -u " + user + " | tail -1 | awk '{print $4}'";
 		day_command = "lastlog -u " + user + " | tail -1 | awk '{print $5}'";
 		time_command = "lastlog -u " + user + " | tail -1 | awk '{print $6}'";

@@ -317,7 +317,6 @@ void Database_Manager::insert_usage_data(System *system){
         cpu_usage_list.push_back(data);
     }
     std::thread cpu_usage_worker(&Database_Manager::insert_cpu_usage, this, cpu_usage_list);
-    cpu_usage_worker.detach();
 
     std::vector<DB_Network_Usage> network_usage_list;
     for(auto item : system->get_network_usage()){
@@ -329,7 +328,6 @@ void Database_Manager::insert_usage_data(System *system){
         network_usage_list.push_back(data);
     }
     std::thread network_usage_worker(&Database_Manager::insert_network_usage, this, network_usage_list);
-    network_usage_worker.detach();
 
     std::vector<DB_User_List> user_list;
     for(auto user : system->get_user_list()){
@@ -344,7 +342,6 @@ void Database_Manager::insert_usage_data(System *system){
         user_list.push_back(data);
     }
     std::thread user_worker(&Database_Manager::insert_user_list, this, user_list);
-    user_worker.detach();
 
     std::vector<DB_Environment_Variables> environment_variable_list;
     for(auto item : system->get_environment_variables()){
@@ -355,17 +352,25 @@ void Database_Manager::insert_usage_data(System *system){
         environment_variable_list.push_back(data);
     }
     std::thread environment_variable_worker(&Database_Manager::insert_environment_variables, this, environment_variable_list);
-    environment_variable_worker.detach();
     
     std::vector<DB_Program_List> db_program_list;
-    for(auto program : system->get_installed_programs()){
+    /*for(auto program : system->get_installed_programs()){
         DB_Program_List program_list;
         program_list.usage_id = id;
         program_list.software = program;
         db_program_list.push_back(program_list);
-    }
+    }*/
     std::thread program_list_worker(&Database_Manager::insert_program_list, this, db_program_list);
-    program_list_worker.detach();
+
+    if(cpu_usage_worker.joinable() && environment_variable_worker.joinable() && 
+        network_usage_worker.joinable() && program_list_worker.joinable() &&
+        user_worker.joinable()){
+            user_worker.join();
+            program_list_worker.join();
+            network_usage_worker.join();
+            environment_variable_worker.join();
+            cpu_usage_worker.join();
+        }
 }
 
 void Database_Manager::insert_cpu_usage(std::vector<DB_Cpu_Usage> db_cpu_usage_list){
@@ -523,9 +528,10 @@ System* Database_Manager::build_system(DB_Systems systems){
     }
     serialization.pop_back();
     serialization += ";" + usage_data.current_user;
-    serialization += ";" + std::to_string(std::mktime(&usage_data.timestamp));
+    serialization += ";" + std::to_string(std::mktime(&usage_data.timestamp)) + ";";
     for(auto db_user_list: user_list){
-        serialization += db_user_list.username + ":";
+        time_t t = mktime(&db_user_list.last_login);
+        serialization += db_user_list.username + ":" + std::to_string(t) + "|";
     }
     serialization.pop_back();
     serialization += ";" + std::to_string(usage_data.avalabile_space) + ";";

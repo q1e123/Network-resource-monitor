@@ -106,8 +106,9 @@ std::string System::serilize(){
 	pkg += ";" + this->current_user;
 	timestamp = std::time(0);
 	pkg += ";" + std::to_string(this->timestamp) + ";";
+	
 	for(auto user : user_list){
-		pkg += user + ":";
+		pkg += user.username + ":" + std::to_string(user.last_login) + "|";
 	}
 	pkg.pop_back();
 	pkg += ";" + std::to_string(this->avalabile_space) + ";";
@@ -212,8 +213,24 @@ System::System(std::string serialization){
 			case 8:{
 				std::istringstream user_list_iss(tmp);
 				std::string user;
-				while (getline(user_list_iss, user, ':')){
-					user_list.push_back(user);
+				while (getline(user_list_iss, user, '|')){
+					std::istringstream user_iss(user);
+					std::string username, lastlog_str;
+					getline(user_iss, username, ':');
+					getline(user_iss, lastlog_str);
+					System_User sys_user;
+					sys_user.username = username;
+					try
+					{
+						
+					
+					sys_user.last_login = std::stol(lastlog_str);
+					user_list.push_back(sys_user);
+					}
+					catch(const std::exception& e)
+					{
+						std::cout << serialization << std::endl <<std::endl;
+					}
 				}
 				break;
 			}
@@ -282,7 +299,7 @@ void System::log(){
 	logger->add_system(serilize());
 }
 
-std::vector<std::string> System::get_user_list(){
+std::vector<System_User> System::get_user_list(){
 	return this->user_list;
 }
 
