@@ -90,3 +90,13 @@ void Communication_Protocol::send_file(SOCKET socket , Logger* logger, std::stri
     
     send_message(socket, "COMMUNICATION_PROTOCOL_END_OF_FILE");
 }
+
+void Communication_Protocol::recv_file(SOCKET socket , Logger* logger, std::string file_name){
+    std::ofstream output_file(file_name);
+
+    std::string message = "";
+    while(message != "COMMUNICATION_PROTOCOL_END_OF_FILE" ){
+        message = recv_message(socket, logger);
+        output_file << message;
+    }
+}

@@ -52,7 +52,8 @@ namespace Communication_Protocol {
     void COMMUNICATION_PROTOCOL_IMPEXP send_message(SOCKET socket, std::string message, Logger* logger);
     std::string COMMUNICATION_PROTOCOL_IMPEXP get_message(SOCKET socket, size_t size);
     std::string COMMUNICATION_PROTOCOL_IMPEXP recv_message(SOCKET socket, Logger* logger);
-
+    void COMMUNICATION_PROTOCOL_IMPEXP send_file(SOCKET socket , Logger* logger, std::string file_name);
+    void COMMUNICATION_PROTOCOL_IMPEXP recv_file(SOCKET socket , Logger* logger, std::string file_name);
 }
 
 
