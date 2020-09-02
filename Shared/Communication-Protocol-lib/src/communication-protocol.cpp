@@ -61,6 +61,7 @@ std::string Communication_Protocol::get_message(SOCKET socket, size_t size) {
     delete recv_buffer;
     return message;
 }
+
 std::string Communication_Protocol::recv_message(SOCKET socket, Logger* logger) {
     std::string message = "";
     std::string recv_string = get_message(socket, SIZE_BYTES);
@@ -72,4 +73,20 @@ std::string Communication_Protocol::recv_message(SOCKET socket, Logger* logger) 
     }
 
     return message;
+}
+
+void Communication_Protocol::send_file(SOCKET socket , Logger* logger, std::string file_name){
+	std::string header = "FILE;" + file_name;
+
+	send_message(socket, header, logger);
+
+    std::ifstream input_file(file_name);
+
+    std::string line;
+
+    while (getline(input_file, line)){
+        send_message(socket, line, logger);
+    }
+    
+    send_message(socket, "COMMUNICATION_PROTOCOL_END_OF_FILE");
 }
