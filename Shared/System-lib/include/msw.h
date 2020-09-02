@@ -12,6 +12,8 @@ using std::string;
 using std::map;
 using std::vector;
 
+#include "system-structs.h"
+
 namespace Msw{
 	string get_os();
 	

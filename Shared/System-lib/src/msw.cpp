@@ -300,8 +300,8 @@ std::string Msw::get_current_user(){
     return user;
 }
 
-std::vector<std::string> Msw::get_user_list() {
-    std::vector<std::string> user_list;
+std::vector<System_User> Msw::get_user_list() {
+    std::vector<System_User> user_list;
 
     LPUSER_INFO_0 pBuf = NULL;
     LPUSER_INFO_0 pTmpBuf;
@@ -327,6 +327,10 @@ std::vector<std::string> Msw::get_user_list() {
                 for (i = 0; (i < dwEntriesRead); i++){
                     std::wstring wuser(pTmpBuf->usri0_name);
                     std::string user(wuser.begin(), wuser.end());
+
+                    System_User sys_user;
+                    sys_user.username = user;
+                    
                     user_list.push_back(user);
                     pTmpBuf++;
                 }
