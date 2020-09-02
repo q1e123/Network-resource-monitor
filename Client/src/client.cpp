@@ -64,38 +64,46 @@ void Client::run_commannd(std::string command){
 	getline(iss, type, ';');
 
 	if (type == "SEND") {
-		std::string request_type;
-		getline(iss, request_type, ';');
-		if(request_type == "SYS_A"){
+		std::string send_type;
+		getline(iss, send_type, ';');
+		if(send_type == "SYS_A"){
 			size_t number_of_systems;
 			std::string number_of_systems_str;
 			getline(iss, number_of_systems_str,';');
 			number_of_systems = std::stol(number_of_systems_str);
 			run_get_systems_active(number_of_systems);
-		} else if (request_type == "SYS_I") {
+		} else if (send_type == "SYS_I") {
 			size_t number_of_systems;
 			std::string number_of_systems_str;
 			getline(iss, number_of_systems_str,';');
 			number_of_systems = std::stol(number_of_systems_str);
 			run_get_systems_inactive(number_of_systems);
-		} else if (request_type == "USERS") {
+		} else if (send_type == "USERS") {
 			size_t number_of_users;
 			std::string number_of_users_str;
 			getline(iss, number_of_users_str,';');
 			number_of_users = std::stol(number_of_users_str);
 			run_get_users(number_of_users);
-		} else if (request_type == "SYSTEMS") {
+		} else if (send_type == "SYSTEMS") {
 			size_t number_of_systems;
 			std::string number_of_systems_str;
 			getline(iss, number_of_systems_str,';');
 			number_of_systems = std::stol(number_of_systems_str);
 			run_get_systems(number_of_systems);
+		} else if (send_type == "FILE") {
+			std::string file_name;
+			getline(iss, file_name);
+			recv_file(file_name);
 		}
 	}else if (type == "REQ") {
 		std::string request_type, user;
 		getline(iss, request_type, ';');
-		getline(iss, user, ';');
-	}
+		if(request_type == "FILE") {
+			 std::string file_name;
+			 getline(iss, file_name);
+			 send_file(file_name);
+		}
+	} 	
 }
 
 void Client::run_get_systems_active(size_t number_of_systems){
@@ -245,7 +253,7 @@ void Client::send_log_file(Logger *logger){
 	std::string log;
 	while (getline(log_file, log)){
 		send_message(log);
-	}	
+	}
 }
 
 void Client::init(){
@@ -311,6 +319,14 @@ void Client::insert_system(DB_Systems db_system){
 	send_message(header);
 	std::string serialization = Database_Structs_Utils::serialize(db_system);
 	send_message(serialization);
+}
+
+void Client::send_file(std::string file_name){
+	Communication_Protocol::send_file(this->client_sock, logger, file_name);
+}
+
+void Client::recv_file(std::string file_name){
+	Communication_Protocol::recv_file(this->client_sock, logger, file_name);
 }
 
 const char* Server_Down_Exception::what() const throw(){

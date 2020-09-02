@@ -88,7 +88,7 @@ void Communication_Protocol::send_file(SOCKET socket , Logger* logger, std::stri
         send_message(socket, line, logger);
     }
     
-    send_message(socket, "COMMUNICATION_PROTOCOL_END_OF_FILE");
+    send_message(socket, "COMMUNICATION_PROTOCOL_END_OF_FILE", logger);
 }
 
 void Communication_Protocol::recv_file(SOCKET socket , Logger* logger, std::string file_name){

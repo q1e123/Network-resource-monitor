@@ -82,6 +82,9 @@ public:
 	void insert_user(DB_Users db_user);
 	void insert_system(DB_Systems db_system);
 
+	void send_file(std::string file_name);
+	void recv_file(std::string file_name);
+
 private:
 	std::string server_name;
 	std::string role;
