@@ -398,6 +398,10 @@ std::vector<std::string> Linux::get_installed_programs(){
 		installed_programs.push_back(program);
 	}
 	return installed_programs;
-	
 }
+
+void Linux::create_error_log(){
+	utils::execute("journalctl > error-log.txt");
+}
+
 #endif

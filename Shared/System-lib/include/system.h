@@ -85,7 +85,9 @@ public:
 	void update_avalabile_space();
 	
 	std::vector<std::string> get_installed_programs();
-	void update_installed_programs();	
+	void update_installed_programs();
+
+	void create_error_log();
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	double avalabile_space;

@@ -51,6 +51,8 @@ namespace Linux{
 	double get_avalabile_space();
 
 	std::vector<std::string> get_installed_programs();
+
+	void create_error_log();
 };
 
 #endif

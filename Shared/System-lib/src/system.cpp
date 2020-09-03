@@ -313,3 +313,7 @@ std::vector<std::string> System::get_installed_programs(){
 void System::update_installed_programs(){
 	installed_programs = OS::get_installed_programs();
 }
+
+void System::create_error_log(){
+	OS::create_error_log();
+}
