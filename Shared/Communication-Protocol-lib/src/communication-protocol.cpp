@@ -76,14 +76,9 @@ std::string Communication_Protocol::recv_message(SOCKET socket, Logger* logger) 
 }
 
 void Communication_Protocol::send_file(SOCKET socket , Logger* logger, std::string file_name){
-	std::string header = "FILE;" + file_name;
-
-	send_message(socket, header, logger);
-
     std::ifstream input_file(file_name);
 
     std::string line;
-
     while (getline(input_file, line)){
         send_message(socket, line, logger);
     }
@@ -94,6 +89,7 @@ void Communication_Protocol::send_file(SOCKET socket , Logger* logger, std::stri
 void Communication_Protocol::recv_file(SOCKET socket , Logger* logger, std::string file_name){
     std::ofstream output_file(file_name);
 
+    std::cout << file_name << std::endl;
     std::string message = "";
     while(message != "COMMUNICATION_PROTOCOL_END_OF_FILE" ){
         message = recv_message(socket, logger);

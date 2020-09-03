@@ -322,6 +322,8 @@ void Client::insert_system(DB_Systems db_system){
 }
 
 void Client::send_file(std::string file_name){
+	std::string header = "FILE;" + file_name;
+	Communication_Protocol::send_message(this->client_sock, header, logger);
 	Communication_Protocol::send_file(this->client_sock, logger, file_name);
 }
 

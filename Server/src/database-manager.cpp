@@ -286,7 +286,7 @@ void Database_Manager::insert_user(DB_Users db_user){
 }
 
 void Database_Manager::insert_usage_data(System *system){
-    DB_Systems db_sys = get_system_id_from(system->get_current_user());
+    DB_Systems db_sys = get_system_from(system->get_current_user());
     soci::session connection;
 
     connection.open(type, connection_string);
@@ -454,11 +454,10 @@ DB_Systems Database_Manager::get_system_from(std::string user){
     connection.open(type, connection_string);
 
     DB_Systems db_sys;
-
-    std::string query = get_query("../SQL/get-system-id-from-user.sql");
+    std::string query = get_query("../SQL/get-system-from-user.sql");
     connection << query, soci::into(db_sys.id),
                         soci::into(db_sys.status),
-                        soci::into(db_sys.machine_id);
+                        soci::into(db_sys.machine_id),
                         soci::use(user, "user");
 
     connection.close();

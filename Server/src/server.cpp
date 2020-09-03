@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <filesystem>
 
 #include "communication-protocol.h"
 #include "database-utils.h"
@@ -79,8 +80,8 @@ void Server::start() {
 		}
 		Communication_Protocol::send_message(client_sock, login_message, logger);
 		if(login_message == "OK" || login_message == "OK_ADMIN"){
-			int system_id = database_manager.get_system_id_from(user);
-			database_manager.update_system_status(system_id, 1);
+			DB_Systems db_sys = database_manager.get_system_from(user);
+			database_manager.update_system_status(db_sys.id, 1);
 			clients.push_back(client);
 			std::thread worker(&Server::recv_msg, this, client);
 			workers[client_sock] = std::move(worker);
@@ -130,7 +131,6 @@ void Server::send_to(Client_Info client, std::string message) {
 
 void Server::recv_msg(Client_Info client) {
 	logger->add("RECIVER STARTED FOR " + client.get_user());
-
 	std::string package;
 	try{
 		while(package != "SOCKET_DOWN"){
@@ -138,11 +138,10 @@ void Server::recv_msg(Client_Info client) {
 				run_cmd(client, package);
 		}
 	} catch (Client_Down_Exception e){
-			int system_id = database_manager.get_system_id_from(client.get_user());
-			database_manager.update_system_status(system_id, 0);
+			DB_Systems db_sys = database_manager.get_system_from(client.get_user());
+			database_manager.update_system_status(db_sys.id, 0);
 			logger->add_network("CONN", "disconnection", client.get_ip());
 			mtx.lock(); 
-			disc_users += client.get_user() + ";";
 			remove_user(client.get_user());
 			mtx.unlock();
 	}
@@ -155,17 +154,16 @@ void Server::run_cmd(Client_Info client, std::string cmd) {
 
 	mtx.lock();
 	if (type == "SYS") {
-		std::string user, serialization;
+		std::string serialization;
 		getline(iss, serialization);		
 		cmd_sys(serialization);
 	} else if (type == "LOG") {
-		std::string user;
 		std::string log_size_str;
 		getline(iss, log_size_str, ';');
 		size_t log_size = std::stol(log_size_str);
 		cmd_log(client, log_size);
 	}else if (type == "REQ") {
-		std::string request_type, user;
+		std::string request_type;
 		getline(iss, request_type, ';');
 		if(request_type == "SYS_A"){
 			cmd_req_sys_a(client);
@@ -176,9 +174,10 @@ void Server::run_cmd(Client_Info client, std::string cmd) {
 		} else if (request_type == "SYSTEMS") {
 			cmd_req_systems(client);
 		} else if (request_type == "FILE") {
-
+			std::string file_name;
+			getline(iss, file_name);
+			cmd_file_send(client, file_name);
 		}
-		
 	} else if (type == "UPDATE") {
 		std::string update_type, user;
 		getline(iss, update_type, ';');
@@ -201,6 +200,10 @@ void Server::run_cmd(Client_Info client, std::string cmd) {
 		} else if (insert_type == "SYSTEMS"){
 			cmd_insert_system(client);
 		}
+	} else if (type == "FILE") {
+		std::string file_name;
+		getline(iss, file_name);
+		cmd_file_recv(client, file_name);
 	}
 	mtx.unlock();
 }
@@ -276,7 +279,6 @@ void Server::cmd_update_users(Client_Info client, size_t number_of_users){
 void Server::cmd_update_systems(Client_Info client, size_t number_of_systems){
 	for (size_t i = 0; i < number_of_systems; ++i){
 		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-		std::cout << serialization << std::endl;
 		DB_Systems db_systems = Database_Structs_Utils::deserialize_db_system(serialization);
 		database_manager.update_system(db_systems);
 	}
@@ -295,11 +297,19 @@ void Server::cmd_insert_system(Client_Info client){
 }
 
 void Server::cmd_file_send(Client_Info client, std::string file_name){
-	//Communication_Protocol::send_file()
+	if(std::filesystem::exists(file_name)){
+		std::string header = "SEND;FILE;" + file_name;
+		Communication_Protocol::send_message(client.get_socket_number(), header, logger);
+		Communication_Protocol::send_file(client.get_socket_number(), logger, file_name);
+	} else {
+		// TODO
+		std::cerr << "File not existent" << std::endl;
+	}
+	
 }
 
 void Server::cmd_file_recv(Client_Info client, std::string file_name){
-
+	Communication_Protocol::recv_file(client.get_socket_number(), logger, file_name);
 }
 
 void Server::remove_user(std::string user) {
