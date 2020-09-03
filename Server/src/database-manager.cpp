@@ -286,7 +286,7 @@ void Database_Manager::insert_user(DB_Users db_user){
 }
 
 void Database_Manager::insert_usage_data(System *system){
-    int system_id = get_system_id_from(system->get_current_user());
+    DB_Systems db_sys = get_system_id_from(system->get_current_user());
     soci::session connection;
 
     connection.open(type, connection_string);
@@ -299,7 +299,7 @@ void Database_Manager::insert_usage_data(System *system){
     connection << query, soci::use(system->get_total_ram(), "total_ram"),
                 soci::use(system->get_used_ram(), "used_ram"), soci::use(system->get_avalabile_ram(), "free_ram"),
                 soci::use(*timestamp, "usage_timestamp"), soci::use(system->get_current_user(), "user"),
-                soci::use(system->get_os(), "operating_system"), soci::use(system_id, "system_id"),
+                soci::use(system->get_os(), "operating_system"), soci::use(db_sys.id, "system_id"),
                 soci::use(system->get_avalabile_space(), "avalabile_space");
 
 
@@ -449,22 +449,21 @@ void Database_Manager::insert_program_list(std::vector<DB_Program_List> program_
     connection.close();
 }
 
-int Database_Manager::get_system_id_from(std::string user){
+DB_Systems Database_Manager::get_system_from(std::string user){
     soci::session connection;
     connection.open(type, connection_string);
 
-    int system_id;
-    soci::indicator ind;
+    DB_Systems db_sys;
 
     std::string query = get_query("../SQL/get-system-id-from-user.sql");
-    connection << query, soci::into(system_id, ind), soci::use(user, "user");
+    connection << query, soci::into(db_sys.id),
+                        soci::into(db_sys.status),
+                        soci::into(db_sys.machine_id);
+                        soci::use(user, "user");
 
     connection.close();
-
-    if(ind == soci::i_ok){
-        return system_id;
-    }
-    return -1;
+    
+    return db_sys;
 }
 
 std::vector<DB_Systems> Database_Manager::get_active_systems_list(){

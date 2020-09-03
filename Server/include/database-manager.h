@@ -32,7 +32,7 @@ public:
     void insert_user(DB_Users db_user);
     void insert_usage_data(System *system);
     
-    int get_system_id_from(std::string user);
+    DB_Systems get_system_from(std::string user);
 
     std::vector<std::string> get_active_systems();
     std::vector<std::string> get_inactive_systems();
