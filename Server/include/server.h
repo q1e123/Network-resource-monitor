@@ -69,17 +69,19 @@ private:
 	void recv_msg(Client_Info client);
 	void remove_user(std::string user);
 
-	void run_cmd(std::string cmd);
+	void run_cmd(Client_Info client_info, std::string cmd);
 	void cmd_sys(std::string serialization);
-	void cmd_log(std::string user, size_t number_of_logs);
-	void cmd_req_sys_a(std::string user);
-	void cmd_req_sys_i(std::string user);
-	void cmd_req_users(std::string user);
-	void cmd_req_systems(std::string user);
-	void cmd_update_users(std::string user, size_t number_of_users);
-	void cmd_update_systems(std::string user, size_t number_of_systems);
-	void cmd_insert_user(std::string user);
-	void cmd_insert_system(std::string user);
+	void cmd_log(Client_Info client_info, size_t number_of_logs);
+	void cmd_req_sys_a(Client_Info client_info);
+	void cmd_req_sys_i(Client_Info client_info);
+	void cmd_req_users(Client_Info client_info);
+	void cmd_req_systems(Client_Info client_info);
+	void cmd_update_users(Client_Info client_info, size_t number_of_users);
+	void cmd_update_systems(Client_Info client_info, size_t number_of_systems);
+	void cmd_insert_user(Client_Info client_info);
+	void cmd_insert_system(Client_Info client_info);
+	void cmd_file_send(Client_Info client_info, std::string file_name);
+	void cmd_file_recv(Client_Info client_info, std::string file_name);
 
 	System* build_system(int id);
 

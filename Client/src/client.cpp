@@ -235,13 +235,13 @@ int Client::socket_close(SOCKET socket) {
 }
 
 void Client::send_system_state(System *system){
-	std::string message = "SYS;" + this->username + ";" + system->serilize();
+	std::string message = "SYS;" + system->serilize();
 	send_message(message);
 }
 
 void Client::send_log_file(Logger *logger){
 	size_t number_of_logs = logger->get_last_line() - logger->get_first_line();
-	std::string header = "LOG;" + this->username + ";" + std::to_string(number_of_logs);
+	std::string header = "LOG;" + std::to_string(number_of_logs);
 	send_message(header);
 	std::string log_file_name = logger->get_file_name();
 	std::ifstream log_file(log_file_name);

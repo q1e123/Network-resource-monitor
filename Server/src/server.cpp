@@ -135,7 +135,7 @@ void Server::recv_msg(Client_Info client) {
 	try{
 		while(package != "SOCKET_DOWN"){
 				package = Communication_Protocol::recv_message(client.get_socket_number(), logger);
-				run_cmd(package);
+				run_cmd(client, package);
 		}
 	} catch (Client_Down_Exception e){
 			int system_id = database_manager.get_system_id_from(client.get_user());
@@ -148,7 +148,7 @@ void Server::recv_msg(Client_Info client) {
 	}
 }
 
-void Server::run_cmd(std::string cmd) {
+void Server::run_cmd(Client_Info client, std::string cmd) {
 	std::istringstream iss(cmd);
 	std::string type;
 	getline(iss, type, ';');
@@ -156,53 +156,50 @@ void Server::run_cmd(std::string cmd) {
 	mtx.lock();
 	if (type == "SYS") {
 		std::string user, serialization;
-		getline(iss, user, ';');
 		getline(iss, serialization);		
 		cmd_sys(serialization);
 	} else if (type == "LOG") {
 		std::string user;
-		getline(iss, user, ';');
 		std::string log_size_str;
 		getline(iss, log_size_str, ';');
 		size_t log_size = std::stol(log_size_str);
-		cmd_log(user, log_size);
+		cmd_log(client, log_size);
 	}else if (type == "REQ") {
 		std::string request_type, user;
 		getline(iss, request_type, ';');
-		getline(iss, user, ';');
 		if(request_type == "SYS_A"){
-			cmd_req_sys_a(user);
+			cmd_req_sys_a(client);
 		} else if (request_type == "SYS_I") {
-			cmd_req_sys_i(user);
+			cmd_req_sys_i(client);
 		} else if (request_type == "USERS") {
-			cmd_req_users(user);
+			cmd_req_users(client);
 		} else if (request_type == "SYSTEMS") {
-			cmd_req_systems(user);
-		} 
+			cmd_req_systems(client);
+		} else if (request_type == "FILE") {
+
+		}
 		
 	} else if (type == "UPDATE") {
 		std::string update_type, user;
 		getline(iss, update_type, ';');
-		getline(iss, user, ';');
 		if(update_type == "USERS"){
 			std::string number_of_users_str;
 			getline(iss, number_of_users_str,';');
 			size_t number_of_users = std::stol(number_of_users_str);
-			cmd_update_users(user, number_of_users);
+			cmd_update_users(client, number_of_users);
 		} else if (update_type == "SYSTEMS") {
 			std::string number_of_systems_str;
 			getline(iss, number_of_systems_str,';');
 			size_t number_of_systems = std::stol(number_of_systems_str);
-			cmd_update_systems(user, number_of_systems);
+			cmd_update_systems(client, number_of_systems);
 		}
 	} else if (type == "INSERT") {
-		std::string insert_type, user;
+		std::string insert_type;
 		getline(iss, insert_type, ';');
-		getline(iss, user, ';');
 		if(insert_type == "USERS"){
-			cmd_insert_user(user);
+			cmd_insert_user(client);
 		} else if (insert_type == "SYSTEMS"){
-			cmd_insert_system(user);
+			cmd_insert_system(client);
 		}
 	}
 	mtx.unlock();
@@ -216,9 +213,7 @@ void Server::cmd_sys(std::string serialization) {
 	database_manager.insert_usage_data(sys);
 }
 
-void Server::cmd_log(std::string user, size_t number_of_logs){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
+void Server::cmd_log(Client_Info client, size_t number_of_logs){
 	for (size_t i = 0; i < number_of_logs; i++){
 		std::string log = Communication_Protocol::recv_message(client.get_socket_number(), logger);	
 		size_t start = log.find("SYSTEM");
@@ -227,10 +222,7 @@ void Server::cmd_log(std::string user, size_t number_of_logs){
 	}
 }
 
-void Server::cmd_req_sys_a(std::string user){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
-
+void Server::cmd_req_sys_a(Client_Info client){
 	std::vector<std::string> systems = database_manager.get_active_systems();
 	size_t number_of_systems = systems.size();
 	std::string message = "SEND;SYS_A;" + std::to_string(number_of_systems);
@@ -240,10 +232,7 @@ void Server::cmd_req_sys_a(std::string user){
 	}
 }
 
-void Server::cmd_req_sys_i(std::string user){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
-
+void Server::cmd_req_sys_i(Client_Info client){
 	std::vector<std::string> systems = database_manager.get_inactive_systems();
 	size_t number_of_systems = systems.size();
 	Communication_Protocol::send_message(client.get_socket_number() , std::to_string(number_of_systems), logger);
@@ -252,10 +241,7 @@ void Server::cmd_req_sys_i(std::string user){
 	}
 }
 
-void Server::cmd_req_users(std::string user){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
-
+void Server::cmd_req_users(Client_Info client){
 	std::vector<DB_Users> users = database_manager.get_all_users();
 	size_t number_of_users = users.size();
 	std::string message = "SEND;USERS;" + std::to_string(number_of_users);
@@ -267,10 +253,7 @@ void Server::cmd_req_users(std::string user){
 	}
 }
 
-void Server::cmd_req_systems(std::string user){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
-
+void Server::cmd_req_systems(Client_Info client){
 	std::vector<DB_Systems> system_list = database_manager.get_all_systems();
 	size_t number_of_systems = system_list.size();
 	std::string message = "SEND;SYSTEMS;" + std::to_string(number_of_systems);
@@ -282,10 +265,7 @@ void Server::cmd_req_systems(std::string user){
 	}
 }
 
-void Server::cmd_update_users(std::string user, size_t number_of_users){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
-
+void Server::cmd_update_users(Client_Info client, size_t number_of_users){
 	for (size_t i = 0; i < number_of_users; ++i){
 		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
 		DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
@@ -293,10 +273,7 @@ void Server::cmd_update_users(std::string user, size_t number_of_users){
 	}
 }
 
-void Server::cmd_update_systems(std::string user, size_t number_of_systems){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
-
+void Server::cmd_update_systems(Client_Info client, size_t number_of_systems){
 	for (size_t i = 0; i < number_of_systems; ++i){
 		std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
 		std::cout << serialization << std::endl;
@@ -305,20 +282,24 @@ void Server::cmd_update_systems(std::string user, size_t number_of_systems){
 	}
 }
 
-void Server::cmd_insert_user(std::string user){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
+void Server::cmd_insert_user(Client_Info client){
 	std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
 	DB_Users db_user = Database_Structs_Utils::deserialize_db_users(serialization);
 	database_manager.insert_user(db_user);
 }
 
-void Server::cmd_insert_system(std::string user){
-	size_t pos = find_client(user);
-	Client_Info client = clients[pos];
+void Server::cmd_insert_system(Client_Info client){
 	std::string serialization = Communication_Protocol::recv_message(client.get_socket_number(), logger);
 	DB_Systems db_system = Database_Structs_Utils::deserialize_db_system(serialization);
 	database_manager.insert_system(db_system);
+}
+
+void Server::cmd_file_send(Client_Info client, std::string file_name){
+	//Communication_Protocol::send_file()
+}
+
+void Server::cmd_file_recv(Client_Info client, std::string file_name){
+
 }
 
 void Server::remove_user(std::string user) {
