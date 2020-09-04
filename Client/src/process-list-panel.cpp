@@ -101,7 +101,7 @@ void Process_List_Panel::update(Process_Sort_Type sort_type){
             std::sort(process_list.begin(), process_list.end(), Proc_Utils::compare_ram_reverse);
             break;
     }
-    string name, pid, cpu, ram;
+    std::string name, pid, cpu, ram;
     name = pid = cpu = ram = "";
 
     for (auto proc : process_list) {

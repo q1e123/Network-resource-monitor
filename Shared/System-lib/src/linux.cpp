@@ -15,16 +15,8 @@
 #include "utils.h"
 #include "jiffy.h"
 
-using std::stol;
-using std::vector;
-using std::ifstream, std::getline, std::cout;
-using std::istringstream;
-using std::pair;
-using std::to_string;
-using std::tuple;
-
-string Linux::get_os(){
-	vector<char> sep;
+std::string Linux::get_os(){
+	std::vector<char> sep;
 	sep.push_back(' ');
 	sep.push_back('=');
 	sep.push_back('"');
@@ -32,39 +24,39 @@ string Linux::get_os(){
 }
 
 size_t Linux::get_total_ram(){
-	vector<char> sep;
+	std::vector<char> sep;
 	sep.push_back(' ');
 	sep.push_back(':');
 	sep.push_back('\t');
-	string tmp = utils::get_value_sysfile(MEMINFO_FILE, "MemTotal",sep);
+	std::string tmp = utils::get_value_sysfile(MEMINFO_FILE, "MemTotal",sep);
 	utils::remove_char_str(tmp, ' ');
 	tmp = tmp.substr(0, tmp.size()-2);
 	return stol(tmp);
 }
 
 size_t Linux::get_avalabile_ram(){
-	vector<char> sep;
+	std::vector<char> sep;
 	sep.push_back(' ');
 	sep.push_back(':');
 	sep.push_back('\t');
-	string tmp = utils::get_value_sysfile(MEMINFO_FILE, "MemAvailable",sep);
+	std::string tmp = utils::get_value_sysfile(MEMINFO_FILE, "MemAvailable",sep);
 	utils::remove_char_str(tmp,' ');
 	tmp = tmp.substr(0, tmp.size()-2);
 	return stol(tmp);
 }
 
-map<string, Jiffy> get_jiffies(){
-	map<string, Jiffy> jiffies;
-	ifstream cpu_file(Linux::STAT_FILE);
-	string line;
+std::map<std::string, Jiffy> get_jiffies(){
+	std::map<std::string, Jiffy> jiffies;
+	std::ifstream cpu_file(Linux::STAT_FILE);
+	std::string line;
 	while(getline(cpu_file,line)){
-		istringstream linestream(line);
-		string prop;
+		std::istringstream linestream(line);
+		std::string prop;
 		linestream>>prop;
-		if(prop.find("cpu") == string::npos){
+		if(prop.find("cpu") == std::string::npos){
 			return jiffies;
 		}
-		vector<size_t> jfs;
+		std::vector<size_t> jfs;
 		size_t jif;
 		while(linestream>>jif){
 			jfs.push_back(jif);
@@ -85,12 +77,12 @@ map<string, Jiffy> get_jiffies(){
 	return jiffies;
 }
 
-map<string, double> Linux::get_cpu_usage(){
-	map<string, Jiffy> current_jiffies, new_jiffies;
+std::map<std::string, double> Linux::get_cpu_usage(){
+	std::map<std::string, Jiffy> current_jiffies, new_jiffies;
 	current_jiffies= get_jiffies();
     std::this_thread::sleep_for (std::chrono::milliseconds(100));
 	new_jiffies = get_jiffies();
-	map<string, double> cpu_usage;
+	std::map<std::string, double> cpu_usage;
 	for(auto item:current_jiffies){
 		size_t dt, dw;
 		dt = new_jiffies[item.first].get_total() - item.second.get_total(); 
@@ -110,12 +102,12 @@ void Linux::restart(){
 	utils::execute("reboot");
 }
 
-vector<string> Linux::get_network_interfaces(){
+std::vector<std::string> Linux::get_network_interfaces(){
 	utils::execute("ls /sys/class/net/ > interfaces");
 
-	ifstream interfaces_file("interfaces");
-	vector<string> interfaces;
-	string interface;
+	std::ifstream interfaces_file("interfaces");
+	std::vector<std::string> interfaces;
+	std::string interface;
 	while(interfaces_file>>interface){
 		interfaces.push_back(interface);
 	}
@@ -123,8 +115,8 @@ vector<string> Linux::get_network_interfaces(){
 	return interfaces;
 }
 
-Network_Usage Linux::get_interface_usage(string interface){
-	string start,cmd_rx, cmd_tx,stat, txp, rxp;
+Network_Usage Linux::get_interface_usage(std::string interface){
+	std::string start,cmd_rx, cmd_tx,stat, txp, rxp;
 	start = "cat /sys/class/net/";
 	stat = "/statistics/";
 	txp = "tx_packets";
@@ -145,18 +137,18 @@ Network_Usage Linux::get_interface_usage(string interface){
 	return nu_new - nu_old;
 }
 
-map<string, Network_Usage> Linux::get_network_usage(){
-	map<string, Network_Usage> network_usage;
-	vector<string> interfaces;
+std::map<std::string, Network_Usage> Linux::get_network_usage(){
+	std::map<std::string, Network_Usage> network_usage;
+	std::vector<std::string> interfaces;
 	interfaces = Linux::get_network_interfaces();
 	
-	string start,cmd_rx, cmd_tx,stat, txp, rxp;
+	std::string start,cmd_rx, cmd_tx,stat, txp, rxp;
 	start = "cat /sys/class/net/";
 	stat = "/statistics/";
 	txp = "tx_packets";
 	rxp = "rx_packets";
 
-	vector<Network_Usage> old_usages;
+	std::vector<Network_Usage> old_usages;
 	for(auto interface : interfaces){
 		size_t rx_old, tx_old;
 		cmd_rx = start + interface + stat + rxp;
@@ -166,7 +158,7 @@ map<string, Network_Usage> Linux::get_network_usage(){
 		old_usages.push_back(Network_Usage(rx_old, tx_old));
 	}
 	std::this_thread::sleep_for (std::chrono::milliseconds(100));
-	vector<Network_Usage> new_usages;
+	std::vector<Network_Usage> new_usages;
 	for(auto interface : interfaces){
 		size_t rx_new, tx_new;
 		cmd_rx = start + interface + stat + rxp;
@@ -199,13 +191,13 @@ std::string Linux::get_ivp4_for(std::string network_interface){
 	return ipv4;
 }
 
-vector<size_t> Linux::get_pids() {
-  vector<size_t> pids;
+std::vector<size_t> Linux::get_pids() {
+  std::vector<size_t> pids;
   DIR* directory = opendir(Linux::PROC_DIR.c_str());
   struct dirent* file;
   while ((file = readdir(directory))) {
     if (file->d_type == DT_DIR) {
-      string filename(file->d_name);
+      std::string filename(file->d_name);
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         size_t pid = stol(filename);
         pids.push_back(pid);
@@ -217,11 +209,11 @@ vector<size_t> Linux::get_pids() {
 }
 
 size_t get_total_cpu(){
-	ifstream cpu_file(Linux::STAT_FILE);
-	string line;
+	std::ifstream cpu_file(Linux::STAT_FILE);
+	std::string line;
 	getline(cpu_file,line);
-	istringstream linestream(line);
-	string str;
+	std::istringstream linestream(line);
+	std::string str;
 	linestream>>str;
 	size_t jif, total_jiffies;
 	total_jiffies = 0;
@@ -232,15 +224,15 @@ size_t get_total_cpu(){
 }
 
 void Linux::get_proc_info(size_t pid, Process &process){
-	string filename, line, data, name;
+	std::string filename, line, data, name;
 	size_t line_number, jiffies_old, uptime_old;
 	bool last;
-	filename = Linux::PROC_DIR + to_string(pid) + "/stat";
+	filename = Linux::PROC_DIR + std::to_string(pid) + "/stat";
 	size_t total_cpu_old;
 	total_cpu_old = get_total_cpu();
-	ifstream proc_stat_file(filename);
+	std::ifstream proc_stat_file(filename);
 	std::getline(proc_stat_file, line);	
-	istringstream line_stream(line);
+	std::istringstream line_stream(line);
 	jiffies_old = 0;
 	line_number = 0;
 	last = false;
@@ -278,7 +270,7 @@ void Linux::get_proc_info(size_t pid, Process &process){
 	total_cpu_new = get_total_cpu();
 	size_t jiffies_new,  ram;
 	std::getline(proc_stat_file, line);	
-	line_stream = istringstream(line);
+	line_stream = std::istringstream(line);
 	jiffies_new = 0;
 	line_number = 0;
 	last = false;
@@ -324,12 +316,12 @@ void Linux::get_proc_info(size_t pid, Process &process){
 	process = Process(pid, name, ram, usage);
 }
 
-vector<Process> Linux::get_process_list(){
-	vector<Process> proc_list;
-	vector<size_t> pids;
-	vector<std::thread> threads;
+std::vector<Process> Linux::get_process_list(){
+	std::vector<Process> proc_list;
+	std::vector<size_t> pids;
+	std::vector<std::thread> threads;
 	pids = Linux::get_pids();
-	proc_list = vector<Process>(pids.size(),Process());
+	proc_list = std::vector<Process>(pids.size(),Process());
 
 	for(size_t i = 0; i <pids.size(); ++i){
 		std::thread worker(Linux::get_proc_info, pids[i], std::ref(proc_list[i]));

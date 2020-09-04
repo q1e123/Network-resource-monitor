@@ -23,10 +23,6 @@
 	#include "msw.h"
 #endif
 
-using std::string;
-using std::vector;
-using std::map;
-
 class SYSTEM_IMPEXP System{
 public:
 	System();
@@ -40,23 +36,23 @@ public:
 	size_t get_avalabile_ram();
 	size_t get_used_ram();
 
-	string get_os();
+	std::string get_os();
 	void update_avalabile_ram();
 
-	map<string, double> get_cpu_usage();
+	std::map<std::string, double> get_cpu_usage();
 	void update_cpu_usage();
 
 	void shutdown();
 	void restart();
 
-	string get_ip();
+	std::string get_ip();
 
-	map<string, Network_Usage> get_network_usage();
+	std::map<std::string, Network_Usage> get_network_usage();
 	void update_network_usage();
 
-	vector<string> get_network_interfaces();
+	std::vector<std::string> get_network_interfaces();
 
-	vector<Process> get_process_list();
+	std::vector<Process> get_process_list();
 	void update_process_list();
 
 	// os;total_ram;avalabile_ram;used_ram;<cpu_usage>;<network_usage>
@@ -96,12 +92,12 @@ public:
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	double avalabile_space;
-	string os, ip, current_user;
-	vector<string> network_interfaces;
-	map<string, double> cpu_usage;
-	map<string, Network_Usage> network_usage;
+	std::string os, ip, current_user;
+	std::vector<std::string> network_interfaces;
+	std::map<std::string, double> cpu_usage;
+	std::map<std::string, Network_Usage> network_usage;
 	std::map<std::string, std::string> ipv4;
-	vector<Process> process_list;
+	std::vector<Process> process_list;
 	std::string machine_id;
 	std::vector<System_User> user_list;
     std::time_t timestamp;

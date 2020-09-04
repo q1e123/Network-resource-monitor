@@ -18,28 +18,19 @@
 #include <vector>
 #include "utils.h"
 
-using std:: vector;
-using std::ifstream;
-using std::getline, std::replace;
-using std:: istringstream;
-using std::cout, std::cerr;
-using std::string;
-using std::array;
-using std::unique_ptr;
-
-string utils::get_value_sysfile(string filepath, string key,vector<char> separators){
-	ifstream os_file(filepath);
-	string line;
+std::string utils::get_value_sysfile(std::string filepath, std::string key,std::vector<char> separators){
+	std::ifstream os_file(filepath);
+	std::string line;
 	while(getline(os_file,line)){
-		replace(line.begin(),line.end(), ' ', '_');
+		std::replace(line.begin(),line.end(), ' ', '_');
 		for(auto sep:separators){
-			replace(line.begin(),line.end(), sep, ' ');
+			std::replace(line.begin(),line.end(), sep, ' ');
 		}
-		istringstream line_stream(line);
-		string k,val;
+		std::istringstream line_stream(line);
+		std::string k,val;
 		while(line_stream >> k >> val){
 			if(k == key){
-				replace(val.begin(), val.end(), '_', ' ');
+				std::replace(val.begin(), val.end(), '_', ' ');
 				return val;
 			}
 		}
@@ -47,17 +38,17 @@ string utils::get_value_sysfile(string filepath, string key,vector<char> separat
 	return "None";
 }
 
-string utils::remove_char_str(string str, char ch){
+std::string utils::remove_char_str(std::string str, char ch){
 	str.erase(std::remove(str.begin(), str.end(), ch), str.end());
 	return str;
 }
 
-string utils::execute(const char *cmd){
-    array<char, 128> buffer;
-    string result;
-    unique_ptr<FILE, decltype(&CLOSE)> pipe(OPEN(cmd, "r"), CLOSE);
+std::string utils::execute(const char *cmd){
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&CLOSE)> pipe(OPEN(cmd, "r"), CLOSE);
     if (!pipe) {
-        cerr<<("popen() failed!\n");
+        std::cerr<<("popen() failed!\n");
     }
     while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
         result += buffer.data();

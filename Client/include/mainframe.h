@@ -46,7 +46,7 @@ private:
 	double t = 1;
 	bool connected = false;
 	System *system;
-	vector<wxColour> cpu_colors;
+	std::vector<wxColour> cpu_colors;
 	Process_Sort_Type process_sort_type;
 	wxTimer *timer;
 	wxPanel *main_panel;

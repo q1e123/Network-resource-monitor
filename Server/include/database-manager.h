@@ -41,7 +41,7 @@ public:
 
 
 private:
-    const string init_file_name = "../Init/database.ini";
+    const std::string init_file_name = "../Init/database.ini";
     std::string type, user, password, users_table, systems_table, database_name, connection_string;
     std::string usage_data_table, cpu_usage_table, network_usage_table, user_list_table;
     std::string environment_variables_table, program_list_table;

@@ -54,8 +54,8 @@ size_t filetime_to_int(const FILETIME &ft){
     return (((size_t)(ft.dwHighDateTime)) << 32) | ((size_t)ft.dwLowDateTime);
 }
 
-map<string, double> Msw::get_cpu_usage(){
-    map<string, double> cpu_usage;
+std::map<std::string, double> Msw::get_cpu_usage(){
+    std::map<std::string, double> cpu_usage;
     double usage;
     FILETIME idleTime, kernelTime, userTime;
     if(GetSystemTimes(&idleTime, &kernelTime, &userTime)){
@@ -99,8 +99,8 @@ void setup_iftable(MIB_IFROW *if_table, DWORD&dw_size){
 
 }
 
-vector<string> Msw::get_network_interfaces(){
-	vector<string> interfaces;
+std::vector<std::string> Msw::get_network_interfaces(){
+	std::vector<std::string> interfaces;
 	DWORD dw_size;
 
     MIB_IFTABLE* if_table;
@@ -126,7 +126,7 @@ vector<string> Msw::get_network_interfaces(){
     if(GetIfTable(if_table, &dw_size, FALSE) == NO_ERROR) {
         for (size_t i = 0; i < if_table->dwNumEntries; i++) {
             if_row = (MIB_IFROW*)&if_table->table[i];
-            string intr(reinterpret_cast<char*>(if_row->bDescr));
+            std::string intr(reinterpret_cast<char*>(if_row->bDescr));
             interfaces.push_back(intr);
         }		
 	}else{
@@ -137,8 +137,8 @@ vector<string> Msw::get_network_interfaces(){
 	return interfaces;
 }
 
-map<string, Network_Usage> Msw::get_network_usage(){
-	map<string, Network_Usage> network_usage;
+std::map<std::string, Network_Usage> Msw::get_network_usage(){
+	std::map<std::string, Network_Usage> network_usage;
     DWORD dw_size;
 
     MIB_IFTABLE* if_table;
@@ -194,7 +194,7 @@ map<string, Network_Usage> Msw::get_network_usage(){
     if(GetIfTable(if_table, &dw_size, FALSE) == NO_ERROR) {
         for (size_t i = 0; i < if_table->dwNumEntries; i++){
             if_row = (MIB_IFROW*)&if_table->table[i];
-            string intr(reinterpret_cast<char*>(if_row->bDescr));
+            std::string intr(reinterpret_cast<char*>(if_row->bDescr));
 			Network_Usage new_usage(if_row->dwInOctets, if_row->dwOutOctets);
             std::cout << new_usage.get_rx()<<" " <<old_usage[i].get_rx()<<"\n";
             Network_Usage usage(new_usage.get_rx() - old_usage[i].get_rx(), new_usage.get_tx() - old_usage[i].get_tx());
@@ -248,9 +248,9 @@ void Msw::get_proc_info(DWORD pid, Process& process) {
     CloseHandle(process_handle);
 
 }
-vector<Process> Msw::get_process_list() {
-    vector<Process> proc_list;
-    vector<std::thread> threads;
+std::vector<Process> Msw::get_process_list() {
+    vstd::ector<Process> proc_list;
+    std::vector<std::thread> threads;
 
     DWORD aProcesses[1024], cbNeeded, cProcesses;
 

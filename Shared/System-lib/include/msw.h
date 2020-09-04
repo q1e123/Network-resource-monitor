@@ -8,27 +8,24 @@
 #include "network-usage.h"
 #include "my-process.h"
 #include <windows.h>
-using std::string;
-using std::map;
-using std::vector;
 
 #include "system-structs.h"
 
 namespace Msw{
-	string get_os();
+	std::string get_os();
 	
 	size_t get_total_ram();
 	size_t get_avalabile_ram();
-	map<string,double> get_cpu_usage();
+	std::map<std::string,double> get_cpu_usage();
 	
 	void shutdown();
 	void restart();
 	
-	vector<string> get_network_interfaces();
-	map<string, Network_Usage> get_network_usage();
+	std::vector<std::string> get_network_interfaces();
+	std::map<std::string, Network_Usage> get_network_usage();
 	
 	void get_proc_info(DWORD pid, Process &process);
-	vector<Process> get_process_list();
+	std::vector<Process> get_process_list();
 
 	std::string get_machine_id();
 

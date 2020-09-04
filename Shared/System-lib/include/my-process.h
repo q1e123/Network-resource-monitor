@@ -7,22 +7,20 @@
 #include "jiffy.h"
 #include "build-opts-system.h"
 
-using std::string;
-
 class SYSTEM_IMPEXP Process{
 public:
-	Process(size_t pid = 0, string name = "", size_t ram = 0, double cpu_usage = 0.0);
+	Process(size_t pid = 0, std::string name = "", size_t ram = 0, double cpu_usage = 0.0);
 
 	size_t get_pid();
 	size_t get_ram();
 	double get_cpu_usage();
-	string get_name();
+	std::string get_name();
 
 	void set_cpu_usage(double usage);
 private:
 	size_t pid, ram;
 	double cpu_usage;
-	string name;
+	std::string name;
 };
 
 namespace Proc_Utils{

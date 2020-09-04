@@ -1,7 +1,7 @@
 #include "my-process.h"
 #include <algorithm>
 
-Process::Process(size_t pid, string name,size_t ram, double cpu_usage){
+Process::Process(size_t pid, std::string name,size_t ram, double cpu_usage){
 	this->pid = pid;
 	this->ram = ram;
 	this->cpu_usage = cpu_usage;
@@ -20,7 +20,7 @@ double Process::get_cpu_usage(){
 	return cpu_usage;
 }
 
-string Process::get_name(){
+std::string Process::get_name(){
 	return name;
 }
 
@@ -29,7 +29,7 @@ void Process::set_cpu_usage(double usage){
 }
 
 bool Proc_Utils::compare_name(Process p1, Process p2){
-	string str1, str2;
+	std::string str1, str2;
 	str1 = p1.get_name();
 	str2 = p2.get_name();
 	std::transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
@@ -50,7 +50,7 @@ bool Proc_Utils::compare_ram(Process p1, Process p2){
 }
 
 bool Proc_Utils::compare_name_reverse(Process p1, Process p2){
-	string str1, str2;
+	std::string str1, str2;
 	str1 = p1.get_name();
 	str2 = p2.get_name();
 	std::transform(str1.begin(), str1.end(), str1.begin(), ::tolower);

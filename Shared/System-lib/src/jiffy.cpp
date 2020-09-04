@@ -19,7 +19,7 @@ void Jiffy::set_work(size_t work){
 	this->work = work;
 }
 
-ostream& operator<<(ostream& os, const Jiffy &jiffy ){
+std::ostream& operator<<(std::ostream& os, const Jiffy &jiffy ){
 	os<<jiffy.total<<" "<<jiffy.work;
     return os;
 }
