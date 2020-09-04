@@ -20,6 +20,9 @@ Project made during Siemens internship.
 * installed programs
 * avalabile storage 
 * environment variables
+* ipv4 (Linux only)
+* error log (Linux only (journalctl) )
+* last logins (Linux only)
 
 ## Client
 * Real time plotting of CPU, RAM and network usage
@@ -35,6 +38,7 @@ Project made during Siemens internship.
 * Transmition of system states
 * Transmition of local logs
 * Transmition of system state (on or off)
+* Transmition of text files
 
 ## Server
 * Storing data in a MySQL database
