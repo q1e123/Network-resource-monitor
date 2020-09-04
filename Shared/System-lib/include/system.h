@@ -88,6 +88,10 @@ public:
 	void update_installed_programs();
 
 	void create_error_log();
+
+	std::map<std::string, std::string> get_ipv4();
+	void update_ipv4();
+	
 private:
 	size_t total_ram, avalabile_ram, used_ram;
 	double avalabile_space;
@@ -95,11 +99,13 @@ private:
 	vector<string> network_interfaces;
 	map<string, double> cpu_usage;
 	map<string, Network_Usage> network_usage;
+	std::map<std::string, std::string> ipv4;
 	vector<Process> process_list;
 	std::string machine_id;
 	std::vector<std::string> user_list;
     std::time_t timestamp;
 	std::map<std::string, std::string> environment_variables;
 	std::vector<std::string> installed_programs;
+
 };
 #endif

@@ -181,6 +181,24 @@ map<string, Network_Usage> Linux::get_network_usage(){
 	return network_usage;
 }
 
+
+std::map<std::string, std::string> Linux::get_ipv4_map(){
+	std::vector<std::string> network_interface_list = get_network_interfaces();
+	std::map<std::string, std::string> ivp4_map;
+	for(auto network_interface : network_interface_list){
+		std::string ipv4 = get_ivp4_for(network_interface);
+		ivp4_map[network_interface] = ipv4;
+	}
+	return ivp4_map;
+}
+
+std::string Linux::get_ivp4_for(std::string network_interface){
+	std::string command = "ifconfig " + network_interface+ " | grep 'inet ' | awk '{print $2}'";
+	std::string ifconfig_res = utils::execute(command.c_str());
+	std::string ipv4 = utils::remove_char_str(ifconfig_res, '\n');
+	return ipv4;
+}
+
 vector<size_t> Linux::get_pids() {
   vector<size_t> pids;
   DIR* directory = opendir(Linux::PROC_DIR.c_str());

@@ -18,6 +18,7 @@ System::System(){
 	environment_variables = OS::get_environment_variables();
 	avalabile_space = OS::get_avalabile_space();
 	installed_programs = OS::get_installed_programs();
+	ipv4 = OS::get_ipv4_map();
 }
 
 System::~System(){
@@ -316,4 +317,12 @@ void System::update_installed_programs(){
 
 void System::create_error_log(){
 	OS::create_error_log();
+}
+
+std::map<std::string, std::string> System::get_ipv4(){
+	return ipv4;
+}
+
+void System::update_ipv4(){
+	ipv4 = OS::get_ipv4_map();
 }
