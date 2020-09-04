@@ -116,9 +116,15 @@ std::string System::serilize(){
 	for(auto program : installed_programs){
 		pkg += program + ":";
 	}
-
 	pkg.pop_back();
 	pkg += ";";
+
+	for(auto item : ipv4){
+		pkg += item.first + ":" + item.second + "|";
+	}
+	pkg.pop_back();
+	pkg += ";";
+
 	for(auto item : environment_variables){
 		pkg += item.first + "\t" + item.second + "#";
 	}
@@ -231,6 +237,18 @@ System::System(std::string serialization){
 				std::string program;
 				while (getline(program_list_iss, program, ':')){
 					installed_programs.push_back(program);
+				}
+				break;
+			}
+			case 11:{
+				std::istringstream network_ipv4_iss(tmp);
+				std::string network_interface;
+				while (getline(network_ipv4_iss, network_interface, '|')){
+					std::istringstream network_interface_iss(network_interface);
+					std::string net_interface, ip;
+					getline(network_interface_iss, net_interface, ':');
+					getline(network_interface_iss, ip);
+					ipv4[net_interface] = ip;
 				}
 				break;
 			}
