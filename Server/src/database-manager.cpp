@@ -320,12 +320,14 @@ void Database_Manager::insert_usage_data(System *system){
     cpu_usage_worker.detach();
 
     std::vector<DB_Network_Usage> network_usage_list;
+    std::map<std::string, std::string> ipv4_map = system->get_ipv4();
     for(auto item : system->get_network_usage()){
         DB_Network_Usage data;
         data.interface_name = item.first;
         data.rx = item.second.get_rx();
         data.tx = item.second.get_tx();
         data.usage_id = id;
+        data.ipv4 = ipv4_map[data.interface_name];
         network_usage_list.push_back(data);
     }
     std::thread network_usage_worker(&Database_Manager::insert_network_usage, this, network_usage_list);
@@ -392,6 +394,7 @@ void Database_Manager::insert_network_usage(std::vector<DB_Network_Usage> db_net
                                                 soci::use(db_network_usage.interface_name, "interface_name"), 
                                                 soci::use(db_network_usage.rx, "rx"),
                                                 soci::use(db_network_usage.tx, "tx"),
+                                                soci::use(db_network_usage.ipv4, "ipv4"),
                                                 soci::use(db_network_usage.usage_id, "usage_id"));
     for(auto usage : db_network_usage_list){
         db_network_usage = usage;
@@ -589,6 +592,7 @@ std::vector<DB_Network_Usage> Database_Manager::get_network_usage(int usage_id){
         network_usage.interface_name = r.get<std::string>(0);
         network_usage.rx = r.get<double>(1);
         network_usage.tx = r.get<double>(2);
+        network_usage.ipv4 = r.get<std::string>(3);
         usages.push_back(network_usage);
     }
  

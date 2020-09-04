@@ -28,6 +28,7 @@ typedef struct DB_Network_Usage{
     int id;
     std::string interface_name;
     double rx,tx;
+    std::string ipv4;
     int usage_id;
 }DB_Network_Usage;
 
