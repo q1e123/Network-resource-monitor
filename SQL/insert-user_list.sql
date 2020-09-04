@@ -1,2 +1,2 @@
-INSERT INTO User_List(username, usage_id)
-VALUES (:username, :usage_id);
+INSERT INTO User_List(username, last_login, usage_id)
+VALUES (:username, :last_login, :usage_id);

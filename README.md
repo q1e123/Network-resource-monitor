@@ -49,7 +49,7 @@ You can either compile client and server at the same time or each one at a time 
 
 ## Prerequisites
 You need to have installed wxWidgets library, SOCI and the database you want to use.  
-[Compioling wxWidgets](https://wiki.wxwidgets.org/Compiling_and_getting_started)  
+[Compiling wxWidgets](https://wiki.wxwidgets.org/Compiling_and_getting_started)  
 [How to setup wxWidgets in Visual Studio](https://www.youtube.com/watch?v=sRhoZcNpMb4)  
 
 You can compile the project using cmake.

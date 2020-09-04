@@ -11,6 +11,7 @@
 #include "jiffy.h"
 #include "network-usage.h"
 #include "my-process.h"
+#include "system-structs.h"
 
 using std::vector;
 using std::string;
@@ -46,8 +47,9 @@ namespace Linux{
 
 	std::string get_current_user();
 
-	std::vector<std::string> get_user_list();
-
+	std::vector<System_User> get_user_list();
+	struct tm* get_last_login(std::string user);
+	
 	std::map<std::string, std::string> get_environment_variables();
 
 	double get_avalabile_space();

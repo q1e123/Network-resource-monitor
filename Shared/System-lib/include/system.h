@@ -11,6 +11,7 @@
 #include "my-process.h"
 
 #include "logger.h"
+#include "system-structs.h"
 
 #include "build-opts-system.h"
 
@@ -75,7 +76,7 @@ public:
 	void log();
 	std::string get_log();
 
-	std::vector<std::string> get_user_list();
+	std::vector<System_User> get_user_list();
 	void update_user_list();
 
 	std::map<std::string, std::string> get_environment_variables();
@@ -102,7 +103,7 @@ private:
 	std::map<std::string, std::string> ipv4;
 	vector<Process> process_list;
 	std::string machine_id;
-	std::vector<std::string> user_list;
+	std::vector<System_User> user_list;
     std::time_t timestamp;
 	std::map<std::string, std::string> environment_variables;
 	std::vector<std::string> installed_programs;

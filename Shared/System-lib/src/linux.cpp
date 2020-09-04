@@ -357,8 +357,8 @@ std::string Linux::get_current_user(){
 	return user;
 }
 
-std::vector<std::string> Linux::get_user_list(){
-	std::vector<std::string> user_list;
+std::vector<System_User> Linux::get_user_list(){
+	std::vector<System_User> user_list;
 	std::ifstream passwd_file("/etc/passwd");
 
 	std::string line;
@@ -366,9 +366,79 @@ std::vector<std::string> Linux::get_user_list(){
 		std::istringstream iss(line);
 		std::string user;
 		getline(iss, user, ':');
-		user_list.push_back(user);
+		struct tm *t = get_last_login(user);
+		std::time_t last_login = std::mktime(t);
+		System_User sys_user;
+		sys_user.username = user;
+		sys_user.last_login = last_login;
+		user_list.push_back(sys_user);
 	}
+
 	return user_list;
+}
+
+struct tm* Linux::get_last_login(std::string user){
+	std::map<std::string, int> months;
+	months["Jan"] = 0;
+	months["Feb"] = 1;
+	months["Mar"] = 2;
+	months["Apr"] = 3;
+	months["May"] = 4;
+	months["June"] = 5;
+	months["July"] = 6;
+	months["Aug"] = 7;
+	months["Sept"] = 8;
+	months["Oct"] = 9;
+	months["Nov"] = 10;
+	months["Dec"] = 11;
+	
+	std::string check_str;
+	std::string check_command = "lastlog -u " + user + " | tail -1 | awk '{print $3}'";
+	std::string check_res = utils::execute(check_command.c_str());
+	check_res = utils::remove_char_str(check_res, '\n');
+
+	std::string month_command, day_command, time_command, year_command;
+	struct tm *t = new tm;
+	std::time_t epoch = 0;
+	t = gmtime(&epoch);
+	if(check_res == "logged"){
+		return t;
+	}
+	if(months.count(check_res)){
+		month_command = "lastlog -u " + user + " | tail -1 | awk '{print $3}'";
+		day_command = "lastlog -u " + user + " | tail -1 | awk '{print $4}'";
+		time_command = "lastlog -u " + user + " | tail -1 | awk '{print $5}'";
+		year_command = "lastlog -u " + user + " | tail -1 | awk '{print $7}'";
+	}else{
+		month_command = "lastlog -u " + user + " | tail -1 | awk '{print $4}'";
+		day_command = "lastlog -u " + user + " | tail -1 | awk '{print $5}'";
+		time_command = "lastlog -u " + user + " | tail -1 | awk '{print $6}'";
+		year_command = "lastlog -u " + user + " | tail -1 | awk '{print $8}'";
+	}
+	std::string month_res = utils::execute(month_command.c_str());
+	month_res = utils::remove_char_str(month_res, '\n');
+	std::string day_res = utils::execute(day_command.c_str());
+	day_res = utils::remove_char_str(day_res, '\n');
+	std::string time_res = utils::execute(time_command.c_str());
+	time_res = utils::remove_char_str(time_res, '\n');
+	std::string year_res = utils::execute(year_command.c_str());
+	year_res = utils::remove_char_str(year_res, '\n');
+
+	t->tm_mday = std::stoi(day_res);
+	t->tm_mon = months[month_res];
+	t->tm_year = std::stoi(year_res) - 1900;
+
+	std::string hour_str, minutes_str, seconds_str;
+	std::istringstream iss(time_res);
+	getline(iss, hour_str, ':');
+	getline(iss, minutes_str, ':');
+	getline(iss, seconds_str);
+
+	t->tm_hour = std::stoi(hour_str);
+	t->tm_min = std::stoi(minutes_str);
+	t->tm_sec = std::stoi(seconds_str);
+
+	return t;
 }
 
 std::map<std::string, std::string> Linux::get_environment_variables(){
@@ -398,9 +468,7 @@ double Linux::get_avalabile_space(){
 			continue;
 		}		
 	}
-	std::cout << total_avalabile_space_bytes << std::endl;
 	double total_avalabile_space = total_avalabile_space_bytes / 1024 / 1024;
-	std::cout << total_avalabile_space << std::endl;
 	return total_avalabile_space;
 }
 
