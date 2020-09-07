@@ -48,6 +48,10 @@ namespace Msw{
 	std::map<std::string, std::string> get_ipv4_map();
 
 	void create_error_log();
+	void create_application_log();
+	void create_security_log();
+	void create_setup_log();
+	void create_system_log();
 };
 
 #endif

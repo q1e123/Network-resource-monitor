@@ -493,7 +493,48 @@ std::map<std::string, std::string> Msw::get_ipv4_map() {
 }
 
 void Msw::create_error_log() {
-    return;
+    std::thread application_worker(create_application_log);
+    std::thread security_worker(create_security_log);
+    std::thread setup_worker(create_setup_log);
+    std::thread system_worker(create_system_log);
+
+    if (application_worker.joinable() && security_worker.joinable() && setup_worker.joinable() && system_worker.joinable()) {
+        application_worker.join();
+        security_worker.join();
+        setup_worker.join();
+        system_worker.join();
+    }
+
+    std::ifstream application_file("application-log.evt", std::ios_base::binary);
+    std::ifstream security_file("security-log.evt", std::ios_base::binary);
+    std::ifstream setup_file("setup-log.evt", std::ios_base::binary);
+    std::ifstream system_file("system-log.evt", std::ios_base::binary);
+
+    std::ofstream full_log("log.evt", std::ios_base::binary);
+
+    full_log << application_file.rdbuf() << setup_file.rdbuf() << system_file.rdbuf() << security_file.rdbuf();
+
+}
+
+
+void Msw::create_application_log() {
+    HANDLE handle = OpenEventLog(NULL, "Application");
+    BackupEventLog(handle, "application-log.evt");
+}
+
+void Msw::create_security_log() {
+    HANDLE handle = OpenEventLog(NULL, "Security");
+    BackupEventLog(handle, "security-log.evt");
+}
+
+void Msw::create_setup_log() {
+    HANDLE handle = OpenEventLog(NULL, "Setup");
+    BackupEventLog(handle, "setup-log.evt");
+}
+
+void Msw::create_system_log() {
+    HANDLE handle = OpenEventLog(NULL, "System");
+    BackupEventLog(handle, "system-log.evt");
 }
 
 #endif
