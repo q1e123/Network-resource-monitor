@@ -32,7 +32,7 @@
 
 using std::cerr;
 
-string Msw::get_os(){
+std::string Msw::get_os(){
 	return utils::remove_char_str(utils::execute("ver"),'\n');
 }
 
@@ -160,7 +160,7 @@ std::map<std::string, Network_Usage> Msw::get_network_usage(){
             exit(EXIT_FAILURE);
         }
     }
-    vector<Network_Usage> old_usage;
+    std::vector<Network_Usage> old_usage;
     if(GetIfTable(if_table, &dw_size, FALSE) == NO_ERROR) {
         for (size_t i = 0; i < if_table->dwNumEntries; i++) {
             if_row = (MIB_IFROW*)&if_table->table[i];
@@ -249,7 +249,7 @@ void Msw::get_proc_info(DWORD pid, Process& process) {
 
 }
 std::vector<Process> Msw::get_process_list() {
-    vstd::ector<Process> proc_list;
+    std::vector<Process> proc_list;
     std::vector<std::thread> threads;
 
     DWORD aProcesses[1024], cbNeeded, cProcesses;
@@ -260,8 +260,8 @@ std::vector<Process> Msw::get_process_list() {
 
     cProcesses = cbNeeded / sizeof(DWORD);
 
-    vector<Process> tmp;
-    tmp = vector<Process>(cProcesses, Process());
+    std::vector<Process> tmp;
+    tmp = std::vector<Process>(cProcesses, Process());
     
     for (size_t i = 0; i < cProcesses; ++i) {
         std::thread worker(Msw::get_proc_info, aProcesses[i], std::ref(tmp[i]));
@@ -327,11 +327,10 @@ std::vector<System_User> Msw::get_user_list() {
                 for (i = 0; (i < dwEntriesRead); i++){
                     std::wstring wuser(pTmpBuf->usri0_name);
                     std::string user(wuser.begin(), wuser.end());
-
                     System_User sys_user;
                     sys_user.username = user;
-                    
-                    user_list.push_back(user);
+                    sys_user.last_login = get_last_login(wuser);
+                    user_list.push_back(sys_user);
                     pTmpBuf++;
                 }
             }
@@ -346,6 +345,28 @@ std::vector<System_User> Msw::get_user_list() {
     if (pBuf != NULL)
         NetApiBufferFree(pBuf);
     return user_list;
+}
+
+std::time_t Msw::get_last_login(std::wstring user) {
+    DWORD dwLevel = 2;
+
+    LPUSER_INFO_0 pBuf = NULL;
+    LPUSER_INFO_4 pBuf4 = NULL;
+
+    NET_API_STATUS nStatus;
+
+    LPTSTR sStringSid = NULL;
+
+    nStatus = NetUserGetInfo(L"localhost", user.c_str(), dwLevel, (LPBYTE*)&pBuf);
+    
+    if (nStatus == NERR_Success)
+    {
+        if (pBuf != NULL)
+        {
+            pBuf4 = (LPUSER_INFO_4)pBuf;
+            return pBuf4->usri4_last_logon;
+        }
+    }
 }
 
 std::map<std::string, std::string> Msw::get_environment_variables() {
@@ -404,7 +425,7 @@ std::vector<std::string> Msw::get_drive_list() {
     }
     return drive_list;
 }
-#include<fstream>
+
 std::vector<std::string> Msw::get_installed_programs() {
     std::set<std::string> installed_programs_set;
     std::ofstream f("test.txt");
@@ -464,4 +485,15 @@ std::vector<std::string> Msw::get_installed_programs() {
     std::vector<std::string> installed_programs = std::vector(installed_programs_set.begin(), installed_programs_set.end());
     return installed_programs;
 }
+
+std::map<std::string, std::string> Msw::get_ipv4_map() {
+    std::map<std::string, std::string> ipv4_map;
+    
+    return ipv4_map;
+}
+
+void Msw::create_error_log() {
+    return;
+}
+
 #endif

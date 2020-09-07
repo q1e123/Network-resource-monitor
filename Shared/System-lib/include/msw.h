@@ -1,6 +1,9 @@
 #ifdef _WIN32 || _WIN64
 #ifndef MSW_H
 #define MSW_H
+
+#include <ctime>
+
 #include <vector>
 #include <fstream>
 #include <string>
@@ -31,7 +34,8 @@ namespace Msw{
 
 	std::string get_current_user();
 
-	std::vector<std::string> get_user_list();
+	std::vector<System_User> get_user_list();
+	std::time_t get_last_login(std::wstring user);
 
 	std::map<std::string, std::string> get_environment_variables();
 
@@ -40,6 +44,10 @@ namespace Msw{
 	std::vector<std::string> get_drive_list();
 
 	std::vector<std::string> get_installed_programs();
+
+	std::map<std::string, std::string> get_ipv4_map();
+
+	void create_error_log();
 };
 
 #endif
