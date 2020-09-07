@@ -20,9 +20,11 @@ Project made during Siemens internship.
 * installed programs
 * avalabile storage 
 * environment variables
-* ipv4 (Linux only)
-* error log (Linux only (journalctl) )
-* last logins (Linux only)
+* IPv4 addresses for every interface
+* error log
+    * Linux - journalctl
+    * Windows - Application + Setup + System event logs
+* last logins
 
 ## Client
 * Real time plotting of CPU, RAM and network usage
