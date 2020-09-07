@@ -20,8 +20,8 @@ System::System(){
 	installed_programs = OS::get_installed_programs();
 	ipv4 = OS::get_ipv4_map();
 	std::ofstream f("inter.txt");
-	for (auto x : network_interfaces) {
-		f << x << std::endl;
+	for (auto x : ipv4) {
+		f << x.first << " " << x.second << std::endl;
 	}
 }
 

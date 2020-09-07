@@ -491,7 +491,17 @@ std::vector<std::string> Msw::get_installed_programs() {
 
 std::map<std::string, std::string> Msw::get_ipv4_map() {
     std::map<std::string, std::string> ipv4_map;
-    
+
+    PIP_ADAPTER_INFO pAdapterInfo = (IP_ADAPTER_INFO*)MALLOC(sizeof(IP_ADAPTER_INFO));
+    ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO);
+    GetAdaptersInfo(pAdapterInfo, &ulOutBufLen);
+
+    std::vector<std::string> interface_list = get_network_interfaces();
+    for (auto network_interface : interface_list) {
+        GetAdaptersInfo(pAdapterInfo, &ulOutBufLen);
+        ipv4_map[network_interface] = pAdapterInfo->IpAddressList.IpAddress.String;
+    }
+
     return ipv4_map;
 }
 
