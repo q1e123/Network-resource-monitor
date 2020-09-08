@@ -29,6 +29,7 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_BUTTON(BUTTON_SYSTEM_MANAGEMENT_REFRESH, MainFrame::send_req_systems)
 	EVT_BUTTON(BUTTON_ADD_NEW_USER, MainFrame::insert_new_user)
 	EVT_BUTTON(BUTTON_ADD_NEW_SYSTEM, MainFrame::insert_new_system)
+	EVT_BUTTON(BUTTON_CHECK_SOFTWARE, MainFrame::check_software)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -157,6 +158,7 @@ void MainFrame::update_program_list(){
 	system->update_installed_programs();
 }
 
+
 void MainFrame::sort_by_name(wxCommandEvent &e){
 	if(process_sort_type != Process_Sort_Type::NAME){
 		process_sort_type = Process_Sort_Type::NAME;
@@ -242,4 +244,8 @@ void MainFrame::insert_new_user(wxCommandEvent &e){
 void MainFrame::insert_new_system(wxCommandEvent &e){
 	DB_Systems db_systems = network_management_page->get_new_system();
 	client->insert_system(db_systems);
+}
+
+void MainFrame::check_software(wxCommandEvent &e){
+	system_page->check_software();
 }

@@ -39,6 +39,7 @@ public:
 	void send_req_systems(wxCommandEvent &e);
 	void insert_new_user(wxCommandEvent &e);
 	void insert_new_system(wxCommandEvent &e);
+	void check_software(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 

@@ -16,7 +16,7 @@ Software_List_Panel::Software_List_Panel(wxNotebookPage *system_page, System *sy
     this->system = system;
 
     panel = new wxScrolledWindow(system_page, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL, "Process List");
-	box_sizer = new wxBoxSizer(wxHORIZONTAL);
+	box_sizer = new wxBoxSizer(wxVERTICAL);
 
 	total_installed_software_text = new wxStaticText(panel, wxID_ANY, "Total installed software: ");
 	total_installed_software_text->SetFont(Fonts::h2);

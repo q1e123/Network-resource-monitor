@@ -10,6 +10,7 @@
 #include "system-header.h"
 #include "system-general-page.h"
 #include "system-administration-page.h"
+#include "system-software-page.h"
 #include "process-sort-type.h"
 class System_Page{
 public:
@@ -18,7 +19,7 @@ public:
     ~System_Page();
     wxNotebookPage* get_all();
     void update(Process_Sort_Type sort_type);
-
+    void check_software();
 private:
     wxStaticText *system_text;
     wxStaticBoxSizer *system_sbox;
@@ -29,6 +30,7 @@ private:
     System_Header *system_header;
     System_General_Page *system_general_page;
     System_Administration_Page *system_administration_page;
+    System_Software_Page *system_software_page;
 };
 
 #endif
