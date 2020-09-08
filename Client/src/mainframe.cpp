@@ -36,7 +36,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	SetAutoLayout(TRUE);
 	system = new System();
 	system->log_init();
-	system->create_error_log();
+	
 	connect();
 	tray_icon = new Tray_Icon(this);
 
