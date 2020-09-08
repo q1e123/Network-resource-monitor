@@ -14,7 +14,7 @@ System_Page::System_Page(wxNotebook *main_notebook, System *system){
 	notebook->AddPage(system_general_page->get_all(), "General", true);
 
 	system_administration_page = new System_Administration_Page(notebook, system);
-	notebook->AddPage(system_administration_page->get_all(), "General", true);
+	notebook->AddPage(system_administration_page->get_all(), "Administration", false);
 
 	system_sizer->Add(system_header->get_all(), 0, wxALL | wxEXPAND, 5);
 	
@@ -27,6 +27,7 @@ wxNotebookPage* System_Page::get_all(){
 	return system_page;
 }
 
-void System_Page::update_process_list(Process_Sort_Type sort_type){
+void System_Page::update(Process_Sort_Type sort_type){
 	system_administration_page->update_process_list(sort_type);
+	
 }

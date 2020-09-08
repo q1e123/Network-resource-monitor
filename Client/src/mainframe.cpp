@@ -87,7 +87,7 @@ void MainFrame::real_time(wxTimerEvent &e){
 	if (process_list_worker.joinable()) {
 		process_list_worker.join();
 		if(main_notebook->GetSelection() == 0){
-			system_page->update_process_list(process_sort_type);
+			system_page->update(process_sort_type);
 		}
 	}
 

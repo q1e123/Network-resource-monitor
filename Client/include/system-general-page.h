@@ -17,6 +17,8 @@ public:
     ~System_General_Page();
     wxNotebookPage* get_all();
 
+    void update();
+    
 private:
     System *system;
     wxStaticBoxSizer *system_sbox;

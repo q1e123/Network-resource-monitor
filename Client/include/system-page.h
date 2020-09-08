@@ -17,7 +17,7 @@ public:
     System_Page(wxNotebook *main_notebook, System *system);
     ~System_Page();
     wxNotebookPage* get_all();
-    void update_process_list(Process_Sort_Type sort_type);
+    void update(Process_Sort_Type sort_type);
 
 private:
     wxStaticText *system_text;

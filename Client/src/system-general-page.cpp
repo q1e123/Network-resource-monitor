@@ -17,3 +17,7 @@ System_General_Page::System_General_Page(wxNotebook *main_notebook, System *syst
 wxNotebookPage* System_General_Page::get_all(){
 	return system_page;
 }
+
+void System_General_Page::update(){
+	system_card->update();
+}
