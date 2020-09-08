@@ -9,7 +9,7 @@
 #include "system.h"
 #include "system-header.h"
 #include "system-general-page.h"
-#include "process-list-panel.h"
+#include "system-administration-page.h"
 #include "process-sort-type.h"
 class System_Page{
 public:
@@ -28,7 +28,7 @@ private:
 
     System_Header *system_header;
     System_General_Page *system_general_page;
-    Process_List_Panel *process_list_panel;
+    System_Administration_Page *system_administration_page;
 };
 
 #endif
