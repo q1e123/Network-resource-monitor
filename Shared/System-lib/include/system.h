@@ -83,6 +83,7 @@ public:
 	
 	std::vector<std::string> get_installed_programs();
 	void update_installed_programs();
+	bool check_if_installed(std::string software);
 
 	void create_error_log();
 

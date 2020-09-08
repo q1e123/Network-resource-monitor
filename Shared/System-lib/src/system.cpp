@@ -1,5 +1,6 @@
 #include "system.h"
 
+#include <algorithm>
 #include <stdexcept>
 #include <sstream>
 #include <fstream>
@@ -348,6 +349,13 @@ std::vector<std::string> System::get_installed_programs(){
 
 void System::update_installed_programs(){
 	installed_programs = OS::get_installed_programs();
+}
+
+bool System::check_if_installed(std::string software){
+	if(std::find(installed_programs.begin(), installed_programs.end(), software) != installed_programs.end()){
+		return true;
+	}
+	return false;
 }
 
 void System::create_error_log(){
