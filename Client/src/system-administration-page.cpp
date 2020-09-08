@@ -6,6 +6,9 @@ System_Administration_Page::System_Administration_Page(wxNotebook *main_notebook
     system_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
 	
+	environment_variable_panel = new Environment_Variable_Panel(system_page, system);
+	system_sizer->Add(environment_variable_panel->get_all(), 1, wxALL | wxEXPAND, 5);
+
 	user_list_panel = new User_List_Panel(system_page, system);
 	system_sizer->Add(user_list_panel->get_all(), 1, wxALL | wxEXPAND, 5);
 
@@ -18,4 +21,5 @@ wxNotebookPage* System_Administration_Page::get_all(){
 
 void System_Administration_Page::update(){
 	user_list_panel->update();
+	environment_variable_panel->update();
 }

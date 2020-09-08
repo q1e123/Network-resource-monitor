@@ -7,6 +7,7 @@
 #include <wx/notebook.h>
 
 #include "user-list-panel.h"
+#include "environment-variable-panel.h"
 
 class System_Administration_Page{
 public:
@@ -23,6 +24,7 @@ private:
     wxNotebook *notebook;
 
     User_List_Panel *user_list_panel;
+    Environment_Variable_Panel *environment_variable_panel;
 };
 
 #endif
