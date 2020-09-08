@@ -16,14 +16,14 @@ Project made during Siemens internship.
 * CPU usage (all cores)
 * rx and tx for a network interface
 * running processes with their PID, CPU and RAM usage
-* user list
 * installed programs
-* avalabile storage 
+* avalabile storage
 * environment variables
 * IPv4 addresses for every interface
 * error log
     * Linux - journalctl
     * Windows - Application + Setup + System event logs
+* user list
 * last logins
 
 ## Checks
