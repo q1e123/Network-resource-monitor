@@ -9,7 +9,6 @@ Administrator should be able to see the diferences between the current and the p
 
 ### Checks
 The client should be able to check:
-* if a software is installed
 * what patches/updates are installed
 
 ## Server

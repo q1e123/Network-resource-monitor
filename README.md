@@ -26,6 +26,9 @@ Project made during Siemens internship.
     * Windows - Application + Setup + System event logs
 * last logins
 
+## Checks
+* check if a software is installed
+
 ## Client
 * Real time plotting of CPU, RAM and network usage
 * Real time tracking of running processes
