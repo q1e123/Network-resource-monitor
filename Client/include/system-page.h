@@ -8,7 +8,7 @@
 
 #include "system.h"
 #include "system-header.h"
-#include "system-card.h"
+#include "system-general-page.h"
 #include "process-list-panel.h"
 #include "process-sort-type.h"
 class System_Page{
@@ -24,9 +24,10 @@ private:
     wxStaticBoxSizer *system_sbox;
     wxStaticBox  *system_static;
     wxNotebookPage *system_page;
+    wxNotebook *notebook;
 
     System_Header *system_header;
-    System_Card *system_card;
+    System_General_Page *system_general_page;
     Process_List_Panel *process_list_panel;
 };
 
