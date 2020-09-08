@@ -352,7 +352,6 @@ void System::update_installed_programs(){
 }
 
 bool System::check_if_installed(std::string software){
-	std::cout << "|" << software << "|" << installed_programs[0] <<"|" << std::endl;
 	if(std::find(installed_programs.begin(), installed_programs.end(), software) != installed_programs.end()){
 		return true;
 	}
