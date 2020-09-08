@@ -22,7 +22,9 @@ private:
     wxStaticBoxSizer *static_box_sizer;
     wxStaticBox *static_box;
     wxStaticText *os_text, *header_text, *machine_id_text, *current_user_text;
-    wxStaticText *avalabile_storage_text;
+    wxStaticText *avalabile_storage_text, *ipv4_text, *ip_text;
+    wxComboBox *interface_combo_box;
+    wxBoxSizer *ip_box_sizer;
 };
 
 #endif

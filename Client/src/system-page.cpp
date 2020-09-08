@@ -29,5 +29,6 @@ wxNotebookPage* System_Page::get_all(){
 
 void System_Page::update(Process_Sort_Type sort_type){
 	system_administration_page->update_process_list(sort_type);
+	system_general_page->update();
 	
 }

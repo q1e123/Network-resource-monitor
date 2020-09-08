@@ -22,12 +22,32 @@ System_Card::System_Card(wxNotebookPage *system_page, System *system){
     std::string avalabile_storage_str = std::to_string(system->get_avalabile_space());
     avalabile_storage_text = new wxStaticText(system_page, wxID_ANY, "Avalabile storage: " + avalabile_storage_str.substr(0, avalabile_storage_str.size()-4) + " GB");
     avalabile_storage_text->SetForegroundColour(Colors::white);
+
+    ip_text = new wxStaticText(system_page, wxID_ANY, "IP");
+    ip_text->SetFont(Fonts::h2);
+    ip_text->SetForegroundColour(Colors::white);
+
+    std::vector<wxString> interface_choices;
+    for(auto network_interface : system->get_network_interfaces()){
+		interface_choices.push_back(network_interface);
+	}
+	interface_combo_box = new wxComboBox(system_page, wxID_ANY);
+	interface_combo_box->Set(interface_choices);
+    ipv4_text = new wxStaticText(system_page, wxID_ANY, "IPv4: ");
+    ipv4_text->SetForegroundColour(Colors::white);
+	ip_box_sizer = new wxBoxSizer(wxHORIZONTAL);
+    
+    ip_box_sizer->Add(interface_combo_box, 0, wxALL, 5);
+	ip_box_sizer->Add(ipv4_text, 0, wxALL | wxEXPAND, 5);
+    
     static_box_sizer = new wxStaticBoxSizer(static_box, wxVERTICAL);
     static_box_sizer->Add(header_text, 0, wxALL | wxEXPAND, 5);
     static_box_sizer->Add(os_text, 0, wxALL | wxEXPAND, 5);
     static_box_sizer->Add(current_user_text, 0, wxALL | wxEXPAND, 5);
     static_box_sizer->Add(machine_id_text, 0, wxALL | wxEXPAND, 5);
+    static_box_sizer->Add(ip_text, 0, wxALL | wxEXPAND, 5);
     static_box_sizer->Add(avalabile_storage_text, 0, wxALL | wxEXPAND, 5);
+    static_box_sizer->Add(ip_box_sizer, 0, wxALL | wxEXPAND, 5);
 }
 
 System_Card::~System_Card(){
@@ -38,5 +58,10 @@ wxStaticBoxSizer* System_Card::get_all(){
 }
 
 void System_Card::update(){
-    avalabile_storage_text->SetLabel("Avalabile storage: " + std::to_string(system->get_avalabile_space()) + " GB");
+    std::string avalabile_storage_str = std::to_string(system->get_avalabile_space());
+    avalabile_storage_text->SetLabel("Avalabile storage: " + avalabile_storage_str.substr(0, avalabile_storage_str.size()-4) + " GB");
+    std::string interface_choice = std::string(interface_combo_box->GetStringSelection());
+    if(interface_choice != ""){
+        ipv4_text->SetLabel("IPv4: " + system->get_ipv4()[interface_choice]);
+    }
 }
