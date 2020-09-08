@@ -22,6 +22,8 @@ private:
     wxStaticBox  *system_static;
     wxNotebookPage *system_page;
     wxNotebook *notebook;
+    wxStaticText *user_list_text, *environment_variable_text;
+    wxButton *generate_log_button;
 
     User_List_Panel *user_list_panel;
     Environment_Variable_Panel *environment_variable_panel;

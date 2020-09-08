@@ -40,6 +40,7 @@ public:
 	void insert_new_user(wxCommandEvent &e);
 	void insert_new_system(wxCommandEvent &e);
 	void check_software(wxCommandEvent &e);
+	void generate_new_log(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE();
 
@@ -74,7 +75,8 @@ private:
 	void update_user_list();
 	void update_environment_variables();
 	void update_program_list();
-	
+	void generate_log();
+
 	void connect();
 };
 

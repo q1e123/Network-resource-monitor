@@ -30,6 +30,7 @@ BEGIN_EVENT_TABLE ( MainFrame, wxFrame )
 	EVT_BUTTON(BUTTON_ADD_NEW_USER, MainFrame::insert_new_user)
 	EVT_BUTTON(BUTTON_ADD_NEW_SYSTEM, MainFrame::insert_new_system)
 	EVT_BUTTON(BUTTON_CHECK_SOFTWARE, MainFrame::check_software)
+	EVT_BUTTON(BUTTON_GENERATE_LOG, MainFrame::generate_new_log)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -248,4 +249,14 @@ void MainFrame::insert_new_system(wxCommandEvent &e){
 
 void MainFrame::check_software(wxCommandEvent &e){
 	system_page->check_software();
+}
+
+void MainFrame::generate_new_log(wxCommandEvent &e){
+	std::cout << "Log generation started" << std::endl;
+	std::thread generate_worker(&MainFrame::generate_log, this);
+	generate_worker.detach();
+}
+
+void MainFrame::generate_log(){
+	system->create_error_log();
 }
