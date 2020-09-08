@@ -11,6 +11,7 @@
 #include "system-general-page.h"
 #include "system-administration-page.h"
 #include "system-software-page.h"
+#include "system-processes-page.h"
 #include "process-sort-type.h"
 class System_Page{
 public:
@@ -31,6 +32,7 @@ private:
     System_General_Page *system_general_page;
     System_Administration_Page *system_administration_page;
     System_Software_Page *system_software_page;
+    System_Processes_Page *system_processes_page;
 };
 
 #endif

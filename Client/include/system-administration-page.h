@@ -6,15 +6,15 @@
 #endif
 #include <wx/notebook.h>
 
-#include "process-list-panel.h"
-#include "process-sort-type.h"
+#include "user-list-panel.h"
+
 class System_Administration_Page{
 public:
     System_Administration_Page();
     System_Administration_Page(wxNotebook *main_notebook, System *system);
     ~System_Administration_Page();
     wxNotebookPage* get_all();
-    void update_process_list(Process_Sort_Type sort_type);
+    void update();
 
 private:
     wxStaticBoxSizer *system_sbox;
@@ -22,7 +22,7 @@ private:
     wxNotebookPage *system_page;
     wxNotebook *notebook;
 
-    Process_List_Panel *process_list_panel;
+    User_List_Panel *user_list_panel;
 };
 
 #endif
