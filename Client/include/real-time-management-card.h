@@ -4,9 +4,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
- 
+#include <wx/notebook.h>
+
 #include <string>
+
 #include "system.h"
+#include "real-time-performance-page.h"
 
 class Real_Time_Management_Card{
 public:
@@ -22,7 +25,9 @@ private:
 	wxBoxSizer *sizer;
 	wxStaticBox *card_static;
 	wxStaticBoxSizer *card_sbox;
-	wxStaticText *user_text, *os_text, *ram_text, *cpu_text, *machine_id_text;
+	wxNotebook *notebook;
+
+	Real_Time_Performance_Page *real_time_performance_page;
 };
 
 #endif
