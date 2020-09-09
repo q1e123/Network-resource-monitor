@@ -15,7 +15,7 @@ public:
     User_List_Panel(wxNotebookPage *system_page, System *system);
     ~User_List_Panel();
 
-    void update(System *system = nullptr);
+    void update();
     wxScrolledWindow* get_all();
 private:
     System *system;

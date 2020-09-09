@@ -18,6 +18,6 @@ wxNotebookPage* System_General_Page::get_all(){
 	return system_page;
 }
 
-void System_General_Page::update(System *system){
-	system_card->update(system);
+void System_General_Page::update(){
+	system_card->update();
 }

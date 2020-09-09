@@ -16,8 +16,7 @@ public:
 
     wxStaticBoxSizer* get_all();
 
-    void update(System *system=nullptr);
-
+    void update();
 private:
     System *system;
     wxStaticBoxSizer *static_box_sizer;

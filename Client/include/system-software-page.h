@@ -15,7 +15,7 @@ public:
     System_Software_Page(wxNotebook *main_notebook, System *system);
     ~System_Software_Page();
     wxNotebookPage* get_all();
-    void update(System *system = nullptr);
+    void update();
     void check_software();
 
 private:

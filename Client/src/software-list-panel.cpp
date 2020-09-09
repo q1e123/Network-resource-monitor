@@ -37,10 +37,7 @@ wxScrolledWindow* Software_List_Panel::get_all(){
     return panel;
 }
 
-void Software_List_Panel::update(System *system){
-    if(system == nullptr){
-        system = this->system;    
-    }
+void Software_List_Panel::update(){
     std::vector<std::string> software_list = system->get_installed_programs();
 	total_installed_software_text->SetLabel("Total installed software: " + std::to_string(software_list.size()));    
     std::sort(software_list.begin(), software_list.end());

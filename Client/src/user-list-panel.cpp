@@ -44,11 +44,7 @@ wxScrolledWindow* User_List_Panel::get_all(){
     return panel;
 }
 
-void User_List_Panel::update(System *system){
-    if(system == nullptr){
-        system = this->system;    
-    }
-
+void User_List_Panel::update(){
     std::vector<System_User> user_list = system->get_user_list();
 
     std::string users, last_log;
