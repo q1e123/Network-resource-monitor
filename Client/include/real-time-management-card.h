@@ -23,9 +23,10 @@ private:
 	wxStaticBox *card_static;
 	wxStaticBoxSizer *card_sbox;
 	wxStaticText *user_text, *os_text, *ram_text, *cpu_text, *machine_id_text, *rx_text, *tx_text;
-	wxBoxSizer *rx_tx_box_sizer;
-	wxComboBox *interface_combo_box;
-    std::vector<wxString> network_choices;
+	wxStaticText *user_log_text, *environment_variable_text;
+	wxBoxSizer *rx_tx_box_sizer, *user_box_sizer, *environment_variable_box_sizer;
+	wxComboBox *interface_combo_box, *user_combo_box, *environment_variable_combo_box;
+    std::vector<wxString> network_choices, user_choices, environment_variable_choices;
 };
 
 #endif
