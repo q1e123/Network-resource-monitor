@@ -14,7 +14,19 @@ Real_Time_Management_Card::Real_Time_Management_Card(wxWindow *parent, System *s
 	machine_id_text = new wxStaticText(parent, wxID_ANY, "Machine ID: " + system->get_machine_id()); 
 	machine_id_text->SetForegroundColour(Colors::black);
 	machine_id_text->SetFont(Fonts::normal);
+	rx_tx_box_sizer = new wxBoxSizer(wxHORIZONTAL); 
+	rx_text = new wxStaticText(parent, wxID_ANY, "In: 0");
+	rx_text->SetFont(Fonts::normal_bold);
+	rx_text->SetForegroundColour(Colors::dark_green);
+	tx_text = new wxStaticText(parent, wxID_ANY, "Out: 0");
+	tx_text->SetFont(Fonts::normal_bold);
+	tx_text->SetForegroundColour(Colors::light_red);
 	
+	for(auto network_interface : system->get_network_interfaces()){
+		network_choices.push_back(network_interface);
+	}
+	interface_combo_box = new wxComboBox(parent, wxID_ANY, "Select interface");
+	interface_combo_box->Set(network_choices);
 
 	std::string ram = "";
 	ram += "Total ram: " + std::to_string(system->get_total_ram()) + "\t";
@@ -39,6 +51,11 @@ Real_Time_Management_Card::Real_Time_Management_Card(wxWindow *parent, System *s
 	card_sbox->Add(machine_id_text, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(ram_text, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(cpu_text, 0, wxALL | wxEXPAND, 5);
+
+	rx_tx_box_sizer->Add(rx_text, 0, wxALL | wxEXPAND, 40);
+	rx_tx_box_sizer->Add(tx_text, 0, wxALL | wxEXPAND, 40);
+	card_sbox->Add(interface_combo_box, 0, wxALL | wxEXPAND, 5);
+	card_sbox->Add(rx_tx_box_sizer, 0, wxALL | wxEXPAND, 5);
 }
 
 void Real_Time_Management_Card::update(System *system){
@@ -54,6 +71,15 @@ void Real_Time_Management_Card::update(System *system){
 
 	ram_text->SetLabel(ram);
 	cpu_text->SetLabel(cpu);
+
+	std::string interface_choice = std::string(interface_combo_box->GetStringSelection());
+    if(interface_choice != ""){
+		double rx, tx;
+		rx = system->get_network_usage()[interface_choice].get_rx();
+		tx = system->get_network_usage()[interface_choice].get_tx();
+        rx_text->SetLabel("IN: " + std::to_string(rx).substr(0, std::to_string(rx).size() - 4));
+        tx_text->SetLabel("OUT: " + std::to_string(tx).substr(0, std::to_string(tx).size() - 4));
+    }
 }
 
 void Real_Time_Management_Card::set_active(){

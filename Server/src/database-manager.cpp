@@ -541,6 +541,13 @@ System* Database_Manager::build_system(DB_Systems systems){
     }
     serialization.pop_back();
     serialization += ";";
+
+    for(auto item : network_usage){
+        serialization += item.interface_name + ":" + item.ipv4 + "|";
+	}
+	serialization.pop_back();
+	serialization += ";";
+
     for(auto env_var : enviroment_variables){
         serialization += env_var.variable + "\t" + env_var.variable_value + "#";
     }

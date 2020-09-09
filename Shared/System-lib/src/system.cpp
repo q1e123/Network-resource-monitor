@@ -201,6 +201,7 @@ System::System(std::string serialization){
 					try{
 						Network_Usage usage(std::stol(usage_rx), std::stol(usage_tx));
 						network_usage[network_interface] = usage;
+						network_interfaces.push_back(network_interface);
 					}catch(const std::exception& e) {
 						Network_Usage usage(0, 0);
 						network_usage[network_interface] = 0;

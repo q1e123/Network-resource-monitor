@@ -22,7 +22,10 @@ private:
 	wxBoxSizer *sizer;
 	wxStaticBox *card_static;
 	wxStaticBoxSizer *card_sbox;
-	wxStaticText *user_text, *os_text, *ram_text, *cpu_text, *machine_id_text;
+	wxStaticText *user_text, *os_text, *ram_text, *cpu_text, *machine_id_text, *rx_text, *tx_text;
+	wxBoxSizer *rx_tx_box_sizer;
+	wxComboBox *interface_combo_box;
+    std::vector<wxString> network_choices;
 };
 
 #endif
