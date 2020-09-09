@@ -57,7 +57,10 @@ wxStaticBoxSizer* System_Card::get_all(){
     return static_box_sizer;
 }
 
-void System_Card::update(){
+void System_Card::update(System *system){
+    if(system == nullptr){
+        system = this->system;    
+    }
     std::string avalabile_storage_str = std::to_string(system->get_avalabile_space());
     avalabile_storage_text->SetLabel("Avalabile storage: " + avalabile_storage_str.substr(0, avalabile_storage_str.size()-4) + " GB");
     std::string interface_choice = std::string(interface_combo_box->GetStringSelection());

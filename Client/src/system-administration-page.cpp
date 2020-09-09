@@ -38,7 +38,7 @@ wxNotebookPage* System_Administration_Page::get_all(){
 	return system_page;
 }
 
-void System_Administration_Page::update(){
-	user_list_panel->update();
-	environment_variable_panel->update();
+void System_Administration_Page::update(System *system){
+	user_list_panel->update(system);
+	environment_variable_panel->update(system);
 }

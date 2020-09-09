@@ -17,7 +17,7 @@ public:
     ~System_General_Page();
     wxNotebookPage* get_all();
 
-    void update();
+    void update(System *system=nullptr);
     
 private:
     System *system;

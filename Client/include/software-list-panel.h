@@ -15,7 +15,7 @@ public:
     Software_List_Panel(wxNotebookPage *system_page, System *system);
     ~Software_List_Panel();
 
-    void update();
+    void update(System *system = nullptr);
     wxScrolledWindow* get_all();
 private:
     System *system;

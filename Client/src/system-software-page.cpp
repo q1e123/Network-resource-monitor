@@ -27,8 +27,8 @@ wxNotebookPage* System_Software_Page::get_all(){
 	return system_page;
 }
 
-void System_Software_Page::update(){
-	software_list_panel->update();
+void System_Software_Page::update(System *system){
+	software_list_panel->update(system);
 }
 
 

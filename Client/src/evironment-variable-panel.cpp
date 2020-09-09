@@ -44,7 +44,10 @@ wxScrolledWindow* Environment_Variable_Panel::get_all(){
     return panel;
 }
 
-void Environment_Variable_Panel::update(){
+void Environment_Variable_Panel::update(System *system){
+	if(system == nullptr){
+        system = this->system;    
+    }
     std::vector<System_User> user_list = system->get_user_list();
 	std::map<std::string, std::string> environment_variables = system->get_environment_variables();
     std::string key, value;
