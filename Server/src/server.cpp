@@ -152,10 +152,9 @@ void Server::run_cmd(Client_Info client, std::string cmd) {
 	std::string type;
 	getline(iss, type, ';');
 
-	mtx.lock();
 	if (type == "SYS") {
 		std::string serialization;
-		getline(iss, serialization);		
+		getline(iss, serialization);
 		cmd_sys(serialization);
 	} else if (type == "LOG") {
 		std::string log_size_str;
@@ -205,7 +204,6 @@ void Server::run_cmd(Client_Info client, std::string cmd) {
 		getline(iss, file_name);
 		cmd_file_recv(client, file_name);
 	}
-	mtx.unlock();
 }
 
 void Server::cmd_sys(std::string serialization) {

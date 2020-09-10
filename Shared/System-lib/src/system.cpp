@@ -116,7 +116,7 @@ std::string System::serilize(){
 	pkg += ";" + std::to_string(this->avalabile_space) + ";";
 
 	for(auto program : installed_programs){
-		pkg += program + ":";
+		pkg += program + ",";
 	}
 	pkg.pop_back();
 	pkg += ";";
@@ -254,7 +254,7 @@ System::System(std::string serialization){
 			case 10:{
 				std::istringstream program_list_iss(tmp);
 				std::string program;
-				while (getline(program_list_iss, program, ':')){
+				while (getline(program_list_iss, program, ',')){
 					installed_programs.push_back(program);
 				}
 				break;

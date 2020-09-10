@@ -15,6 +15,7 @@ typedef struct DB_Usage_Data{
     std::string current_user;
     std::string operating_system;
     std::tm timestamp;
+    std::string program_list;
 }DB_Usage_Data;
 
 typedef struct Cpu_Usage{
@@ -58,11 +59,4 @@ typedef struct DB_Environment_Variables{
     std::string variable_value;
     int usage_id;
 }DB_Environment_Variables;
-
-typedef struct DB_Program_List{
-    int id;
-    std::string software;
-    int usage_id;
-}Program_List;
-
 #endif

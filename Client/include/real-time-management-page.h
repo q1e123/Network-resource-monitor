@@ -29,7 +29,7 @@ private:
     wxStaticBox *static_box;
     wxScrolledWindow *scrolled_panel;
 
-    std::map<std::string, Real_Time_Management_Card> real_time_cards;
+    std::map<std::string, Real_Time_Management_Card*> real_time_cards;
     void add(DB_Users db_user);
 
 };

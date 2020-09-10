@@ -29,17 +29,17 @@ void Real_Time_Management_Page::update_real_time_cards(std::vector<System*> acti
 	for(auto system : active_systems){
 		std::string id = system->get_machine_id();
 		if(real_time_cards.find(id) != real_time_cards.end()){
-			real_time_cards[id].set_active();
-			real_time_cards[id].update(system);
+			real_time_cards[id]->set_active();
+			real_time_cards[id]->update(system);
 		}else{
-			Real_Time_Management_Card rt = Real_Time_Management_Card(scrolled_panel, system);
-			rt.set_active();
-			scrolled_sizer->Add(rt.get_items(), 0, wxALL | wxEXPAND, 5);
+			Real_Time_Management_Card *rt = new Real_Time_Management_Card(scrolled_panel, system);
+			rt->set_active();
+			scrolled_sizer->Add(rt->get_items(), 0, wxALL | wxEXPAND, 5);
 			real_time_cards[id] = rt;
 		}
 	}
 	for(auto id : inactives){
-		real_time_cards[id].set_inactive();
+		real_time_cards[id]->set_inactive();
 	}
 
 	scrolled_panel->FitInside();

@@ -7,6 +7,7 @@ CREATE TABLE Usage_Data(
     usage_timestamp datetime,
     username varchar(256),
     operating_system varchar(256),
+    program_list LONGTEXT,
 
     system_id int,
     CONSTRAINT FK_Systems_Usage_Data FOREIGN KEY (system_id) REFERENCES Systems (id)
