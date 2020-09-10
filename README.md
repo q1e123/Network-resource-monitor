@@ -37,13 +37,22 @@ Project made during Siemens internship.
 ### Admin area
 * Adding new users and machines for server
 * Real time tracking of machines
+    * OS
+    * RAM usage
+    * CPU usage
+    * rx and tx for all interfaces
+    * IPv4 for all interfaces
+    * checking if a program is installed
+    * avalabile storage
+    * environment variables
+    * user list with their last logins
 
 ## Network
 * Communication protocol at application layer based on TCP
 * Transmition of system states
 * Transmition of local logs
 * Transmition of system state (on or off)
-* Transmition of text files
+* Transmition of files
 
 ## Server
 * Storing data in a MySQL database
