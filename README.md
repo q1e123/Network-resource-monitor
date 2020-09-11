@@ -120,3 +120,6 @@ If it's the first time you run this change all keys from create to **on** so the
 ```
 server.exe <instance_name> <port>
 ```
+
+# License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
