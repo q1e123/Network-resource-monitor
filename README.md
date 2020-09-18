@@ -1,5 +1,6 @@
 # Network resource monitor
-This is a cross-platform tool that can help you monitor a network's resources.  
+This is a cross-platform tool that can help you monitor a network's resources.
+For the web app check [this repository](https://github.com/q1e123/Network-resource-monitor-web).  
 Project made during Siemens internship.
 
 # 3rd party libraries
