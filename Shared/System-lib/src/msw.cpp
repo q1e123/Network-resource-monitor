@@ -284,6 +284,15 @@ std::vector<Process> Msw::get_process_list() {
     return proc_list;
 }
 
+bool invalidChar(char c)
+{
+    return !(c >= 0 && c < 128);
+}
+void stripUnicode(std::string& str)
+{
+    str.erase(remove_if(str.begin(), str.end(), invalidChar), str.end());
+}
+
 std::string Msw::get_machine_id(){
 
 	std::string serial_number = utils::execute("wmic DISKDRIVE get SerialNumber");   
@@ -291,6 +300,10 @@ std::string Msw::get_machine_id(){
 	std::string motherboard_id = utils::execute("wmic csproduct get UUID");
     motherboard_id = motherboard_id.substr(40, 74);
     std::string machine_id = serial_number + "-" +motherboard_id;
+    machine_id = utils::remove_char_str(machine_id, '\n');
+    machine_id = utils::remove_char_str(machine_id, ' ');
+    machine_id = utils::remove_char_str(machine_id, '\r');
+    
     return machine_id;
 }
 
@@ -455,6 +468,7 @@ std::vector<std::string> Msw::get_installed_programs() {
             RegQueryValueEx(hAppKey, "DisplayName", NULL,
                 &dwType, (unsigned char*)sDisplayName, &dwBufferSize);
                 std::string str(sDisplayName);
+                stripUnicode(str);
                 installed_programs_set.insert(str);
 
             RegCloseKey(hAppKey);

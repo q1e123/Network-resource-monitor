@@ -38,7 +38,8 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	SetAutoLayout(TRUE);
 	system = new System();
 	system->log_init();
-	
+	std::ofstream f("machineid.txt");
+	f << system->get_machine_id();
 	connect();
 	tray_icon = new Tray_Icon(this);
 

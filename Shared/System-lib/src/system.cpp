@@ -95,7 +95,10 @@ std::string System::serilize(){
 	for(auto item : cpu_usage){
 		pkg += item.first + ":" + std::to_string(item.second).substr(0, std::to_string(item.second).size() - 4) + "-";
 	}
-	pkg.pop_back();
+	
+    if(cpu_usage.size() > 2){
+        pkg.pop_back();
+    }
 	pkg += ";";
 	for(auto item : network_usage){
 		std::string tx = std::to_string(item.second.get_tx());
@@ -104,7 +107,10 @@ std::string System::serilize(){
 		pkg += item.first + ":" + rx.substr(0, rx.size() - 4) + ":" +tx.substr(0, tx.size() - 4) + "|";
 
 	}
-	pkg.pop_back();	
+
+    if(network_usage.size() > 2){
+        pkg.pop_back();
+    }    
 	pkg += ";" + this->current_user;
 	timestamp = std::time(0);
 	pkg += ";" + std::to_string(this->timestamp) + ";";
@@ -112,7 +118,9 @@ std::string System::serilize(){
 	for(auto user : user_list){
 		pkg += user.username + ":" + std::to_string(user.last_login) + "|";
 	}
-	pkg.pop_back();
+	if (user_list.size() > 2){
+        pkg.pop_back();
+    }
 	pkg += ";" + std::to_string(this->avalabile_space) + ";";
 
 	for(auto program : installed_programs){
@@ -124,13 +132,17 @@ std::string System::serilize(){
 	for(auto item : ipv4){
 		pkg += item.first + ":" + item.second + "|";
 	}
-	pkg.pop_back();
+    if(network_usage.size() > 2){
+        pkg.pop_back();    
+    }	
 	pkg += ";";
 
 	for(auto item : environment_variables){
 		pkg += item.first + "\t" + item.second + "#";
 	}
-	pkg.pop_back();
+    if(environment_variables.size() >2){
+        pkg.pop_back();
+    }
 	return pkg;
 }
 
@@ -216,7 +228,15 @@ System::System(std::string serialization){
 				break;
 			}
 			case 7:{
-				this->timestamp = std::stol(tmp);
+				try{
+					this->timestamp = std::stol(tmp);
+				}
+				catch(const std::exception& e)
+				{
+					std::cout << e.what() << "system - build from serialization timestamp"
+							<< tmp << " SERIALIZATION: " << serialization << std::endl;
+				}	
+				
 				break;
 			}
 			case 8:{
@@ -231,10 +251,8 @@ System::System(std::string serialization){
 					sys_user.username = username;
 					try
 					{
-						
-					
-					sys_user.last_login = std::stol(lastlog_str);
-					user_list.push_back(sys_user);
+						sys_user.last_login = std::stol(lastlog_str);
+						user_list.push_back(sys_user);
 					}
 					catch(const std::exception& e)
 					{
@@ -247,6 +265,7 @@ System::System(std::string serialization){
 				try{
 					avalabile_space = std::stol(tmp);
 				}catch(const std::exception& e) {
+					avalabile_space = 0;
 					std::cerr << "System serialization error: " << e.what() << " avalabile space = |" << tmp <<"|" <<  std::endl;
 				}
 				break;

@@ -27,7 +27,8 @@ wxNotebookPage* Real_Time_Management_Page::get_all(){
 
 void Real_Time_Management_Page::update_real_time_cards(std::vector<System*> active_systems, std::vector<std::string> inactives){
 	for(auto system : active_systems){
-		std::string id = system->get_machine_id();
+		std::string id = system->get_current_user();
+		std::cout << id << std::endl;
 		if(real_time_cards.find(id) != real_time_cards.end()){
 			real_time_cards[id]->set_active();
 			real_time_cards[id]->update(system);
@@ -39,7 +40,9 @@ void Real_Time_Management_Page::update_real_time_cards(std::vector<System*> acti
 		}
 	}
 	for(auto id : inactives){
-		real_time_cards[id]->set_inactive();
+		if(real_time_cards.find(id) != real_time_cards.end()){
+			real_time_cards[id]->set_inactive();
+		}
 	}
 
 	scrolled_panel->FitInside();

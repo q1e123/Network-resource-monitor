@@ -485,7 +485,9 @@ System* Database_Manager::build_system(DB_Systems systems){
         std::string cpu_usage_str = std::to_string(usage.usage);
         serialization += usage.cpu_name + ":" + cpu_usage_str.substr(0, cpu_usage_str.size() - 4) + "-"; 
     }
-    serialization.pop_back();
+    if(cpu_usage.size() > 2){
+        serialization.pop_back();
+    }
     serialization += ";";
     for(auto network_interface : network_usage){
         std::string rx = std::to_string(network_interface.rx);
@@ -493,14 +495,18 @@ System* Database_Manager::build_system(DB_Systems systems){
 
         serialization += network_interface.interface_name + ":" + rx.substr(0, rx.size() - 4) + ":" +tx.substr(0, tx.size() - 4) + "|"; 
     }
-    serialization.pop_back();
+    if(network_usage.size() > 2){
+        serialization.pop_back();
+    }    
     serialization += ";" + usage_data.current_user;
     serialization += ";" + std::to_string(std::mktime(&usage_data.timestamp)) + ";";
     for(auto db_user_list: user_list){
         time_t t = mktime(&db_user_list.last_login);
         serialization += db_user_list.username + ":" + std::to_string(t) + "|";
     }
-    serialization.pop_back();
+    if (user_list.size() > 2){
+        serialization.pop_back();
+    }    
     serialization += ";" + std::to_string(usage_data.avalabile_space) + ";";
     
     serialization += usage_data.program_list + ";";
@@ -508,13 +514,17 @@ System* Database_Manager::build_system(DB_Systems systems){
     for(auto item : network_usage){
         serialization += item.interface_name + ":" + item.ipv4 + "|";
 	}
-	serialization.pop_back();
+    if(network_usage.size() > 2){
+        serialization.pop_back();    
+    }	
 	serialization += ";";
 
     for(auto env_var : enviroment_variables){
         serialization += env_var.variable + "\t" + env_var.variable_value + "#";
     }
-    serialization.pop_back();
+    if(enviroment_variables.size() >2){
+        serialization.pop_back();
+    }
     System *system = new System(serialization);
     return system;
 }
