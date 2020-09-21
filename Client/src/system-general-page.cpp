@@ -1,10 +1,13 @@
 #include "system-page.h"
+#include "colors.h"
 
 System_General_Page::System_General_Page(){}
 
 System_General_Page::System_General_Page(wxNotebook *main_notebook, System *system){
 	this->system = system;
     system_page = new wxPanel(main_notebook, wxID_ANY);
+	system_page->SetBackgroundColour(Colors::dark_gray);
+
 	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
 	
 	system_card = new System_Card(system_page, system);

@@ -6,7 +6,8 @@
 
 Real_Time_Management_Page::Real_Time_Management_Page(){};
 
-Real_Time_Management_Page::Real_Time_Management_Page(wxNotebook *main_notebook){
+Real_Time_Management_Page::Real_Time_Management_Page(wxNotebook *main_notebook, Client *client){
+	this->client = client;
     page = new wxPanel(main_notebook, wxID_ANY);
 
 	box_sizer= new wxBoxSizer(wxVERTICAL);
@@ -33,7 +34,7 @@ void Real_Time_Management_Page::update_real_time_cards(std::vector<System*> acti
 			real_time_cards[id]->set_active();
 			real_time_cards[id]->update(system);
 		}else{
-			Real_Time_Management_Card *rt = new Real_Time_Management_Card(scrolled_panel, system);
+			Real_Time_Management_Card *rt = new Real_Time_Management_Card(scrolled_panel, system, this->client);
 			rt->set_active();
 			scrolled_sizer->Add(rt->get_items(), 0, wxALL | wxEXPAND, 5);
 			real_time_cards[id] = rt;

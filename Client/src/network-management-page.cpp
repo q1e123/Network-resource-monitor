@@ -5,8 +5,9 @@
 #include "gui-element-id.h"
 Network_Management_Page::Network_Management_Page(){};
 
-Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, System *system){
+Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, System *system, Client *client){
 	user_role = "Not set";
+	this->client = client;
 
     page = new wxPanel(main_notebook, wxID_ANY);
 	box_sizer= new wxBoxSizer(wxVERTICAL);
@@ -28,7 +29,7 @@ Network_Management_Page::Network_Management_Page(wxNotebook *main_notebook, Syst
 	system_management_page = new System_Management_Page(notebook);
 	notebook->AddPage(system_management_page->get_all(), "System Management");
 
-	real_time_management_page = new Real_Time_Management_Page(notebook);
+	real_time_management_page = new Real_Time_Management_Page(notebook, client);
 	notebook->AddPage(real_time_management_page->get_all(), "Real time");
 	
 	box_sizer->Add(network_text, 0, wxALL, 5);

@@ -16,6 +16,8 @@ User_List_Panel::User_List_Panel(wxNotebookPage *system_page, System *system){
     this->system = system;
 
     panel = new wxScrolledWindow(system_page, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL, "Process List");
+	panel->SetBackgroundColour(Colors::dark_gray);
+
 	box_sizer = new wxBoxSizer(wxHORIZONTAL);
 	user_list_box_sizer = new wxBoxSizer(wxVERTICAL);
 	last_log_box_sizer = new wxBoxSizer(wxVERTICAL);

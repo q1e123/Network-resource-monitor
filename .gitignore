@@ -8,3 +8,5 @@ Init/database.ini
 Init/system-logger.ini
 .vscode/
 Init/client.ini
+server-demo
+win-demo

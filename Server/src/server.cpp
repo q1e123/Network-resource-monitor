@@ -296,6 +296,7 @@ void Server::cmd_insert_system(Client_Info client){
 
 void Server::cmd_file_send(Client_Info client, std::string file_name){
 	if(std::filesystem::exists(file_name)){
+		std::cout << "Sending " << file_name << std::endl;
 		std::string header = "SEND;FILE;" + file_name;
 		Communication_Protocol::send_message(client.get_socket_number(), header, logger);
 		Communication_Protocol::send_file(client.get_socket_number(), logger, file_name);

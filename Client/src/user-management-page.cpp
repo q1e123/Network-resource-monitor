@@ -11,6 +11,7 @@ User_Management_Page::User_Management_Page(wxNotebook *main_notebook){
 
     page = new wxPanel(main_notebook, wxID_ANY);
 	add_user_form = new Add_User_From(page);
+	page->SetBackgroundColour(Colors::dark_gray);
 
 	box_sizer= new wxBoxSizer(wxVERTICAL);
     submit_changes_button = new wxButton(page, GUI_ELEMENT_ID::BUTTON_USER_MANAGEMENT_SUMBIT_CHANGES, "Sumbit changes");

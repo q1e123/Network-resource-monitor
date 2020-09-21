@@ -13,11 +13,12 @@
 #include "user-management-page.h"
 #include "system-management-page.h"
 #include "real-time-management-page.h"
+#include "client.h"
 
 class Network_Management_Page{
 public:
     Network_Management_Page();
-    Network_Management_Page(wxNotebook *main_notebook, System *system);
+    Network_Management_Page(wxNotebook *main_notebook, System *system, Client *client);
 
     wxNotebookPage* get_all();
     void change_to_connected_gui(std::string server_name);
@@ -37,6 +38,7 @@ public:
     DB_Systems get_new_system();
 
 private:
+    Client *client;
     std::string user_role;
     System *system;
    	wxNotebook *notebook;

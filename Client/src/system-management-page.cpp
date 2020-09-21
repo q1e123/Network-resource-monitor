@@ -8,7 +8,8 @@ System_Management_Page::System_Management_Page(){};
 
 System_Management_Page::System_Management_Page(wxNotebook *main_notebook){
     page = new wxPanel(main_notebook, wxID_ANY);
-	
+	page->SetBackgroundColour(Colors::dark_gray);
+
 	box_sizer= new wxBoxSizer(wxVERTICAL);
     submit_changes_button = new wxButton(page, GUI_ELEMENT_ID::BUTTON_SYSTEM_MANAGEMENT_SUMBIT_CHANGES, "Sumbit changes");
 	submit_changes_button->SetForegroundColour(Colors::black);

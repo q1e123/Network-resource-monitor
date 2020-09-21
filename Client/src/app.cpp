@@ -8,7 +8,7 @@
 IMPLEMENT_APP(App)
 
 bool App::OnInit(){
-	MainFrame *main_window = new MainFrame("Siemens", wxDefaultPosition, wxSize(800, 600));
+	MainFrame *main_window = new MainFrame("Network-resource-monitor", wxDefaultPosition, wxSize(800, 600));
 	main_window->Show(true);
 	SetTopWindow(main_window);
 

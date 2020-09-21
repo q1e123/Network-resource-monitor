@@ -60,7 +60,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	main_notebook->AddPage(performance_page->get_all(), "Performance");
 
 	if(client  != nullptr && client->get_role() == "Administrator"){
-		network_management_page = new Network_Management_Page(main_notebook, system);
+		network_management_page = new Network_Management_Page(main_notebook, system, client);
 		network_management_page->set_user_role(client->get_role());
 		network_management_page->change_to_connected_gui(client->get_server_name());
 		main_notebook->AddPage(network_management_page->get_all(), "Network Management");

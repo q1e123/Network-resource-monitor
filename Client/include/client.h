@@ -73,7 +73,8 @@ public:
 	void request_inactive_systems();
 	void request_users();
 	void request_systems();
-
+	void request_file(std::string file_name);
+	
 	void send_system_state(System *system);
 	void send_log_file(Logger *logger);
 	void update_users(std::vector<DB_Users> users);

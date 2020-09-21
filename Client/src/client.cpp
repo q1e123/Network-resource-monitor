@@ -283,6 +283,10 @@ void Client::request_systems(){
 	send_message("REQ;SYSTEMS;" + username);
 }
 
+void Client::request_file(std::string file_name){
+	send_message("REQ;FILE;" + file_name);
+}
+
 void Client::update_users(std::vector<DB_Users> users){
 	this->users = users;
 	size_t number_of_systems = users.size();

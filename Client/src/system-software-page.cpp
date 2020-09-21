@@ -9,7 +9,8 @@ System_Software_Page::System_Software_Page(wxNotebook *main_notebook, System *sy
 
 	system_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
-	
+	system_page->SetBackgroundColour(Colors::dark_gray);
+
 	check_software_button = new wxButton(system_page, GUI_ELEMENT_ID::BUTTON_CHECK_SOFTWARE, "Check");
 	check_software_button->SetBackgroundColour(Colors::light_gray);
 	check_software_button->SetForegroundColour(Colors::black);

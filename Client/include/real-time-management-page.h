@@ -13,17 +13,19 @@
 #include "real-time-management-card.h"
 #include "database-structs.h"
 #include "add-user-form.h"
+#include "client.h"
 
 class Real_Time_Management_Page{
 public:
     Real_Time_Management_Page();
-    Real_Time_Management_Page(wxNotebook *main_notebook);
+    Real_Time_Management_Page(wxNotebook *main_notebook, Client *client);
 
     wxNotebookPage* get_all();
 
     void update_real_time_cards(std::vector<System*> active_systems, std::vector<std::string> inactives);
 
 private:
+    Client *client;
     wxNotebookPage *page;
     wxBoxSizer *box_sizer, *scrolled_sizer;
     wxStaticBox *static_box;

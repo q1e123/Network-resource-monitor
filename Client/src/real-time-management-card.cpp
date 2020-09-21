@@ -5,9 +5,11 @@
 
 BEGIN_EVENT_TABLE (Real_Time_Management_Card, wxStaticBox)
 	EVT_BUTTON(BUTTON_CHECK_SOFTWARE_REAL_TIME, Real_Time_Management_Card::check_software)
+	EVT_BUTTON(BUTTON_GET_LOG_REAL_TIME, Real_Time_Management_Card::get_log)
 END_EVENT_TABLE()
 
-Real_Time_Management_Card::Real_Time_Management_Card(wxWindow *parent, System *system) : wxStaticBox(parent, wxID_ANY, ""){
+Real_Time_Management_Card::Real_Time_Management_Card(wxWindow *parent, System *system, Client *client) : wxStaticBox(parent, wxID_ANY, ""){
+	this->client = client;
 	this->system = system;
 	sizer = new wxBoxSizer(wxVERTICAL);
 	user_text = new wxStaticText(this, wxID_ANY, "User: " + system->get_current_user()); 
@@ -101,12 +103,17 @@ Real_Time_Management_Card::Real_Time_Management_Card(wxWindow *parent, System *s
 	environment_variable_box_sizer->Add(environment_variable_combo_box, 0, wxALL | wxEXPAND, 5);
 	environment_variable_box_sizer->Add(environment_variable_text, 0, wxALL | wxEXPAND, 5);
 
+	get_log_button = new wxButton(this, GUI_ELEMENT_ID::BUTTON_GET_LOG_REAL_TIME, "Get log");
+	get_log_button->SetBackgroundColour(Colors::light_gray);
+	get_log_button->SetForegroundColour(Colors::black);
+
 	card_sbox->Add(interface_combo_box, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(rx_tx_box_sizer, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(user_box_sizer, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(environment_variable_box_sizer, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(software_input, 0, wxALL | wxEXPAND, 5);
 	card_sbox->Add(check_software_button, 0, wxALL, 5);
+	card_sbox->Add(get_log_button, 0, wxALL, 5);
 }
 
 void Real_Time_Management_Card::update(System *system){
@@ -186,4 +193,8 @@ void Real_Time_Management_Card::check_software(wxCommandEvent &e){
 		return;
 	}
 	wxMessageBox(software + " is not installed on this machine");
+}
+
+void Real_Time_Management_Card::get_log(wxCommandEvent &e){
+	client->request_file("log-demo.txt");
 }

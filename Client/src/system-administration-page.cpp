@@ -9,6 +9,7 @@ System_Administration_Page::System_Administration_Page(){}
 System_Administration_Page::System_Administration_Page(wxNotebook *main_notebook, System *system){
     system_page = new wxPanel(main_notebook, wxID_ANY);
 	wxSizer *system_sizer = new wxBoxSizer(wxVERTICAL);
+	system_page->SetBackgroundColour(Colors::dark_gray);
 
 	generate_log_button = new wxButton(system_page, GUI_Element_ID::BUTTON_GENERATE_LOG, "Generate new log");
 	generate_log_button->SetBackgroundColour(Colors::light_green);
@@ -23,7 +24,6 @@ System_Administration_Page::System_Administration_Page(wxNotebook *main_notebook
 	system_sizer->Add(environment_variable_text, 0, wxALL, 5);
 	system_sizer->Add(environment_variable_panel->get_all(), 1, wxALL | wxEXPAND, 5);
 
-	
 	user_list_text = new wxStaticText(system_page, wxID_ANY, "Users");
 	user_list_text->SetFont(Fonts::h2);
     user_list_text->SetForegroundColour(Colors::white);
