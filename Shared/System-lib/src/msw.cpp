@@ -43,14 +43,14 @@ size_t Msw::get_total_ram(){
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof (statex);
 	GlobalMemoryStatusEx(&statex);
-	return statex.ullTotalPhys;
+	return statex.ullTotalPhys / 1024;
 }
 
 size_t Msw::get_avalabile_ram(){
 	MEMORYSTATUSEX statex;
 	statex.dwLength = sizeof (statex);
 	GlobalMemoryStatusEx(&statex);
-	return statex.ullAvailPhys;
+	return statex.ullAvailPhys / 1024;
 }
 
 size_t filetime_to_int(const FILETIME &ft){
