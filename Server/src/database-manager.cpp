@@ -14,9 +14,13 @@ Database_Manager::Database_Manager(){
 void Database_Manager::init(){
 	get_login_data();
     get_create_data();
-    create_tables();    
+    std::cout << "create_tables" << std::endl;
+    create_tables();
+    std::cout << "get_insert_data" << std::endl;
     get_insert_data();
+    std::cout << "insert_data" << std::endl;
     insert_data();
+    std::cout << "fff" << std::endl;
 }
 
 void Database_Manager::get_login_data(){
@@ -37,13 +41,14 @@ void Database_Manager::get_login_data(){
 void Database_Manager::get_create_data(){
     CSimpleIniA ini;
 	if (ini.LoadFile(this->init_file_name.c_str()) < 0) {
+
+        std::cout << "FAIL";
 		std::cerr << "Can't open database init file" << std::endl;
 		exit(1);
 	}
-    
     this->users_table = ini.GetValue("create", "users_table");
     this->systems_table = ini.GetValue("create", "systems_table");
-    this->usage_data_table = ini.GetValue("create", "usage_data_table");
+    this->usage_data_table = ini.GetValue("create", "data_usage_table");
     this->cpu_usage_table = ini.GetValue("create", "cpu_usage_table");
     this->network_usage_table = ini.GetValue("create", "network_usage_table");
     this->user_list_table = ini.GetValue("create", "user_list_table");
@@ -62,24 +67,31 @@ void Database_Manager::get_insert_data(){
 }
 
 void Database_Manager::create_tables(){
+    std::cout << "systems_table" << std::endl;
     if(this->systems_table == "on"){
         create_systems_table();
     }
+    std::cout << "users_table" << std::endl;
     if(this->users_table == "on"){
         create_users_table();
     }
+    std::cout << "usage_data_table" << std::endl;
     if(this->usage_data_table == "on"){
         create_usage_data_table();
     }
+    std::cout << "cpu_usage_table" << std::endl;
     if(this->cpu_usage_table == "on"){
         create_cpu_usage_table();
     }
+    std::cout << "create_network_usage_table" << std::endl;
     if(this->network_usage_table == "on"){
         create_network_usage_table();
     }
+    std::cout << "user_list_table" << std::endl;
     if(this->user_list_table == "on"){
         create_user_list_table();
     }
+    std::cout << "environment_variables_table" << std::endl;
     if(this->environment_variables_table == "on"){
         create_environment_variables_table();
     }
@@ -93,11 +105,18 @@ void Database_Manager::create_users_table(){
     connection.close();
 }
 
+#include <exception>
 void Database_Manager::create_systems_table(){
     soci::session connection;
-    connection.open(type, connection_string);
+    try {
+        connection.open(type, connection_string);
+    }
+    catch (std::exception &e ){
+        std::cout << e.what();
+    }
 
     std::string query = get_query("../SQL/create-systems-table.sql");
+    std::cout << "query" << std::endl;
     connection << query;
 
     connection.close();

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 set(PROJECT_NAME "client")
 project(${PROJECT_NAME})
 
-find_package(wxWidgets COMPONENTS core base REQUIRED)
+find_package(wxWidgets 3.1 COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 include_directories(include
@@ -22,7 +22,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 target_link_libraries(${PROJECT_NAME} 
-                        ${wxWidgets_LIBRARIES} 
+                        ${wxWidgets_LIBRARIES}
                         System_lib Utils_lib Logger_lib 
                         Communication_Protocol_lib
                         )
